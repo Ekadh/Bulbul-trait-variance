@@ -1,0 +1,142 @@
+Part 1: Loading range size, abundance and morphological data and merging
+```{r}
+library(tidyverse)
+
+# Load range size data
+range_size <- read.csv("../data/range_sizes.csv")
+
+# Load abundance data
+abundance <- read.csv("../data/abundances.csv")
+
+# Load morphological data if needed
+morphology <- read.csv("../data/Bulbul_AVONET_data.csv")
+
+# Merge datasets
+merged_data <- merge(range_size, abundance, by.x = "Common.name", by.y = "Common.name") %>%
+    distinct(Common.name, .keep_all = TRUE)
+str(merged_data)
+write.csv(merged_data, "../data/merged_range_abundance_data.csv")
+
+# Load AVONET data
+bulbul_specimens <- read.csv("../data/Bulbul_AVONET_data.csv", stringsAsFactors = FALSE)
+
+#Merge Scientific.name column of merged_data and the Species2_eBird column of bulbul_specimens
+final_data <- merge(merged_data, bulbul_specimens, by.x = "Scientific.name", by.y = "Species1_BirdLife")
+str(final_data)
+bulbuls <- final_data 
+
+# Save the final bulbul data
+write.csv(bulbuls, "../data/Bulbul_final_data.csv")
+```
+
+Part 2: Calculate trait variances for species with 4+ bulbul_specimens
+```{r}
+bulbuls_count <- table(bulbuls$Species2_eBird)
+bulbuls <- bulbuls[bulbuls$Species2_eBird %in% names(bulbuls_count[bulbuls_count >= 5]), ]
+str(bulbuls)
+
+# Calculate trait variance for each species (one row per species)
+trait_cols <- c("Species2_eBird", "area_square_miles", "Abundance.estimate",
+                "Beak.Length_Culmen", "Beak.Length_Nares", 
+                "Beak.Width", "Beak.Depth", "Tarsus.Length", 
+                "Wing.Length", "Kipps.Distance", "Secondary1", "Hand.wing.Index", "Tail.Length")
+bulbuls_var <- aggregate(. ~ Species2_eBird + area_square_miles + Abundance.estimate, 
+                         data = bulbuls[, trait_cols], 
+                         FUN = var, na.rm = TRUE)
+str(bulbuls_var)
+
+write.csv(bulbuls_count, "../data/Bulbul_specimen_counts.csv")
+```
+
+Part 3: Plotting trait variances against range size and abundance
+```{r}
+library(ggplot2)
+
+# Remove highest range size outlier for better visualization
+bulbuls_var <- bulbuls_var[bulbuls_var$area_square_miles < 7000000, ]
+
+# Plot trait variances against range size
+ggplot(bulbuls_var, aes(x = Tail.Length, y = area_square_miles)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "σ² Tail Length", y = "Range size in square miles") +
+  theme_minimal()
+
+ggsave("../results/TailLengthVar_vs_RangeSize_unlogged.png", width = 8, height = 5)
+
+```
+
+Part 4: Run an LM to test relationship between trait variance and range size
+```{r}
+lm_tail_length <- lm(scale(area_square_miles) ~ scale(Beak.Width), data = bulbuls_var)
+summary(lm_tail_length)
+```
+
+Part 5: Instead of variance, model morphospace area vs range size and abundance
+```{r}
+# Select morphological traits for PCA
+pca_traits <- bulbuls %>%
+  select(
+    Beak.Length_Culmen,
+    Beak.Length_Nares,
+    Beak.Width,
+    Beak.Depth,
+    Tarsus.Length,
+    Wing.Length,
+    Kipps.Distance,
+    Tail.Length
+  )
+
+# Keep complete cases only
+pca_complete <- pca_traits %>% drop_na()
+
+# Keep matching metadata
+meta_complete <- bulbuls %>%
+  select(Species2_eBird, area_square_miles, Abundance.estimate) %>%
+  slice(as.numeric(rownames(pca_complete)))
+
+# Run PCA
+pca_global <- prcomp(pca_complete, center = TRUE, scale. = TRUE)
+summary(pca_global)
+
+# Calculate morphospace area (convex hull area) for each species
+pca_scores <- data.frame(
+  Species2_eBird        = meta_complete$Species2_eBird,
+  area_square_miles     = meta_complete$area_square_miles,
+  Abundance.estimate  = meta_complete$Abundance.estimate,
+  PC1 = pca_global$x[, 1],
+  PC2 = pca_global$x[, 2]
+)
+
+library(geometry)
+
+morphospace_area <- pca_scores %>%
+  group_by(Species2_eBird) %>%
+  filter(n() >= 5) %>%   # enforce minimum sample size again
+  summarise(
+    morphospace_area = convhulln(
+      cbind(PC1, PC2),
+      options = "FA"
+    )$vol,
+    area_square_miles    = mean(area_square_miles, na.rm = TRUE),
+    Abundance.estimate = mean(Abundance.estimate, na.rm = TRUE),
+    n_specimens          = n(),
+    .groups = "drop"
+  )
+
+str(morphospace_area)
+write.csv(morphospace_area, "../data/Bulbul_morphospace_areas.csv")
+
+# Plot morphospace area vs range size
+ggplot(morphospace_area,
+       aes(x = area_square_miles,
+           y = (morphospace_area))) +
+  geom_point(size = 2, alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE) +
+  theme_minimal() +
+  labs(
+    x = "Range size: square miles",
+    y = "Log(Morphospace area: PC1–PC2)",
+    title = "Species morphospace size vs geographic range size"
+  )
+```

@@ -1,0 +1,187 @@
+```
+Part 1: Load AVONET data and filter correctly for bulbul species
+```{r}
+AVONET <- read.csv("../data/AVONET raw data.csv", stringsAsFactors = FALSE)
+str(AVONET)
+
+bulbul_genera <- c("Pycnonotus", "Brachypodius", "Hypsipetes", "Iole",
+       "Criniger", "Hemixos", "Alophoixus", "Rubigula",
+       "Eurillas", "Setornis", "Tricholestes", "Phyllastrephus",
+       "Bleda", "Andropadus", "Stelgidillas", "Calyptocichla", 
+       "Neolestes", "Atimastillas", "Alcurus", "Nok", "Spizixos",
+       "Ixonotus", "Thescelocichla", "Chlorocichla", "Baeopogon", 
+       "Arizelocichla", "Acritillas", "Ixos", "Microtarsus")
+
+AVONET$Species2_eBird <- trimws(as.character(AVONET$Species2_eBird))
+pattern <- paste0("^(", paste(bulbul_genera, collapse = "|"), ")(\\b|\\s)")
+
+idx <- !is.na(AVONET$Species2_eBird) & grepl(pattern, AVONET$Species2_eBird, ignore.case = TRUE)
+bulbuls <- AVONET[idx, ]
+str(bulbuls)
+sum(unique(as.factor(bulbuls$Avibase.ID)) %in% unique(as.factor(AVONET$Avibase.ID)))
+
+write.csv(bulbuls, "../data/Bulbul_AVONET_data.csv")
+```
+
+Part 2: Merge with BNHS data
+```{r}
+library(openxlsx)
+BNHS <- read.xlsx("../data/BNHS_data.xlsx")
+str(BNHS)
+
+library(tidyverse)
+BNHS$Specimen.number <- as.character(BNHS$Specimen.number)
+BNHS$Publication <- as.character(BNHS$Publication)
+bulbul_traits <- bind_rows(bulbuls, BNHS)
+str(bulbul_traits)
+
+write.csv(bulbul_traits, "../data/Bulbul_AVONET_data.csv")
+```
+
+Part 3: Load bulbul specimen data and model morphospace 
+```{r}
+bulbul_specimens <- read.csv("../data/Bulbul_AVONET_data.csv", stringsAsFactors = FALSE)
+str(bulbul_specimens)
+
+# Select traits to model morphospace
+traits <- bulbul_specimens %>%
+  select(
+    Beak.Length_Culmen,
+    Beak.Length_Nares,
+    Beak.Width,
+    Beak.Depth,
+    Tarsus.Length,
+    Wing.Length,
+    Kipps.Distance,
+    Tail.Length
+  )
+
+traits_complete <- traits %>% drop_na()
+
+#Create metadata table
+meta_complete <- bulbul_traits %>%
+  select(Species2_eBird) %>%
+  slice(as.numeric(rownames(traits_complete)))
+
+# Perform PCA
+pca_result <- prcomp(traits_complete, center = TRUE, scale. = TRUE)
+summary(pca_result)
+
+pca_df <- data.frame(
+  PC1 = pca_result$x[, 1],
+  PC2 = pca_result$x[, 2],
+  Species2_eBird = meta_complete$Species2_eBird
+)
+
+# Plot PCA results
+ggplot(pca_df, aes(PC1, PC2, colour = Species2_eBird)) +
+  geom_point(alpha = 0.6, size = 1.8) +
+  theme_classic() +
+  labs(
+    x = paste0("PC1 (", round(100 * summary(pca_result)$importance[2,1], 1), "%)"),
+    y = paste0("PC2 (", round(100 * summary(pca_result)$importance[2,2], 1), "%)"),
+    colour = "Species"
+  ) +
+  theme(
+    legend.position = "none"  # IMPORTANT if many species
+  )
+
+ggsave("../results/Bulbul_Morphospace_PCA.png", width = 6, height = 5)
+
+#Species centroids: OPTIONAL
+species_centroids <- pca_df %>%
+  group_by(Species2_eBird) %>%
+  summarise(
+    PC1 = mean(PC1),
+    PC2 = mean(PC2),
+    .groups = "drop"
+  )
+
+ggplot(pca_df, aes(PC1, PC2, colour = Species2_eBird)) +
+  geom_point(alpha = 0.3, size = 1.5) +
+  geom_point(
+    data = species_centroids,
+    aes(PC1, PC2),
+    colour = "black",
+    size = 3,
+    inherit.aes = FALSE
+  ) +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+
+Part 4: One PCA for a species with wide range vs one with narrow range
+```{r}
+wide_range_species <- "Pycnonotus cafer"
+narrow_range_species <- "Arizelocichla nigriceps"
+
+wide_range_data <- bulbul_specimens %>%
+  filter(Species2_eBird == wide_range_species) %>%
+  select(
+    Beak.Length_Culmen,
+    Beak.Length_Nares,
+    Beak.Width,
+    Beak.Depth,
+    Tarsus.Length,
+    Wing.Length,
+    Kipps.Distance,
+    Tail.Length
+  ) %>%
+  drop_na()
+
+narrow_range_data <- bulbul_specimens %>%
+  filter(Species2_eBird == narrow_range_species) %>%
+  select(
+    Beak.Length_Culmen,
+    Beak.Length_Nares,
+    Beak.Width,
+    Beak.Depth,
+    Tarsus.Length,
+    Wing.Length,
+    Kipps.Distance,
+    Tail.Length
+  ) %>%
+  drop_na()
+
+combined_data <- rbind(wide_range_data, narrow_range_data)
+pca_combined <- prcomp(combined_data, center = TRUE, scale. = TRUE)
+summary(pca_combined)
+
+pca_combined_df <- data.frame(
+  PC1 = pca_combined$x[, 1],
+  PC2 = pca_combined$x[, 2],
+  Species2_eBird = c(rep(wide_range_species, nrow(wide_range_data)),
+                     rep(narrow_range_species, nrow(narrow_range_data)))
+)
+
+hulls <- pca_combined_df %>%
+  group_by(Species2_eBird) %>%
+  slice(chull(PC1, PC2))
+
+cb_palette <- c(
+  "Pycnonotus cafer"     = "#E69F00",
+  "Arizelocichla nigriceps" = "#009E73"
+)
+
+ggplot(pca_combined_df, aes(PC1, PC2, colour = Species2_eBird)) +
+  geom_polygon(
+    data = hulls,
+    aes(fill = Species2_eBird),
+    alpha = 0.25,
+    colour = NA
+  ) +
+  geom_point(aes(shape = Species2_eBird), size = 2, alpha = 0.7) +
+  scale_colour_manual(values = cb_palette) +
+  scale_fill_manual(values = cb_palette) +
+  theme_classic() +
+  labs(
+    x = paste0("PC1 (", round(100 * summary(pca_combined)$importance[2,1], 1), "%)"),
+    y = paste0("PC2 (", round(100 * summary(pca_combined)$importance[2,2], 1), "%)"),
+    colour = "Species",
+    fill   = "Species",
+    shape  = "Species"
+  ) +
+  theme(legend.position = "top")
+
+ggsave("../results/Bulbul_Wide_vs_Narrow_Range_PCA.png", width = 6, height = 5)
+```

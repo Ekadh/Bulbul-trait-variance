@@ -1,0 +1,115 @@
+Part 1: Bulbul locality data merging with specimen data
+```{r}
+library(tidyverse)
+
+str(bulbuls) # uses bulbuls data compiled using bulbul_morphospace.Rmd
+
+localities <- read.csv("../data/Locality_data.csv")
+str(localities)
+
+# Merge bulbuls data with locality data
+localities_selected <- localities %>%
+  select(Specimen.number, Locality.on.label, Locality.edited)
+str(localities_selected)
+colnames(localities_selected)[2] <- "Locality"
+
+localities_selected <- localities %>%
+  filter(!is.na(Specimen.number)) %>%
+  distinct(Specimen.number, .keep_all = TRUE)
+
+merged <- bulbuls %>%
+  left_join(
+    localities_selected,
+    by = "Specimen.number",
+    suffix = c("", ".new")
+  )
+
+merged <- merged %>%
+  mutate(
+    Locality = ifelse(
+      !is.na(Locality.on.label),
+      Locality.on.label,
+      Locality
+    )
+  ) %>%
+  select(-Locality.on.label)
+str(merged)
+
+#Combining Locality.edited column unless NA or empty string
+merged <- merged %>%
+  mutate(
+    Locality = ifelse(
+      !is.na(Locality.edited) & Locality.edited != "",
+      Locality.edited,
+      Locality
+    )
+  ) %>%
+  select(-Locality.edited)
+str(merged)
+
+write.csv(merged, "../data/Bulbul_merged_localities.csv")
+```
+
+Part 2: Georeferencing bulbul specimen localities
+```{r}
+localities_unique <- merged %>%
+  filter(!is.na(Locality) & Locality != "") %>%
+  group_by(Species2_eBird, Locality) %>%
+  summarise(
+    Specimen.number = paste(Specimen.number, collapse = ", "),
+    Country = paste(Country_WRI, collapse = ", "),
+    n_specimens = n(),
+    .groups = "drop"
+  )
+
+str(localities_unique)
+
+write.csv(localities_unique, "../data/Bulbul_unique_localities.csv")
+```
+
+Part 3: Put the points on the map
+```{r}
+unique_localities <- read.csv("../data/Bulbul_unique_localities.csv", stringsAsFactors = FALSE)
+str(unique_localities)
+
+library(sf)
+
+points_sf <- st_as_sf(
+  unique_localities,
+  coords = c("Lon", "Lat"),
+  crs = 4326
+)
+
+# Plot points to verify
+plot(points_sf["n_specimens"])
+
+# Convert n_specimens to factor for discrete color scale
+points_sf <- points_sf %>%
+  mutate(n_specimens = as.factor(n_specimens))
+
+# Get world borders
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# Get bounding box of points and add buffer
+bbox <- st_bbox(points_sf)
+buffer_dist <- 5  # degrees
+bbox_buffered <- bbox + c(-buffer_dist, -buffer_dist, buffer_dist, buffer_dist)
+bbox_sf <- st_as_sfc(bbox_buffered)
+
+# Crop world to bounding box
+world_cropped <- st_crop(world, bbox_buffered)
+
+# Plot using ggplot2 with zoomed extent
+ggplot() +
+  geom_sf(data = world_cropped, fill = "lightgrey", color = "black") +
+  geom_sf(data = points_sf, aes(color = n_specimens), size = 2) +
+  coord_sf(xlim = c(bbox_buffered[1], bbox_buffered[3]), 
+           ylim = c(bbox_buffered[2], bbox_buffered[4]),
+           expand = FALSE) +
+  theme_minimal() +
+  labs(title = "Bulbul Specimen Localities") +
+  theme(legend.position = "top", legend.title = element_text(size = 10)) +
+  scale_color_viridis_d(name = "Number of Specimens per species")
+
+ggsave("../results/Bulbul_Specimen_Localities_Map.png", width = 8, height = 6)
+```

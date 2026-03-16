@@ -1,0 +1,334 @@
+##Poisson models
+
+Loading fisheries data:
+```{r}
+install.packages("MASS")
+install.packages("ggpubr")
+require(ggplot2)
+require(MASS)
+require(ggpubr)
+fish <- read.csv("../data/fisheries.csv", stringsAsFactors = T)
+str(fish)
+```
+
+Initial plotting:
+```{r}
+ggplot(fish, aes(x = MeanDepth, y = TotAbund)) +
+    geom_point() +
+    labs(x = "Mean Depth (km)", y = "Total abundance") +
+    theme_classic()
+```
+
+GLM for total abundance explained by Mean Depth, and its summary
+```{r}
+M1 <- glm(formula = TotAbund ~ MeanDepth, family = "poisson", data = fish)
+summary(M1)
+```
+
+Plotting the model diagnostics:
+```{r}
+par(mfrow = c(2,2))
+plot(M1)
+sum(cooks.distance(M1)>1)
+```
+
+Scatterplot with year as fixed factor just to check:
+```{r}
+scatterplot<-ggplot(fish, aes(x=MeanDepth, y=TotAbund, color=factor(Period)))+
+  geom_point()+
+  labs(x= "Mean Depth (km)", y="Total Abundance")+
+  theme_classic()+
+  scale_color_discrete(name="Period", labels=c("1979-1989", "1997-2002"))
+boxplot<- ggplot(fish, aes(x=factor(Period, labels=c("1979-1989", "1997-2002")), y=TotAbund))+
+  geom_boxplot()+
+  theme_classic()+
+  labs(x="Period", y="Total Abundance")
+ggarrange(scatterplot, boxplot, labels=c("A","B"), ncol=1, nrow=2)
+```
+
+Adding period as a fixed factor:
+```{r}
+fish$Period <- factor(fish$Period)
+M2 <- glm(TotAbund ~ MeanDepth * Period, data = fish, family = "poisson")
+summary(M2)
+```
+
+Dispersion is still >100 which is too much, time for a negative binomial:
+```{r}
+M3 <- glm.nb(TotAbund ~ MeanDepth * Period, data = fish)
+summary(M3)
+```
+
+The multiplicative interaction is not needed as the MeanDepth:Period interaction is not significant:
+```{r}
+M4 <- glm.nb(formula = TotAbund ~ MeanDepth + Period, data = fish)
+summary(M4)
+```
+
+Now let's look at the model diagnostics for M4 and the dispersion paramater:
+```{r}
+par(mfrow = c(2,2))
+plot(M4)
+```
+
+Now let's do a final plot with confidence intervals and standard error:
+The reason for using predict is basically to get the model values for the distribution of period 1 and period 2 points to calculate confidence intervals
+```{r}
+period1 <- data.frame(MeanDepth=seq(from=0.804, to=4.865, length=100), Period="1")
+period2 <- data.frame(MeanDepth=seq(from=0.804, to=4.865, length=100), Period="2")
+period1_predictions<- predict(M4, newdata = period1, type = "link", se.fit = TRUE) # the type="link" here predicted the fit and se on the log-linear scale. 
+period2_predictions<- predict(M4, newdata = period2, type = "link", se.fit = TRUE)
+period1$pred<- period1_predictions$fit
+period1$se<- period1_predictions$se.fit
+period1$upperCI<- period1$pred+(period1$se*1.96)
+period1$lowerCI<- period1$pred-(period1$se*1.96)
+period2$pred<- period2_predictions$fit
+period2$se<- period2_predictions$se.fit
+period2$upperCI<- period2$pred+(period2$se*1.96)
+period2$lowerCI<- period2$pred-(period2$se*1.96)
+complete<- rbind(period1, period2)
+
+# Making the Plot 
+ggplot(complete, aes(x=MeanDepth, y=exp(pred)))+ 
+  geom_line(aes(color=factor(Period)))+
+  geom_ribbon(aes(ymin=exp(lowerCI), ymax=exp(upperCI), fill=factor(Period), alpha=0.3), show.legend = FALSE)+ 
+  geom_point(fish, mapping = aes(x=MeanDepth, y=TotAbund, color=factor(Period)))+
+  labs(y="Total Abundance", x="Mean Depth (km)")+
+  theme_classic()+
+  scale_color_discrete(name="Period", labels=c("1979-1989", "1997-2002"))
+
+```
+
+Just do all this much easier:
+```{r}
+require(ggeffects)
+plot(ggpredict(M4, terms=c("MeanDepth", "Period")), show_data=T)
+```
+
+Moving on to the bee mites example:
+Fitting the Poisson model after loading bee mites data
+```{r}
+mites <- read.csv("../data/bee_mites.csv")
+mites_m1 <- glm(formula = Dead_mites ~ Concentration, data = mites, family = "poisson")
+summary(mites_m1)
+```
+
+Exercise for Galapagos data gala.txt
+```{r}
+gala <- read.delim("../data/gala.txt")
+summary(gala)
+island_number <- glm(formula = Species ~ log(Area), data = gala, family = "poisson")
+summary(island_number)
+```
+
+Instead of poisson, try quasi-poisson or negative binomial:
+```{r}
+island_number <- glm(formula = Species ~ log(Area), data = gala, family = "quasipoisson")
+summary(island_number)
+
+island_number <- glm.nb(formula = Species ~ log(Area), data = gala)
+summary(island_number)
+```
+Negative binomial gives a dispersion parameter of around 1, which is acceptable
+Now to check the residuals vs fitted
+```{r}
+island_number <- glm(formula = Species ~ log(Area), data = gala, family = "quasipoisson")
+summary(island_number)
+
+island_number <- glm.nb(formula = Species ~ log(Area), data = gala)
+summary(island_number)
+
+par(mfrow = c(2,2))
+plot(island_number)
+```
+
+Question2: Amphibian roadkill
+```{r}
+amphib <- read.delim("../data/RoadKills.txt")
+summary(amphib)
+amphib$D.PARK <- amphib$D.PARK/1000
+amphib_park <- glm(formula = TOT.N ~ D.PARK, data = amphib, family = "poisson")
+summary(amphib_park)
+```
+
+Negative binomial and quasipoisson:
+```{r}
+amphib_park <- glm(formula = TOT.N ~ D.PARK, data = amphib, family = "quasipoisson")
+summary(amphib_park)
+amphib_park <- glm.nb(formula = TOT.N ~ D.PARK, data = amphib)
+summary(amphib_park)
+```
+
+
+Now we move to Handout GLM H02
+##Binomal and binary GLMs
+
+```{r}
+require(ggplot2)
+require(ggpubr)
+worker <- read.csv("../data/workerbees.csv", stringsAsFactors = T)
+str(worker)
+
+scatterplot <- ggplot(worker, aes(x = CellSize, y = Parasites))+
+  geom_point()+
+  labs(x = "Cell Size (cm)", y = "Probability of Parasite")+
+  theme_classic()
+boxplot <- ggplot(worker, aes(x = factor(Parasites), y = CellSize))+
+  geom_boxplot()+
+  theme_classic()+
+  labs(x = "Presence/Absence of Parasites", y = "Cell Size (cm)")
+ggarrange(scatterplot, boxplot, labels = c("A","B"), ncol = 1, nrow = 2)
+```
+
+Fitting the model to look at whether cell size affects parasites:
+```{r}
+M1 <- glm(Parasites ~ CellSize, data = worker, family = "binomial")
+summary(M1)
+```
+
+Plotting the GLM you just made:
+```{r}
+range(worker$CellSize)
+new_data <- data.frame(CellSize = seq(from = 0.352, to = 0.664, length = 100))
+predictions <- predict(M1, newdata = new_data, type = "link", se.fit = TRUE)
+new_data$pred<- predictions$fit
+new_data$se<- predictions$se.fit
+new_data$upperCI<- new_data$pred+(new_data$se*1.96)
+new_data$lowerCI<- new_data$pred-(new_data$se*1.96)
+
+ggplot(new_data, aes(x=CellSize, y=plogis(pred)))+ 
+  geom_line(col="black")+
+  geom_point(worker, mapping = aes(x=CellSize, y=Parasites), col="blue")+
+  geom_ribbon(aes(ymin=plogis(lowerCI), ymax=plogis(upperCI), alpha=0.2), show.legend = FALSE)+ 
+  labs(y="Probability of Infection", x="Cell Size (cm)")+
+  theme_classic()
+```
+
+New example to investigate: Chytrid infection status in the Pyrenees:
+```{r}
+require(ggplot2)
+chytrid<- read.csv("../data/chytrid.csv", stringsAsFactors = T)
+str(chytrid)
+
+scatterplot<-ggplot(chytrid, aes(x=Springavgtemp, y=InfectionStatus))+
+  geom_point()+
+  labs(x= "Probability of Infection", y="Average Spring Temperature (Degrees Celsius)")+
+  theme_classic()
+boxplot<- ggplot(chytrid, aes(x=factor(InfectionStatus), y=Springavgtemp))+
+  geom_boxplot()+
+  theme_classic()+
+  labs(x="Presence/Absence of Infection", y="Average Spring Temperature (Degrees Celsius)")
+ggarrange(scatterplot, boxplot, labels=c("A","B"), ncol=1, nrow=2)
+```
+
+Fitting the GLM onto the data to investigate whether probability of fungus infection increases with spring Temperature:
+```{r}
+M2 <- glm(InfectionStatus ~ Springavgtemp, data = chytrid, family = "binomial")
+summary(M2)
+
+#Plotting
+new_data <- data.frame(Springavgtemp=seq(from=0.99, to=13.67, length=100))
+predictions<- predict(M2, newdata = new_data, type = "link", se.fit = TRUE) # the type="link" here predicted the fit and se on the log-linear scale. 
+new_data$pred<- predictions$fit
+new_data$se<- predictions$se.fit
+new_data$upperCI<- new_data$pred+(new_data$se*1.96)
+new_data$lowerCI<- new_data$pred-(new_data$se*1.96)
+
+# Making the Plot 
+ggplot(new_data, aes(x=Springavgtemp, y=plogis(pred)))+ 
+  geom_line(col="black")+
+  geom_point(chytrid, mapping = aes(x=Springavgtemp, y=InfectionStatus), col="blue")+
+  geom_ribbon(aes(ymin=plogis(lowerCI), ymax=plogis(upperCI), alpha=0.2), show.legend = FALSE)+ 
+  labs(y="Probability of Infection", x="Average Spring Temperature (Degrees Celsius)")+
+  theme_classic()
+```
+
+The model just isn't very good fitting and the psuedo-R squared is very bad, so we convert to binomial outcomes
+Count the number of positives, number of negatives to make it into proportions:
+```{r}
+chytrid_binomial<- read.csv("../data/chytrid_binomial.csv", stringsAsFactors = T)
+str(chytrid_binomial)
+
+M3<- glm(cbind(Positives, Total-Positives)~AverageSpringTemp, data = chytrid_binomial, family = "binomial")
+summary(M3)
+
+```
+Personal exercise 1: Check the number of bulbul specimens per species available on AVONET
+```{r}
+AVONET <- read.csv("../data/AVONET raw data.csv", stringsAsFactors = FALSE)
+str(AVONET)
+
+bulbul_genera <- c("Pycnonotus", "Brachypodius", "Hypsipetes", "Iole",
+       "Criniger", "Hemixos", "Alophoixus", "Rubigula",
+       "Eurillas", "Setornis", "Tricholestes", "Phyllastrephus",
+       "Bleda", "Andropadus", "Stelgidillas", "Calyptocichla", 
+       "Neolestes", "Atimastillas", "Alcurus", "Nok", "Spizixos",
+       "Ixonotus", "Thescelocichla", "Chlorocichla", "Baeopogon", 
+       "Arizelocichla", "Acritillas", "Ixos", "Microtarsus")
+
+AVONET$Species2_eBird <- trimws(as.character(AVONET$Species2_eBird))
+pattern <- paste0("^(", paste(bulbul_genera, collapse = "|"), ")(\\b|\\s)")
+
+idx <- !is.na(AVONET$Species2_eBird) & grepl(pattern, AVONET$Species2_eBird, ignore.case = TRUE)
+bulbuls <- AVONET[idx, ]
+str(bulbuls)
+
+# Only keep species that have at least 4 entries
+bulbuls_count <- table(bulbuls$Species2_eBird)
+bulbuls <- bulbuls[bulbuls$Species2_eBird %in% names(bulbuls_count[bulbuls_count >= 5]), ]
+
+bulbuls <- read.csv("../data/Bulbul_AVONET_data.csv")
+str(bulbuls)
+unique(bulbuls$AviList)
+
+bulbuls_var <- bulbuls %>%
+  group_by(AviList) %>%
+  summarise(
+    n_specimens = n(),
+    across(
+      all_of(trait_cols),
+      list(
+        Mean = ~ if(sum(!is.na(.)) == 0) NA_real_ else mean(., na.rm = TRUE),
+        Max  = ~ if(sum(!is.na(.)) == 0) NA_real_ else max(., na.rm = TRUE),
+        Min  = ~ if(sum(!is.na(.)) == 0) NA_real_ else min(., na.rm = TRUE)
+      ),
+      .names = "{.col}_{.fn}"
+    ),
+    .groups = "drop"
+  )
+
+# Save the trait variance data
+write.csv(bulbuls_var, "../data/Bulbul_trait_data.csv")
+
+# Ensure Specimen.number is character and trimmed
+bulbuls$Specimen.number <- trimws(as.character(bulbuls$Specimen.number))
+
+# Drop rows with missing/empty specimen numbers
+bulbuls <- bulbuls[!is.na(bulbuls$Specimen.number) & bulbuls$Specimen.number != "", ]
+
+# Keep only one row per unique specimen number within each species
+bulbuls <- bulbuls[!duplicated(paste(bulbuls$Species2_eBird, bulbuls$Specimen.number)), ]
+str(bulbuls)
+
+bul_count <- table(bulbuls$Species2_eBird)
+mean(bul_count)
+hist(bul_count, main = "Frequency of individual specimens sampled per species", xlab = "No. of individuals sampled")
+
+write.csv(bul_count, "../data/Bulbul_specimen_counts_4_or_less.csv")
+bul_count <- bul_count[bul_count <= 4]
+
+#Calculate specimen counts again from Bulbul_AVONET_data.csv to check
+
+bul_count <- table(bulbul_avonet$AviList)
+
+setdiff(
+  unique(avilist_bulbuls$Scientific_name),
+  unique(bulbul_avonet$Species1_BirdLife)
+)
+
+setdiff(
+  unique(bulbul_avonet$Species1_BirdLife),
+  unique(avilist_bulbuls$Scientific_name)
+)
+```
+

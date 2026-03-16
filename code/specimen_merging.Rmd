@@ -1,0 +1,208 @@
+Part 1: Merge specimens from other museum datasets into Bulbul_AVONET_data
+```{r}
+library(tidyverse)
+library(openxlsx)
+
+#My bulbul dataset
+bulbuls <- read.csv("../data/Bulbul_AVONET_data.csv")
+str(bulbuls)
+#Florida Museum of Natural History (FLMNH) dataset
+flmnh <- read.xlsx("../data/Collaborator data/Sample_data_sheet_oac.xlsx")
+str(flmnh)
+#UPLB Museum of Natural History (UPLB) dataset - Phillipines
+uplb <- read.xlsx("../data/Collaborator data/Sample_data_sheet_uplb_philippines.xlsx")
+str(uplb)
+
+uplb <- uplb |>
+  rename(
+    AviList = Scientific_Name,
+    Beak.Length_Culmen = Bill_TotalCulmen,
+    Beak.Length_Nares = Bill_FromNostril,
+    Beak.Width = Bill_Width,
+    Beak.Depth = Bill_Depth,
+    Gape_Width = Gape.Width,
+    Tarsus.Length = Tarsus_Length,
+    Kipps.Distance = Sec1_Length,
+    Wing.Length = Wing_Chord,
+    Tail.Length = Tail_Length
+  )
+
+traits <- c(
+"Beak.Length_Culmen",
+"Beak.Length_Nares",
+"Beak.Width",
+"Beak.Depth",
+"Tarsus.Length",
+"Wing.Length",
+"Kipps.Distance",
+"Tail.Length",
+"Gape_Width"
+)
+
+#AVONET means for each trait, by species
+avonet_means <- bulbuls |>
+  group_by(AviList) |>
+  summarise(
+    across(all_of(traits), ~mean(.x, na.rm=TRUE)),
+    .groups="drop"
+  )
+avonet_points <- merge(
+  bulbuls,
+  avonet_means,
+  by="AviList",
+  suffixes=c("_specimen","_mean")
+)
+
+#Museum means for each trait, by species
+uplb_means <- uplb |>
+  group_by(AviList) |>
+  summarise(
+    across(all_of(traits), ~mean(.x, na.rm=TRUE)),
+    .groups="drop"
+  )
+uplb_points <- merge(
+  uplb,
+  avonet_means,
+  by="AviList",
+  suffixes=c("_UPLB","_mean")
+)
+
+comparison <- merge(
+  avonet_means,
+  uplb_means,
+  by="AviList",
+  suffixes=c("_AVONET","_UPLB")
+)
+
+#Non-highlighted species mean plots
+comparison_long <- comparison %>%
+  pivot_longer(
+    cols = -AviList,
+    names_to = c("Trait", "Dataset"),
+    names_pattern = "(.*)_(AVONET|UPLB)",
+    values_to = "Value"
+  ) %>%
+  pivot_wider(
+    names_from = Dataset,
+    values_from = Value
+  )
+
+ggplot(comparison_long,
+       aes(AVONET, UPLB)) +
+
+  geom_point(size = 3, colour = "#009E73") +
+
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "dashed"
+  ) +
+
+  facet_wrap(~Trait, scales = "free") +
+
+  theme_classic() +
+
+  labs(
+    x = "AVONET species mean",
+    y = "UPLB species mean"
+  )
+
+
+#Method 2: Highlighting species with specimen measurements in the UPLB dataset, and comparing those to the AVONET means for those species
+uplb_species <- uplb_points %>%
+    filter(!is.na(Beak.Length_Culmen_UPLB)) %>%
+    pull(AviList) %>%
+    unique()
+
+avonet_points_filtered <- avonet_points %>%
+    dplyr::filter(AviList %in% uplb_species)
+
+avonet_long <- avonet_points_filtered %>%
+  pivot_longer(
+    cols = ends_with("_specimen"),
+    names_to = "Trait",
+    names_pattern = "(.*)_specimen",
+    values_to = "specimen"
+  ) %>%
+  pivot_longer(
+    cols = ends_with("_mean"),
+    names_to = "Trait_mean",
+    names_pattern = "(.*)_mean",
+    values_to = "mean"
+  ) %>%
+  filter(Trait == Trait_mean) %>%
+  select(AviList, Trait, specimen, mean)
+
+uplb_long <- uplb_points %>%
+  pivot_longer(
+    cols = ends_with("_UPLB"),
+    names_to = "Trait",
+    names_pattern = "(.*)_UPLB",
+    values_to = "UPLB"
+  ) %>%
+  pivot_longer(
+    cols = ends_with("_mean"),
+    names_to = "Trait_mean",
+    names_pattern = "(.*)_mean",
+    values_to = "mean"
+  ) %>%
+  filter(Trait == Trait_mean) %>%
+  select(AviList, Trait, UPLB, mean)
+
+ggplot() +
+
+  geom_point(
+    data = avonet_long,
+    aes(mean, specimen, colour = AviList),
+    alpha = 0.4
+  ) +
+
+  geom_point(
+    data = uplb_long,
+    aes(mean, UPLB),
+    colour = "#D55E00",
+    shape = 17,
+    size = 2
+  ) +
+
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "dashed"
+  ) +
+
+  facet_wrap(~Trait, scales = "free") +
+
+  theme_classic() +
+  theme(legend.position = "bottom") +
+
+  labs(
+    x = "AVONET species mean",
+    y = "Specimen measurement"
+  )
+
+ggsave("../results/UPLB_comparison.pdf", width = 12, height = 8)
+
+
+#Checking for specimens that are > 3 standard deviations from the AVONET mean for that species, for any trait
+
+avonet_stats <- bulbuls |>
+  group_by(AviList) |>
+  summarise(
+    culmen_mean = mean(Beak.Length_Culmen, na.rm=TRUE),
+    culmen_sd = sd(Beak.Length_Culmen, na.rm=TRUE),
+    .groups="drop"
+  )
+
+florida_check <- merge(
+  flmnh,
+  avonet_stats,
+  by="AviList"
+)
+
+florida_check$outlier <-
+abs(florida_check$Beak.Length_Culmen - florida_check$culmen_mean) >
+2*florida_check$culmen_sd
+
+
+```
