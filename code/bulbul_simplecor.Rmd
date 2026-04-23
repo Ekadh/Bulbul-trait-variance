@@ -1,12 +1,21 @@
 Part 1: Loading range size, abundance and morphological data and merging
 ```{r}
 library(tidyverse)
+library(openxlsx)
+library(brms)
+library(ape)
 
 # Load range size data
-range_size <- read.csv("../data/range_sizes.csv")
+range_size <- read.csv("../data/Bulbul_rangesize.csv")
+str(range_size)
+
+#Only keep columns 2-4 and columns 27-37
+range_size <- range_size[, c(2:4, 27:37)]
+str(range_size)
 
 # Load abundance data
 abundance <- read.csv("../data/abundances.csv")
+str(abundance)
 
 # Load morphological data if needed
 morphology <- read.csv("../data/Bulbul_AVONET_data.csv")
@@ -20,30 +29,64 @@ write.csv(merged_data, "../data/merged_range_abundance_data.csv")
 # Load AVONET data
 bulbul_specimens <- read.csv("../data/Bulbul_AVONET_data.csv", stringsAsFactors = FALSE)
 
+#Check AviList column for unique species names
+setdiff(
+  unique(bulbul_specimens$AviList),
+  unique(range_size$AviList)
+)
+
+setdiff(
+  unique(range_size$AviList),
+  unique(bulbul_specimens$AviList)
+)
+
 #Merge Scientific.name column of merged_data and the Species2_eBird column of bulbul_specimens
-final_data <- merge(merged_data, bulbul_specimens, by.x = "Scientific.name", by.y = "Species1_BirdLife")
+final_data <- merge(range_size, bulbul_specimens, by.x = "AviList", by.y = "AviList")
 str(final_data)
-bulbuls <- final_data 
+bulbuls <- final_data
+
+final_data <- merge(abundance, bulbul_specimens, by.x = "Scientific.name", by.y = "AviList")
+str(final_data)
+bulbuls <- final_data
 
 # Save the final bulbul data
 write.csv(bulbuls, "../data/Bulbul_final_data.csv")
 ```
 
-Part 2: Calculate trait variances for species with 4+ bulbul_specimens
+Part 2: Calculate trait variances for species with 10+ bulbul_specimens
 ```{r}
-bulbuls_count <- table(bulbuls$Species2_eBird)
-bulbuls <- bulbuls[bulbuls$Species2_eBird %in% names(bulbuls_count[bulbuls_count >= 5]), ]
+bulbuls_count <- table(bulbuls$AviList)
+bulbuls <- bulbuls[bulbuls$AviList %in% names(bulbuls_count[bulbuls_count >= 10]), ]
 str(bulbuls)
 
 # Calculate trait variance for each species (one row per species)
-trait_cols <- c("Species2_eBird", "area_square_miles", "Abundance.estimate",
-                "Beak.Length_Culmen", "Beak.Length_Nares", 
-                "Beak.Width", "Beak.Depth", "Tarsus.Length", 
-                "Wing.Length", "Kipps.Distance", "Secondary1", "Hand.wing.Index", "Tail.Length")
-bulbuls_var <- aggregate(. ~ Species2_eBird + area_square_miles + Abundance.estimate, 
-                         data = bulbuls[, trait_cols], 
-                         FUN = var, na.rm = TRUE)
+trait_cols <- c(
+  "Beak.Length_Culmen", "Beak.Length_Nares",
+  "Beak.Width", "Beak.Depth", "Tarsus.Length",
+  "Wing.Length", "Kipps.Distance", "Secondary1",
+  "Hand.wing.Index", "Tail.Length"
+)
+
+# Calculate variance for each trait, skipping NA values, for range size, habitat, trophic level, and lifestyle categories
+bulbuls_var <- bulbuls %>%
+  group_by(AviList, Range.Size) %>%
+  summarise(
+    across(all_of(trait_cols[1:length(trait_cols)]), 
+           ~var(., na.rm = TRUE), 
+           .names = "{.col}"),
+    .groups = "drop"
+  )
 str(bulbuls_var)
+
+#Calculate variance for abundance only
+bulbuls_var <- bulbuls %>%
+  group_by(Scientific.name, Abundance.estimate) %>%
+  summarise(
+    across(all_of(trait_cols[1:length(trait_cols)]), 
+           ~var(., na.rm = TRUE), 
+           .names = "{.col}"),
+    .groups = "drop"
+  )
 
 write.csv(bulbuls_count, "../data/Bulbul_specimen_counts.csv")
 ```
@@ -53,23 +96,33 @@ Part 3: Plotting trait variances against range size and abundance
 library(ggplot2)
 
 # Remove highest range size outlier for better visualization
-bulbuls_var <- bulbuls_var[bulbuls_var$area_square_miles < 7000000, ]
+#bulbuls_var <- bulbuls_var[bulbuls_var$Range.Size < 7000000, ]
 
 # Plot trait variances against range size
-ggplot(bulbuls_var, aes(x = Tail.Length, y = area_square_miles)) +
+ggplot(bulbuls_var, aes(x = log(Range.Size), y = Wing.Length)) +
   geom_point() +
   geom_smooth(method = "lm") +
-  labs(x = "σ² Tail Length", y = "Range size in square miles") +
+  labs(x = "Range size in square miles (log scale)", y = "σ² Wing Length") +
   theme_minimal()
 
-ggsave("../results/TailLengthVar_vs_RangeSize_unlogged.png", width = 8, height = 5)
+ggsave("../results/WingLengthVar_vs_RangeSize_logged.png", width = 8, height = 5)
 
+# Plot trait variances against abundance
+ggplot(bulbuls_var, aes(x = log(Abundance.estimate), y = Tarsus.Length)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(x = "Abundance estimate (log scale)", y = "σ² Tarsus Length") +
+  theme_minimal()
+str(bulbuls_var)
 ```
 
 Part 4: Run an LM to test relationship between trait variance and range size
 ```{r}
-lm_tail_length <- lm(scale(area_square_miles) ~ scale(Beak.Width), data = bulbuls_var)
-summary(lm_tail_length)
+lm_wing_length <- lm(Tail.Length ~ Abundance.estimate, data = bulbuls_var)
+summary(lm_wing_length)
+
+boxplot(bulbuls_var$Wing.Length ~ bulbuls_var$Primary.Lifestyle, xlab = "Primary Lifestyle", ylab = "σ² Wing Length")
+
 ```
 
 Part 5: Instead of variance, model morphospace area vs range size and abundance
@@ -78,12 +131,8 @@ Part 5: Instead of variance, model morphospace area vs range size and abundance
 pca_traits <- bulbuls %>%
   select(
     Beak.Length_Culmen,
-    Beak.Length_Nares,
-    Beak.Width,
-    Beak.Depth,
     Tarsus.Length,
     Wing.Length,
-    Kipps.Distance,
     Tail.Length
   )
 
@@ -92,7 +141,7 @@ pca_complete <- pca_traits %>% drop_na()
 
 # Keep matching metadata
 meta_complete <- bulbuls %>%
-  select(Species2_eBird, area_square_miles, Abundance.estimate) %>%
+  select(AviList, Range.Size) %>%
   slice(as.numeric(rownames(pca_complete)))
 
 # Run PCA
@@ -101,9 +150,8 @@ summary(pca_global)
 
 # Calculate morphospace area (convex hull area) for each species
 pca_scores <- data.frame(
-  Species2_eBird        = meta_complete$Species2_eBird,
-  area_square_miles     = meta_complete$area_square_miles,
-  Abundance.estimate  = meta_complete$Abundance.estimate,
+  AviList = meta_complete$AviList,
+  Range.Size = meta_complete$Range.Size,
   PC1 = pca_global$x[, 1],
   PC2 = pca_global$x[, 2]
 )
@@ -111,15 +159,14 @@ pca_scores <- data.frame(
 library(geometry)
 
 morphospace_area <- pca_scores %>%
-  group_by(Species2_eBird) %>%
+  group_by(AviList) %>%
   filter(n() >= 5) %>%   # enforce minimum sample size again
   summarise(
     morphospace_area = convhulln(
       cbind(PC1, PC2),
       options = "FA"
     )$vol,
-    area_square_miles    = mean(area_square_miles, na.rm = TRUE),
-    Abundance.estimate = mean(Abundance.estimate, na.rm = TRUE),
+    Range.Size    = mean(Range.Size, na.rm = TRUE),
     n_specimens          = n(),
     .groups = "drop"
   )
@@ -129,14 +176,105 @@ write.csv(morphospace_area, "../data/Bulbul_morphospace_areas.csv")
 
 # Plot morphospace area vs range size
 ggplot(morphospace_area,
-       aes(x = area_square_miles,
-           y = (morphospace_area))) +
+       aes(x = log(Range.Size),
+           y = morphospace_area)) +
   geom_point(size = 2, alpha = 0.7) +
   geom_smooth(method = "lm", se = TRUE) +
   theme_minimal() +
   labs(
-    x = "Range size: square miles",
-    y = "Log(Morphospace area: PC1–PC2)",
+    x = "Range size: square miles (log scale)",
+    y = "Morphospace area: PC1–PC2",
     title = "Species morphospace size vs geographic range size"
   )
+```
+
+Part 6: Time for brms modeling! But first, phylogeny building
+```{r}
+library(ape)
+
+phylogeny <- read.tree("../data/Phylogeny/mcc_dated_clements_McTavish_2025.nex")
+str(phylogeny)
+
+phylogeny <- phylogeny[[6]]
+
+tarsus_var$species_phylo <- gsub(" ", "_", tarsus_var$AviList)
+
+species_keep <- unique(bulbuls$AviList_tree)
+
+phylo_pruned <- drop.tip(
+  phylogeny,
+  setdiff(phylogeny$tip.label, species_keep)
+)
+str(phylo_pruned$edge.length)
+
+# Save the pruned tree for later use
+write.tree(phylo_pruned, "../data/Phylogeny/bulbul_phylogeny_pruned.nex")
+
+#Load it again if needed
+phylo_pruned <- read.tree("../data/Phylogeny/bulbul_phylogeny_pruned.nex")
+str(phylo_pruned)
+
+#Making covariance matrix for brms
+A <- ape::vcv(phylo_pruned, corr = TRUE)
+
+head(rownames(A))
+
+#Now trying the brms model with the covariance matrix
+
+bulbuls_var$Wing.Length_z <- scale(bulbuls_var$Wing.Length)
+bulbuls_var$Tarsus.Length_z <- scale(bulbuls_var$Tarsus.Length)
+bulbuls_var$Beak.Length_Culmen_z <- scale(bulbuls_var$Beak.Length_Culmen)
+bulbuls_var$Tail.Length_z <- scale(bulbuls_var$Tail.Length)
+bulbuls_var$Range.Size_z <- scale(log(bulbuls_var$Range.Size))
+
+brm(
+  Range.Size_z ~ Tail.Length_z +
+    (1 | gr(species_phylo, cov = A)),
+  data = bulbuls_var,
+  data2 = list(A = A),
+  chains = 4,
+  cores = 4,
+  iter = 40000
+)
+```
+
+Part 7: Try a different method, do the random effect first and get residuals, then run the brms model with the residuals as the response variable
+```{r}
+#First, run the model with just the random effect to get the residuals
+m <- lm(
+  Beak.Length_Culmen ~ Sex + Measurer,
+  data = bulbuls,
+  na.action = na.exclude
+)
+
+bulbuls$Beak_resid <- residuals(m)
+
+#Next, get variance for each species
+beak_var <- bulbuls |>
+  group_by(AviList) |>
+  summarise(
+    Beak.var = var(Beak_resid, na.rm = TRUE),
+    n = n()
+  )
+
+#Next, merge with range size data
+beak_var <- merge(beak_var, range_size, by.x = "AviList", by.y = "AviList")
+str(beak_var)
+
+beak_var$Range.Size_z <- scale(log(beak_var$Range.Size))
+beak_var$Beak.var_z <- scale(beak_var$Beak.var)
+names(beak_var)
+
+beak_var$species_phylo <- gsub(" ", "_", beak_var$AviList)
+
+#Finally, run the brms model with the residual variance as the response variable
+brm(
+  Range.Size_z ~ Beak.var_z + log(n) +
+    (1 | gr(species_phylo, cov = A)),
+  data = beak_var,
+  data2 = list(A = A)
+)
+
+setdiff(beak_var$species_phylo, rownames(A))
+setdiff(rownames(A), beak_var$species_phylo)
 ```

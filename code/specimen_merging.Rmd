@@ -12,8 +12,68 @@ str(flmnh)
 #UPLB Museum of Natural History (UPLB) dataset - Phillipines
 uplb <- read.xlsx("../data/Collaborator data/Sample_data_sheet_uplb_philippines.xlsx")
 str(uplb)
+#Only keep row 34 and beyond
+uplb <- uplb[34:nrow(uplb), ]
+#SYSU Guangzhou dataset - China
+sysu <- read.xlsx("../data/Collaborator data/Sample_data_sheet_SYSU_China.xlsx")
+str(sysu)
+#Steinhardt MNH - Israel
+steinhardt <- read.xlsx("../data/Collaborator data/Sample_data_sheet_Steinhardt_NihanD_Israel.xlsx")
+str(steinhardt)
+#Field data 1: Wenyi Zhou's field data from China
+field1 <- read.xlsx("../data/Collaborator data/Sample_data_sheet_Wenyi_Zhou_China.xlsx")
+str(unique(field1$sp.latin))
+# Remove duplicate columns if they exist
+field1 <- field1[, !duplicated(colnames(field1))]
+field1 <- field1 |>
+  filter(sp.latin %in% c(
+    "Pycnonotus sinensis",
+    "Spizixos semitorques",
+    "Hemixos castanonotus",
+    "Ixos mcclellandii",
+    "Hypsipetes leucocephalus"
+  ))
+str(field1)
+#Field data 2: Peter Mikula and Martin Hromada's field data from Angola
+field2 <- read.xlsx("../data/Collaborator data/Mikula-Hromada_Sample data sheet.xlsx")
+str(field2)
+field2 <- field2 |>
+  filter(Family == "Pycnonotidae")
+str(field2)
+#LSUMNS bulbul data: David Vander Pluym
+lsumns <- read.xlsx("../data/Collaborator data/Bulbul_Vander_Pluym.xlsx")
+str(lsumns)
+lsumns$KD <- lsumns$Wing_Chord - lsumns$Sec_1
+#Museum data from Peter Mikula (measured by Martin Bulla) - National Museum, Prague, Czechia
+nmpc <- read.xlsx("../data/Collaborator data/Bulla&Mikula_bulbuls_NMP_export.xlsx")
+str(nmpc)
+nmpc$KD <- nmpc$Wing_Chord - nmpc$Sec_1
+#Cambridge University Museum of Zoology (CUMZ) dataset - UK (part measured by Carla only, Elizabeth yet to be added)
+cumz <- read.xlsx("../data/Collaborator data/Sample data sheet CJD.xlsx")
+str(cumz)
+cumz$KD <- cumz$Wing_Chord - cumz$Sec_1
+#UMICH initial dataset - Probst
+umich <- read.csv("../data/Collaborator data/Sample_data_sheet_UMICH_Probst.csv")
+str(umich)
+umich$KD <- umich$Wing.length - umich$First.secondary.length
+#NMNH dataset - Manila, Philippines
+nmnh <- read.xlsx("../data/Collaborator data/Sample_data_sheet_NMNH_Philippines.xlsx")
+str(nmnh)
+nmnh$Bill_Width <- as.numeric(nmnh$Bill_Width)
+nmnh$Bill_Depth <- as.numeric(nmnh$Bill_Depth)
+nmnh$Tarsus_Length <- as.numeric(nmnh$Tarsus_Length)
+#Universitas Andalas dataset - Indonesia
+ua <- read.xlsx("../data/Collaborator data/Sample_data_sheet_UA_Muhammad.xlsx")
+str(ua)
+#Kansas University Natural History Museum (KUNHM) dataset - Camila Mendes and 1 more colleague
+ku <- read.xlsx("../data/Collaborator data/Sample_data_sheet_KU_CamilaMendes.xlsx")
+str(ku)
+#Royal Ontario Museum (ROM) dataset - Vedant Gattani
+rom <- read.xlsx("../data/Collaborator data/Sample_data_sheet_ROM_Vedant.xlsx")
+str(rom)
+rom$KD <- rom$Wing_Chord - rom$Sec_1
 
-uplb <- uplb |>
+ua <- ua |>
   rename(
     AviList = Scientific_Name,
     Beak.Length_Culmen = Bill_TotalCulmen,
@@ -22,7 +82,7 @@ uplb <- uplb |>
     Beak.Depth = Bill_Depth,
     Gape_Width = Gape.Width,
     Tarsus.Length = Tarsus_Length,
-    Kipps.Distance = Sec1_Length,
+    Kipps.Distance = `Kipp's_Distance`,
     Wing.Length = Wing_Chord,
     Tail.Length = Tail_Length
   )
@@ -54,24 +114,24 @@ avonet_points <- merge(
 )
 
 #Museum means for each trait, by species
-uplb_means <- uplb |>
+ua_means <- ua |>
   group_by(AviList) |>
   summarise(
     across(all_of(traits), ~mean(.x, na.rm=TRUE)),
     .groups="drop"
   )
-uplb_points <- merge(
-  uplb,
+ua_points <- merge(
+  ua,
   avonet_means,
   by="AviList",
-  suffixes=c("_UPLB","_mean")
+  suffixes=c("_ua","_mean")
 )
 
 comparison <- merge(
   avonet_means,
-  uplb_means,
+  sysu_means,
   by="AviList",
-  suffixes=c("_AVONET","_UPLB")
+  suffixes=c("_AVONET","_SYSU")
 )
 
 #Non-highlighted species mean plots
@@ -79,7 +139,7 @@ comparison_long <- comparison %>%
   pivot_longer(
     cols = -AviList,
     names_to = c("Trait", "Dataset"),
-    names_pattern = "(.*)_(AVONET|UPLB)",
+    names_pattern = "(.*)_(AVONET|SYSU)",
     values_to = "Value"
   ) %>%
   pivot_wider(
@@ -88,7 +148,7 @@ comparison_long <- comparison %>%
   )
 
 ggplot(comparison_long,
-       aes(AVONET, UPLB)) +
+       aes(AVONET, SYSU)) +
 
   geom_point(size = 3, colour = "#009E73") +
 
@@ -104,18 +164,18 @@ ggplot(comparison_long,
 
   labs(
     x = "AVONET species mean",
-    y = "UPLB species mean"
+    y = "SYSU species mean"
   )
 
 
-#Method 2: Highlighting species with specimen measurements in the UPLB dataset, and comparing those to the AVONET means for those species
-uplb_species <- uplb_points %>%
-    filter(!is.na(Beak.Length_Culmen_UPLB)) %>%
+#Method 2: Highlighting species with specimen measurements in the SYSU dataset, and comparing those to the AVONET means for those species
+ua_species <- ua_points %>%
+    filter(!is.na(Wing.Length_ua)) %>%
     pull(AviList) %>%
     unique()
 
 avonet_points_filtered <- avonet_points %>%
-    dplyr::filter(AviList %in% uplb_species)
+    dplyr::filter(AviList %in% ua_species)
 
 avonet_long <- avonet_points_filtered %>%
   pivot_longer(
@@ -133,12 +193,12 @@ avonet_long <- avonet_points_filtered %>%
   filter(Trait == Trait_mean) %>%
   select(AviList, Trait, specimen, mean)
 
-uplb_long <- uplb_points %>%
+ua_long <- ua_points %>%
   pivot_longer(
-    cols = ends_with("_UPLB"),
+    cols = ends_with("_ua"),
     names_to = "Trait",
-    names_pattern = "(.*)_UPLB",
-    values_to = "UPLB"
+    names_pattern = "(.*)_ua",
+    values_to = "ua"
   ) %>%
   pivot_longer(
     cols = ends_with("_mean"),
@@ -147,7 +207,7 @@ uplb_long <- uplb_points %>%
     values_to = "mean"
   ) %>%
   filter(Trait == Trait_mean) %>%
-  select(AviList, Trait, UPLB, mean)
+  select(AviList, Trait, ua, mean)
 
 ggplot() +
 
@@ -158,11 +218,11 @@ ggplot() +
   ) +
 
   geom_point(
-    data = uplb_long,
-    aes(mean, UPLB),
+    data = ua_long,
+    aes(mean, ua),
     colour = "#D55E00",
     shape = 17,
-    size = 2
+    size = 1
   ) +
 
   geom_abline(
@@ -181,7 +241,7 @@ ggplot() +
     y = "Specimen measurement"
   )
 
-ggsave("../results/UPLB_comparison.pdf", width = 12, height = 8)
+ggsave("../results/Collaborator data comparisons/ua_comparison_Muhammad.pdf", width = 12, height = 8)
 
 
 #Checking for specimens that are > 3 standard deviations from the AVONET mean for that species, for any trait
