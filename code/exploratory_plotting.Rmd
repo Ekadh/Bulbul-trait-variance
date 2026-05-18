@@ -15,12 +15,15 @@ AVONET$Species2_eBird <- trimws(as.character(AVONET$Species2_eBird))
 pattern <- paste0("^(", paste(bulbul_genera, collapse = "|"), ")(\\b|\\s)")
 
 idx <- !is.na(AVONET$Species2_eBird) & grepl(pattern, AVONET$Species2_eBird, ignore.case = TRUE)
-bulbuls <- AVONET[idx, ]
-str(bulbuls)
+bulbuls_raw <- AVONET[idx, ]
+str(bulbuls_raw)
 
 # Only keep species that have at least 4 entries
-bulbuls_count <- table(bulbuls$Species2_eBird)
-bulbuls <- bulbuls[bulbuls$Species2_eBird %in% names(bulbuls_count[bulbuls_count >= 5]), ]
+bulbuls_count <- table(bulbuls_raw$Species2_eBird)
+mean(bulbuls_count)
+write.csv(bulbuls_count, "../data/Bulbul_RAW_specimen_counts.csv")
+
+bulbuls <- bulbuls_raw[bulbuls_raw$Species2_eBird %in% names(bulbuls_count[bulbuls_count >= 5]), ]
 
 bulbuls <- read.csv("../data/Bulbul_AVONET_data.csv")
 str(bulbuls)
@@ -161,4 +164,970 @@ setdiff(
   unique(ku_priority_list$Species)
 )
 ```
+Now try similar for AMNH
+```{r}
+lines <- readLines("../data/Holdings/AMNH_bulbul_holdings.csv")
 
+# Split each line by tab
+split_lines <- strsplit(lines, "\t")
+
+# Extract the 14th column (between 14th and 15th tab = field 14)
+species <- sapply(split_lines, function(x) {
+  if (length(x) >= 14) x[14] else NA
+})
+
+
+# Clean up
+species <- species[!is.na(species) & species != ""]
+
+#Remove every 3rd word and add to a new column of dataframe called Subspecies
+species_df <- data.frame(Species = species)
+species_count <- table(species_df$Species)
+write.csv(species_count, "../data/Holdings/Raw_AMNH_bulbul_specimen_counts.csv")
+species_df$Subspecies <- sapply(species_df$Species, function(x) {
+  words <- strsplit(x, " ")[[1]]
+  if (length(words) > 2) {
+    subspecies <- words[3]
+    species <- paste(words[1], words[2])
+    return(subspecies)
+  } else {    return(NA)
+  }
+})
+
+
+head(species_df)
+
+#Keep only the Species columns rows that match with the AviList column in the bulbuls dataset
+species_df <- species_df[species_df$Species %in% unique(bulbuls$AviList), ]
+str(species_df)
+
+#Count the number of specimens per species in the species_df data frame
+amnh_bulcount <- table(species_df$Species)
+
+#Create a new data frame with the species and specimen counts
+amnh_bulcount_df <- data.frame(Species = names(amnh_bulcount),
+                               Specimen.count.in.AMNH.collections = as.vector(amnh_bulcount))
+str(amnh_bulcount_df)
+
+#Now add a new column for comments
+amnh_bulcount_df$Comments <- NA
+
+#Now load the bulbul specimen counts file and add a new column to the amnh_bulcount_df data frame with the specimen counts from the bulbul specimen counts file, matching by species name
+bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts.csv")
+str(bulbul_specimen_counts)
+amnh_bulcount_df$Specimen.count.in.AVONET <- bulbul_specimen_counts$Freq[match(amnh_bulcount_df$Species, bulbul_specimen_counts$Var1)]
+str(amnh_bulcount_df)
+
+#Now sort from lowest to highest specimen count in AVONET
+amnh_bulcount_df <- amnh_bulcount_df[order(amnh_bulcount_df$Specimen.count.in.AVONET), ]
+str(amnh_bulcount_df)
+write.csv(amnh_bulcount_df, "../data/Holdings/AMNH_priority_list.csv", row.names = FALSE)
+```
+Now try specimen counts with the integrated dataset
+```{r}
+bulbuls <- read.csv("../data/Bulbul_AVONET_data.csv")
+bulbuls_integrated <- read.csv("../data/Bulbul_AVONET_data_integrated.csv")
+bulbul_specimen_counts <- table(bulbuls_integrated$AviList)
+mean(bulbul_specimen_counts)
+write.csv(bulbul_specimen_counts, "../data/Bulbul_specimen_counts_integrated.csv")
+bulbul_specimen_counts <- bulbul_specimen_counts[bulbul_specimen_counts < 20]
+write.csv(bulbul_specimen_counts, "../data/Bulbul_specimen_counts_integrated_less_than_20.csv")
+unique(bulbuls_integrated$AviList)
+
+#Find AviList species in the bulbuls dataset that are not present in the integrated dataset and vice versa
+setdiff(
+  unique(bulbuls$AviList),
+  unique(rom$AviList)
+)
+
+setdiff(
+  unique(rom$AviList),
+  unique(bulbuls$AviList)
+)
+```
+Now for the Harvard collections, need to make a priority list
+```{r}
+library(stringr)
+
+lines <- readLines("../data/Holdings/Harvard_bulbul_holdings.csv", warn = FALSE)
+
+# Split by tab
+split_lines <- strsplit(lines, "\t")
+
+# Extract species (column 10)
+species <- sapply(split_lines, function(x) {
+  if (length(x) >= 10) x[10] else NA
+})
+
+# Extract subspecies (column 11)
+subspecies <- sapply(split_lines, function(x) {
+  if (length(x) >= 11) x[11] else NA
+})
+
+# Remove header row
+species <- species[-1]
+subspecies <- subspecies[-1]
+
+# Clean species (remove quotes + ensure only Genus species)
+species_clean <- sapply(species, function(x) {
+  x <- gsub('"', '', x)
+  words <- strsplit(x, " ")[[1]]
+  if (length(words) >= 2) {
+    paste(words[1], words[2])
+  } else {
+    NA
+  }
+})
+
+# Clean subspecies
+subspecies_clean <- gsub('"', '', subspecies)
+subspecies_clean[subspecies_clean == ""] <- NA
+
+# Combine into dataframe
+harvard_df <- data.frame(
+  Species = species_clean,
+  Subspecies = subspecies_clean
+)
+
+# Remove empty rows
+harvard_df <- harvard_df[!is.na(harvard_df$Species), ]
+
+head(harvard_df)
+
+harvard_df$Subspecies[is.na(harvard_df$Subspecies)] <- "none"
+#Count specimens per species and subspecies
+harvard_count <- table(harvard_df$Species, harvard_df$Subspecies)
+harvard_count_df <- as.data.frame(harvard_count)
+#Remove all the zeros from the count table
+harvard_count_df <- harvard_count_df[harvard_count_df$Freq > 0, ]
+colnames(harvard_count_df) <- c("Species", "Subspecies", "Specimen.count.in.Harvard.collections")
+str(harvard_count_df)
+#Now add a new column for comments
+harvard_count_df$Comments <- NA
+write.csv(harvard_count_df, "../data/Holdings/Harvard_priority_list.csv", row.names = FALSE)
+#Arrange by species name
+harvard_count_df <- harvard_count_df[order(harvard_count_df$Species), ]
+str(harvard_count_df)
+#Attach AVONET specimen counts to the harvard_count_df data frame, matching by species name
+bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated.csv")
+harvard_count_df$Specimen.count.in.AVONET <- bulbul_specimen_counts$Freq[match(harvard_count_df$Species, bulbul_specimen_counts$Var1)]
+str(harvard_count_df)
+write.csv(harvard_count_df, "../data/Holdings/Harvard_priority_list.csv", row.names = FALSE)
+
+
+#Load again
+harvard_priority <- read.csv("../data/Holdings/Harvard_priority_list.csv")
+str(harvard_priority)
+
+#Arrange by lowest to highest AVONET specimen count
+harvard_priority <- harvard_priority[order(harvard_priority$Specimen.count.in.AVONET), ]
+str(harvard_priority)
+write.csv(harvard_priority, "../data/Holdings/Harvard_priority_list.csv", row.names = FALSE)
+```
+Need a specimen counts file that instead counts specimens per species required to reach a target of 30 specimens per species in the integrated dataset, excluding species that already have 30 or more specimens
+```{r}
+bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated.csv")
+str(bulbul_specimen_counts)
+bulbul_specimen_counts <- bulbul_specimen_counts[bulbul_specimen_counts$Freq < 30, ]
+bulbul_specimen_counts$Specimens.required.to.reach.30 <- 30 - bulbul_specimen_counts$Freq
+str(bulbul_specimen_counts)
+#Now to remove Freq column and only keep the Species and Specimens.required.to.reach.30 columns while also ordering by highest to lowest number of specimens required
+bulbul_specimen_counts <- bulbul_specimen_counts[order(-bulbul_specimen_counts$Specimens.required.to.reach.30), ]
+bulbul_specimen_counts <- bulbul_specimen_counts[, c("Var1", "Specimens.required.to.reach.30")]
+colnames(bulbul_specimen_counts) <- c("Species", "Specimens.required.to.reach.30")
+str(bulbul_specimen_counts)
+write.csv(bulbul_specimen_counts, "../data/Bulbul_specimen_counts_to_reach_30.csv", row.names = FALSE)
+```
+Combining csv files for the Naturalis Leiden holdings
+```{r}
+# -----------------------------
+# 1. Set path to your Downloads folder
+# -----------------------------
+base_path <- "/Users/brinda/Downloads"
+
+# -----------------------------
+# 2. List all part files
+# -----------------------------
+files <- list.files(
+  path = base_path,
+  pattern = "bulbul_occurrences_clean_part[0-9]+\\.csv",
+  full.names = TRUE
+)
+
+# Optional: ensure correct order (part1 → part10)
+files <- files[order(as.numeric(gsub(".*part([0-9]+)\\.csv", "\\1", files)))]
+
+# -----------------------------
+# 3. Read and combine
+# -----------------------------
+library(dplyr)
+
+combined_df <- files %>%
+  lapply(read.csv) %>%
+  bind_rows()
+
+# -----------------------------
+# 4. Write final merged file
+# -----------------------------
+output_path <- file.path(base_path, "Naturalis_bulbul_holdings.csv")
+
+write.csv(combined_df, output_path, row.names = FALSE)
+
+# -----------------------------
+# 5. Quick check
+# -----------------------------
+cat("Merged file saved to:\n", output_path, "\n")
+cat("Total rows:", nrow(combined_df), "\n")
+
+#Load it again
+naturalis_holdings <- read.csv("../data/Holdings/Naturalis_bulbul_holdings.csv")
+str(naturalis_holdings)
+
+#Now only keep the Scientifi_Name and Occurrences column and rename them to Species and Specimen.count.in.Naturalis.collections respectively
+naturalis_holdings <- naturalis_holdings %>%
+  select(Scientific_Name, Occurrences) %>%
+  rename(Species = Scientific_Name, Specimen.count.in.Naturalis.collections = Occurrences)
+str(naturalis_holdings)
+
+#Now add new columns for Requested.samples and Comments and fill them with NA
+naturalis_holdings$Requested.samples <- NA
+naturalis_holdings$Comments <- NA
+str(naturalis_holdings)
+
+#Now add a Specimen.count.in.AVONET column by matching the Species column with the Var1 column in the bulbul_specimen_counts data frame and taking the Freq column from the bulbul_specimen_counts data frame
+bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated.csv", stringsAsFactors = FALSE)
+str(bulbul_specimen_counts)
+
+# initialize column as NA (preserve NA where no match)
+naturalis_holdings$Specimen.count.in.AVONET <- NA_integer_
+
+# match and assign; unmatched remain NA
+midx <- match(naturalis_holdings$Species, bulbul_specimen_counts$Var1)
+naturalis_holdings$Specimen.count.in.AVONET <- bulbul_specimen_counts$Freq[midx]
+
+str(naturalis_holdings)
+
+#Make specimen count in AVONET appear before Requested.samples and Comments columns
+naturalis_holdings <- naturalis_holdings %>%
+  select(Species, Specimen.count.in.Naturalis.collections, Specimen.count.in.AVONET, Requested.samples, Comments)
+str(naturalis_holdings)
+
+write.csv(naturalis_holdings, "../data/Holdings/Naturalis_priority_list.csv", row.names = FALSE)
+
+#Now load the naturalis priority list again and arrange by lowest to highest specimen count in AVONET
+naturalis_priority <- read.csv("../data/Holdings/Naturalis_priority_list.csv")
+str(naturalis_priority)
+naturalis_priority <- naturalis_priority[order(naturalis_priority$Specimen.count.in.AVONET), ]
+str(naturalis_priority)
+
+#Before writing csv, need to fill in the requested samples column with the number of specimens required to reach 30 specimens in AVONET, which is calculated by taking the Specimen.count.in.AVONET column and subtracting it from 30, but only for species that have less than 30 specimens in AVONET. For species that already have 30 or more specimens in AVONET, the Requested.samples column should be filled with 0.
+naturalis_priority$Requested.samples <- ifelse(
+  naturalis_priority$Specimen.count.in.AVONET < 30,
+  pmin(
+    30 - naturalis_priority$Specimen.count.in.AVONET,
+    naturalis_priority$Specimen.count.in.Naturalis.collections
+  ),
+  0
+)
+str(naturalis_priority)
+
+write.csv(naturalis_priority, "../data/Holdings/Naturalis_priority_list.csv", row.names = FALSE)
+```
+Now to integrate the NJ Collar datasets and check compatibility of the data
+```{r}
+njcollar1 <- read.xlsx("../data/Collaborator data/NJ_ bulbuls/Alophoixus ochraceus morphometrics.xlsx")
+str(njcollar1)
+
+data_path <- "../data/Collaborator data/NJ_ bulbuls/"
+
+files <- list.files(data_path, pattern = "\\.xlsx?$", full.names = TRUE)
+
+library(readxl)
+data_list <- lapply(files, function(f) {
+  df <- read.xlsx(f)
+  df$Source_file <- basename(f)
+  # Ensure Comments, Collection, and Date.collected are always character columns
+  for (col in c("Comments", "Collection", "Date.collected", "Specimen.number", "Subspecies", "Locality")) {
+    if (!(col %in% names(df))) {
+      df[[col]] <- NA_character_
+    } else {
+      df[[col]] <- as.character(df[[col]])
+    }
+  }
+  df
+})
+
+# Combine all data frames into one
+njcollar_combined <- bind_rows(data_list)
+str(njcollar_combined)
+write.csv(njcollar_combined, "../data/Collaborator data/NJ_ bulbuls/NJ_bulbul_morphometrics_combined.csv", row.names = FALSE)
+```
+Now time to check compatibility and integrate
+```{r}
+njcollar <- read.csv("../data/Collaborator data/NJ_ bulbuls/NJ_bulbul_morphometrics_combined.csv", stringsAsFactors = FALSE)
+str(njcollar)
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
+str(bulbuls)
+
+njcollar <- njcollar |>
+  rename(
+    AviList = AviList,
+    Beak.Length_Culmen = Bill_TotalCulmen,
+    Beak.Width = Beak.Width,
+    Tarsus.Length = Tarsus.Length,
+    Wing.Length = Wing.Chord,
+    Tail.Length = Tail.Length,
+    Specimen.number = Specimen.number,
+    Locality = Locality,
+    Sex = Sex,
+    Subspecies = Subspecies,
+    Comments = Comments,
+    Measurer = Measurer,
+    Source = Collection,
+    Date.collected = Date.collected
+  )
+
+traits <- c(
+"Beak.Length_Culmen",
+"Beak.Width",
+"Tarsus.Length",
+"Wing.Length",
+"Tail.Length"
+)
+
+#Merging step with AVONET data - do NOT remove any columns from the AVONET data frame, just add new rows for UMich specimens, and leave NA where information/columns are missing in UMich but present in AVONET
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv")
+bulbuls2 <- bind_rows(
+  bulbuls,
+  njcollar %>% select(any_of(names(bulbuls)))
+) %>%
+  select(all_of(names(bulbuls)))
+str(bulbuls2)
+
+write.csv(bulbuls2, "../data/Bulbul_AVONET_data_integrated.csv", row.names = FALSE)
+
+#AVONET means for each trait, by species
+avonet_means <- bulbuls |>
+  group_by(AviList) |>
+  summarise(
+    across(all_of(traits), ~mean(.x, na.rm=TRUE)),
+    .groups="drop"
+  )
+avonet_points <- merge(
+  bulbuls,
+  avonet_means,
+  by="AviList",
+  suffixes=c("_specimen","_mean")
+)
+
+#Museum means for each trait, by species
+njcollar_means <- njcollar |>
+  group_by(AviList) |>
+  summarise(
+    across(all_of(traits), ~mean(.x, na.rm=TRUE)),
+    .groups="drop"
+  )
+njcollar_points <- merge(
+  njcollar,
+  avonet_means,
+  by="AviList",
+  suffixes=c("_njcollar","_mean")
+)
+
+njcollar_species <- njcollar_points %>%
+  filter(!is.na(Wing.Length_njcollar) | !is.na(Tail.Length_njcollar)) %>%
+  pull(AviList) %>%
+  unique()
+
+avonet_points_filtered <- avonet_points %>%
+    dplyr::filter(AviList %in% njcollar_species)
+
+avonet_long <- avonet_points_filtered %>%
+  pivot_longer(
+    cols = ends_with("_specimen"),
+    names_to = "Trait",
+    names_pattern = "(.*)_specimen",
+    values_to = "specimen"
+  ) %>%
+  pivot_longer(
+    cols = ends_with("_mean"),
+    names_to = "Trait_mean",
+    names_pattern = "(.*)_mean",
+    values_to = "mean"
+  ) %>%
+  filter(Trait == Trait_mean) %>%
+  select(AviList, Trait, specimen, mean)
+
+njcollar_long <- njcollar_points %>%
+  pivot_longer(
+    cols = ends_with("_njcollar"),
+    names_to = "Trait",
+    names_pattern = "(.*)_njcollar",
+    values_to = "njcollar"
+  ) %>%
+  pivot_longer(
+    cols = ends_with("_mean"),
+    names_to = "Trait_mean",
+    names_pattern = "(.*)_mean",
+    values_to = "mean"
+  ) %>%
+  filter(Trait == Trait_mean) %>%
+  select(AviList, Trait, njcollar, mean)
+
+ggplot() +
+
+  geom_point(
+    data = avonet_long,
+    aes(mean, specimen, colour = AviList),
+    alpha = 0.4
+  ) +
+
+  geom_point(
+    data = njcollar_long,
+    aes(mean, njcollar),
+    colour = "#D55E00",
+    shape = 17,
+    alpha = 0.4,
+    size = 1
+  ) +
+
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "dashed"
+  ) +
+
+  facet_wrap(~Trait, scales = "free") +
+
+  theme_classic() +
+  theme(legend.position = "bottom") +
+
+  labs(
+    x = "AVONET species mean",
+    y = "Specimen measurement"
+  )
+
+#Remove any co-ordinates > 3SD from the 1:1 line for each trait, where SD is calculated from the AVONET specimen measurements for that trait, across all species
+avonet_sd <- bulbuls %>%
+  group_by(AviList) %>%
+  summarise(
+    across(all_of(traits), ~sd(.x, na.rm=TRUE)),
+    .groups="drop"
+  )
+
+avonet_long <- avonet_long %>%
+  left_join(avonet_sd, by = "AviList", suffix = c("", "_sd")) %>%
+  mutate(
+    distance_from_line = abs(specimen - mean),
+    outlier = case_when(
+      Trait == "Beak.Length_Culmen" & distance_from_line > 3 * Beak.Length_Culmen_sd ~ TRUE,
+      Trait == "Beak.Width" & distance_from_line > 3 * Beak.Width_sd ~ TRUE,
+      Trait == "Tarsus.Length" & distance_from_line > 3 * Tarsus.Length_sd ~ TRUE,
+      Trait == "Wing.Length" & distance_from_line > 3 * Wing.Length_sd ~ TRUE,
+      Trait == "Tail.Length" & distance_from_line > 3 * Tail.Length_sd ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) %>%
+  filter(!outlier)
+
+avonet_long <- avonet_long %>%
+  select(AviList, Trait, specimen, mean)
+
+#Re-plot after removing outliers
+ggplot() +
+  geom_point(
+    data = avonet_long,
+    aes(mean, specimen, colour = AviList),
+    alpha = 0.4
+  ) +
+
+  geom_point(
+    data = njcollar_long,
+    aes(mean, njcollar),
+    colour = "#D55E00",
+    shape = 17,
+    alpha = 0.4,
+    size = 1
+  ) +
+
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "dashed"
+  ) +
+
+  facet_wrap(~Trait, scales = "free") +
+
+  theme_classic() +
+  theme(legend.position = "bottom") +
+
+  labs(
+    x = "AVONET species mean",
+    y = "Specimen measurement"
+  )
+
+ggsave("../results/Collaborator data comparisons/njcollar_comparison.pdf", width = 12, height = 8)
+```
+I need to now make a very good looking phylogeny figure with initial AVONET specimen counts for bulbuls and current bulbul specimen counts after integrating data from all museums
+```{r}
+#Specimen counts first (bulbuls_raw already loaded)
+
+bulbuls <- read.csv(
+  "../data/Bulbul_AVONET_data_integrated.csv",
+  stringsAsFactors = FALSE)
+
+traits <- c(
+  "Beak.Length_Culmen",
+  "Beak.Width",
+  "Beak.Depth",
+  "Tarsus.Length",
+  "Wing.Length",
+  "Tail.Length"
+)
+
+bulbuls$n_traits_measured <- rowSums(
+  !is.na(bulbuls[, traits])
+)
+
+bulbuls_filtered <- bulbuls %>%
+  filter(n_traits_measured >= 3)
+str(bulbuls_filtered)
+
+bulbul_specimen_counts <- bulbuls_filtered %>%
+  count(AviList)
+write.csv(bulbul_specimen_counts, "../data/Bulbul_specimen_counts_integrated_3traits.csv", row.names = FALSE)
+str(bulbul_specimen_counts)
+
+bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated_3traits.csv", stringsAsFactors = FALSE)
+
+raw_specimen_counts <- read.csv("../data/Bulbul_RAW_specimen_counts.csv", stringsAsFactors = FALSE)
+str(raw_specimen_counts)
+
+write.csv(bulbuls_raw, "../data/Bulbul_RAW_AVONET_data.csv", row.names = FALSE)
+
+#Phylogeny time
+library(ape)
+phylogeny <- read.tree("../data/Phylogeny/mcc_dated_clements_McTavish_2025.nex")
+str(phylogeny)
+
+phylogeny <- phylogeny[[6]]
+
+#Now remove the underscores from the tip labels in the phylogeny and replace them with spaces
+phylogeny$tip.label <- gsub("_", " ", phylogeny$tip.label)
+
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
+
+#Now only keep the tips from the phylogeny that are present in the AviList column of the bulbuls data frame
+phylogeny <- drop.tip(phylogeny, setdiff(phylogeny$tip.label, unique(bulbuls$AviList)))
+str(phylogeny)
+
+#Now create a data frame with the tip labels and the specimen counts from the bulbul_specimen_counts data frame, matching by species name
+bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated_3traits.csv", stringsAsFactors = FALSE)
+raw_specimen_counts <- read.csv("../data/Bulbul_RAW_specimen_counts.csv", stringsAsFactors = FALSE)
+
+#Find the different species between the bulbul_specimen_counts and raw_specimen_counts data frames
+setdiff(
+  unique(bulbul_specimen_counts$AviList),
+  unique(raw_specimen_counts$Var1)
+)
+
+setdiff(
+  unique(raw_specimen_counts$Var1),
+  unique(bulbul_specimen_counts$AviList)
+)
+
+#Now add the rows for the species that are in bulbul_specimen_counts but not in raw_specimen_counts to the raw_specimen_counts data frame, with a Freq of 0
+missing_species <- setdiff(
+  unique(bulbul_specimen_counts$Var1),
+  unique(raw_specimen_counts$Var1)
+)
+
+missing_rows <- data.frame(X = NA, Var1 = missing_species, Freq = 0)
+raw_specimen_counts <- rbind(raw_specimen_counts, missing_rows)
+write.csv(raw_specimen_counts, "../data/Bulbul_RAW_specimen_counts.csv", row.names = FALSE)
+
+
+phylo_data <- data.frame(
+  Species = phylogeny$tip.label,
+  Specimen.count.in.AVONET = raw_specimen_counts$Freq[match(phylogeny$tip.label, raw_specimen_counts$Var1)],
+  Specimen.count.after.integration = bulbul_specimen_counts$n[match(phylogeny$tip.label, bulbul_specimen_counts$AviList)]
+)
+phylo_data$Genus <- sub(" .*", "", phylo_data$Species)
+str(phylo_data)
+
+#Now to make a nice phylogeny figure with the initial AVONET specimen counts and the current bulbul specimen counts after integrating data from all museums, as a stacked bar plot coming from the tip labels using ggtree
+library(ggtree)
+library(ggplot2)
+library(ggstance)
+
+#PLOTTING
+
+phylo_data_before <- phylo_data %>%
+  select(Species, Genus, Count = Specimen.count.in.AVONET)
+
+phylo_data_after <- phylo_data %>%
+  select(Species, Genus, Count = Specimen.count.after.integration)
+
+make_tree_plot <- function(data,
+                           pwidth = 1.2,
+                           tree_linewidth = 0.5,
+                           tip_size = 1.2) {
+  
+  bar_scale <- 10
+  
+  data_tree <- data
+  
+  data_bar <- data %>%
+    mutate(
+      Count_bar = Count * bar_scale
+    )
+  
+  p <- ggtree(
+    phylogeny,
+    layout = "fan",
+    open.angle = 5,
+    size = tree_linewidth
+  ) %<+% data_tree
+  
+  p <- p + geom_tippoint(
+    aes(color = Genus),
+    size = tip_size
+  )
+  
+  p <- p + geom_fruit(
+    data = data_bar,
+    geom = geom_bar,
+    mapping = aes(
+      y = Species,
+      x = Count_bar
+    ),
+    stat = "identity",
+    orientation = "y",
+    offset = 0.05,
+    width = 0.8,
+    pwidth = pwidth,
+    fill = "steelblue"
+  )
+  
+  p + 
+    theme_void() +
+    theme(
+      legend.position = "right"
+    )
+}
+
+p_before <- make_tree_plot(
+  phylo_data_before,
+  pwidth = 0.27,
+  tree_linewidth = 0.75,
+  tip_size = 2.1
+)
+
+p_after <- make_tree_plot(
+  phylo_data_after,
+  pwidth = 1.2,
+  tree_linewidth = 0.5,
+  tip_size = 1.2
+)
+
+library(cowplot)
+
+legend <- get_legend(
+  p_before +
+    theme(legend.position = "right") +
+    guides(color = guide_legend(title = "Genus"))
+)
+
+p_before <- p_before +
+  theme(legend.position = "none")
+
+p_after <- p_after +
+  theme(legend.position = "none")
+
+final_plot <- plot_grid(
+  p_before,
+  p_after,
+  legend,
+  ncol = 3,
+  rel_widths = c(1, 1, 0.5)
+)
+
+ggsave(
+  "../results/Phylogeny/phylogeny_specimen_counts_comparison.pdf",
+  final_plot,
+  width = 16,
+  height = 12
+)
+```
+Now let's try some density plots to compare the distribution of specimen measurements in AVONET 1.0 vs the integrated dataset
+```{r}
+improvement_df <- phylo_data %>%
+  mutate(
+    diff = Specimen.count.after.integration -
+      Specimen.count.in.AVONET
+  )
+
+bulbuls <- read.csv(
+  "../data/Bulbul_AVONET_data_integrated.csv",
+  stringsAsFactors = FALSE
+)
+
+bulbuls$Dataset <- "After"
+
+raw_bulbuls <- read.csv(
+  "../data/Bulbul_RAW_AVONET_data.csv",
+  stringsAsFactors = FALSE
+)
+
+raw_bulbuls$Dataset <- "Before"
+
+raw_bulbuls <- raw_bulbuls %>%
+  rename(AviList = Species1_BirdLife)
+
+combined_data <- bind_rows(raw_bulbuls, bulbuls)
+
+plot_data <- combined_data %>%
+  filter(!is.na(Wing.Length))
+
+plot_summary <- plot_data %>%
+  group_by(AviList, Dataset) %>%
+  summarise(
+    mean_trait = mean(Wing.Length, na.rm = TRUE),
+    sample_size = n(),
+    .groups = "drop"
+  ) %>%
+  tidyr::pivot_wider(
+    names_from = Dataset,
+    values_from = c(mean_trait, sample_size)
+  ) %>%
+  mutate(
+    mean_difference = abs(mean_trait_After - mean_trait_Before)
+  )
+
+species_selection <- improvement_df %>%
+  select(
+    Species,
+    improvement = diff
+  ) %>%
+  left_join(
+    plot_summary,
+    by = c("Species" = "AviList")
+  ) %>%
+  filter(
+    !is.na(mean_difference),
+    mean_difference >= 3,
+    sample_size_Before >= 3,
+    sample_size_After >= 10
+  ) %>%
+  arrange(
+    desc(improvement),
+    desc(mean_difference)
+  )
+
+top_species <- head(species_selection$Species, 6)
+
+plot_data_filtered <- plot_data %>%
+  filter(AviList %in% top_species)
+
+plot_data_filtered$AviList <- factor(
+  plot_data_filtered$AviList,
+  levels = top_species
+)
+
+mean_lines <- plot_data_filtered %>%
+  group_by(AviList, Dataset) %>%
+  summarise(
+    mean_trait = mean(Wing.Length, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+binwidth_value <- 2
+
+p <- ggplot(
+  plot_data_filtered,
+  aes(
+    x = Wing.Length,
+    fill = Dataset
+  )
+) +
+  
+  geom_histogram(
+    aes(y = after_stat(count)),
+    position = "identity",
+    alpha = 0.5,
+    color = "black",
+    linewidth = 0.2,
+    binwidth = binwidth_value
+  ) +
+  
+  geom_vline(
+    data = mean_lines,
+    aes(
+      xintercept = mean_trait,
+      color = Dataset
+    ),
+    linewidth = 1,
+    linetype = "dashed"
+  ) +
+  
+  facet_wrap(
+    ~ AviList,
+    scales = "free_y",
+    ncol = 3
+  ) +
+  
+  scale_fill_manual(
+    values = c(
+      "Before" = "red",
+      "After" = "steelblue"
+    )
+  ) +
+  
+  scale_color_manual(
+    values = c(
+      "Before" = "darkred",
+      "After" = "steelblue4"
+    )
+  ) +
+  
+  labs(
+    x = "Wing Length (mm)",
+    y = "Frequency",
+    fill = "Dataset",
+    color = "Mean"
+  ) +
+  
+  theme_classic(base_size = 13) +
+  
+  theme(
+    strip.text = element_text(
+      face = "italic",
+      size = 11
+    ),
+    legend.position = "top"
+  )
+
+p
+
+ggsave(
+  "../results/Phylogeny/histograms_top_species.pdf",
+  p,
+  width = 14,
+  height = 9
+)
+
+species_selection %>%
+  select(
+    Species,
+    improvement,
+    mean_trait_Before,
+    mean_trait_After,
+    sample_size_Before,
+    sample_size_After
+  ) %>%
+  head(10)
+```
+Re-trying the phylogeny figure as one plot
+```{r}
+phylo_data_before <- phylo_data %>%
+  select(
+    Species,
+    Genus,
+    Count = Specimen.count.in.AVONET
+  )
+
+phylo_data_after <- phylo_data %>%
+  select(
+    Species,
+    Genus,
+    Count = Specimen.count.after.integration
+  )
+
+global_max <- max(
+  c(
+    phylo_data_before$Count,
+    phylo_data_after$Count
+  ),
+  na.rm = TRUE
+)
+
+make_tree_plot <- function(data) {
+  
+  data_tree <- data
+  
+  data_bar <- data %>%
+    mutate(
+      Count_bar = Count
+    )
+  
+  p <- ggtree(
+    phylogeny,
+    layout = "fan",
+    open.angle = 5,
+    size = 0.3
+  ) %<+% data_tree
+  
+  p <- p +
+    geom_tippoint(
+      aes(color = Genus),
+      size = 1.2
+    )
+  
+  p <- p +
+    geom_fruit(
+      data = data_bar,
+      geom = geom_bar,
+      mapping = aes(
+        y = Species,
+        x = Count_bar
+      ),
+      stat = "identity",
+      orientation = "y",
+      offset = 0.05,
+      width = 0.8,
+      pwidth = 2.5,
+      fill = "steelblue"
+    )
+  
+  p <- p +
+    scale_x_continuous(
+      limits = c(0, global_max)
+    )
+  
+  p +
+    theme_void() +
+    theme(
+      legend.position = "right"
+    )
+}
+
+p_before <- make_tree_plot(phylo_data_before)
+
+p_after <- make_tree_plot(phylo_data_after)
+
+legend <- get_legend(
+  p_before +
+    theme(legend.position = "right") +
+    guides(
+      color = guide_legend(title = "Genus")
+    )
+)
+
+p_before <- p_before +
+  theme(legend.position = "none")
+
+p_after <- p_after +
+  theme(legend.position = "none")
+
+final_plot <- plot_grid(
+  p_before,
+  p_after,
+  legend,
+  ncol = 3,
+  rel_widths = c(1, 1, 0.4)
+)
+```
+Last plot needed for meeting: A museum map with all data source lat-longs, then the radius of circle is determined by number of specimens they provided
+```{r}
+
+```

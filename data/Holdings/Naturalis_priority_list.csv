@@ -1,0 +1,92 @@
+Species,Specimen.count.in.Naturalis.collections,Specimen.count.in.AVONET,Requested.sample,Comments
+Pycnonotus tympanistrigus,11,2,11,"Priority species, please measure all specimens"
+Pycnonotus leucogrammicus,19,5,19,"Priority species, please measure all specimens"
+Hypsipetes olivaceus/ Iole olivacea,26,6,24,"Priority species, please measure all specimens"
+Hypsipetes borbonicus,4,6,4,"Priority species, please measure all specimens"
+Thapsinillas longirostris,4,6,4,"Priority species, please measure all specimens, including all subspecies which have now been split into separate species (please report ssp. if applicable)"
+Hypsipetes parvirostris,1,7,1,"Priority species, please measure this specimen"
+Pycnonotus xantholaemus,1,9,1,"Priority species, please measure this specimen"
+Ixos virescens,156,10,20,"Island species, please measure about 20"
+Neolestes torquatus,3,10,3,"Range-restricted species, please measure these 3 specimens"
+Phyllastrephus hypochloris,7,11,7,"Range-restricted species, please measure all specimens"
+Pycnonotus penicillatus,3,12,3,"Range-restricted species, please measure these 3 specimens"
+Pycnonotus squamatus,33,20,10,"Vulnerable species, please measure all specimens"
+Pycnonotus bimaculatus,310,22,8,"Near Threatened, please measure all specimens"
+Hypsipetes madagascariensis,108,14,16,"Island species, please measure all specimens"
+Hypsipetes siquijorensis,1,14,1,"Island species, please measure all specimens"
+Ixos nicobariensis,3,15,3,"Island species, please measure all specimens"
+Thapsinillas affinis,109,17,13,"Island species, please measure all specimens, and list ssp. if applicable "
+Setornis criniger,11,13,11,"Specialist species, please measure all specimens if possible"
+Phyllastrephus terrestris,11,17,11,"Specialist species, please measure all specimens if possible"
+Pycnonotus capensis,12,11,12,Locally common species so would be great to measure all specimens
+Pycnonotus nigricans,9,12,9,Locally common species so would be great to measure all specimens
+Pycnonotus luteolus,29,13,17,Locally common species so would be great to measure all specimens
+Phyllastrephus fulviventris,1,10,1,
+Pycnonotus blanfordi,1,10,1,
+Pycnonotus xanthorrhous,1,10,1,
+Hypsipetes ganeesa,4,11,4,
+Iole propinqua,1,11,1,
+Calyptocichla serinus,4,10,4,
+Chlorocichla falkensteini,8,12,8,
+Baeopogon indicator,4,12,4,
+Pycnonotus flavescens,3,12,3,
+Atimastillas flavicollis,2,12,2,
+Pycnonotus dispar,1,12,1,
+Acritillas indica,4,13,4,
+Pycnonotus melanicterus,168,13,17,
+Thescelocichla leucopleura,17,14,16,
+Phyllastrephus strepitans,11,14,11,
+Hemixos flavala,4,14,4,
+Ixonotus guttatus,9,15,9,
+Chlorocichla laetissima,1,15,1,
+Phyllastrephus fischeri,39,16,14,
+Arizelocichla nigriceps,1,16,1,
+Chlorocichla simplex,13,17,13,
+Phyllastrephus flavostriatus,12,17,12,
+Pycnonotus simplex,149,18,12,
+Pycnonotus finlaysoni,9,18,9,
+Pycnonotus striatus,7,18,7,
+Phyllastrephus scandens,1,20,1,
+Pycnonotus eutilotus,42,20,10,
+Ixos malaccensis,15,21,9,
+Pycnonotus priocephalus,1,21,1,
+Criniger barbatus,8,24,6,
+Eurillas curvirostris,2,24,2,
+Alophoixus phaeocephalus,1,24,1,
+Pycnonotus cyaniventris,27,24,6,
+Pycnonotus zeylanicus,143,26,4,
+Hypsipetes leucocephalus,30,28,2,
+Bleda canicapillus,10,28,2,
+Bleda eximius,14,29,1,
+Criniger calurus,6,29,1,
+Spizixos semitorques,61,30,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus plumosus,154,31,0,"Always good to measure more if time permits, but higher priorities should come first"
+Stelgidillas gracilirostris,2,31,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus sinensis,117,32,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus leucogenys,17,32,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus melanoleucos,24,33,0,"Always good to measure more if time permits, but higher priorities should come first"
+Phyllastrephus albigularis,3,34,0,"Always good to measure more if time permits, but higher priorities should come first"
+Chlorocichla flaviventris,22,35,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus aurigaster,578,37,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus brunneus,69,40,0,"Always good to measure more if time permits, but higher priorities should come first"
+Phyllastrephus icterinus,4,41,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus leucotis,2,41,0,"Always good to measure more if time permits, but higher priorities should come first"
+Andropadus importunus,3,48,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus erythropthalmos,66,49,0,"Always good to measure more if time permits, but higher priorities should come first"
+Tricholestes criniger,18,50,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus atriceps,270,55,0,"Always good to measure more if time permits, but higher priorities should come first"
+Hypsipetes everetti,6,73,0,"Always good to measure more if time permits, but higher priorities should come first"
+Hypsipetes amaurotis,50,88,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus xanthopygos,16,105,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus jocosus,22,116,0,"Always good to measure more if time permits, but higher priorities should come first"
+Bleda syndactylus,18,117,0,"Always good to measure more if time permits, but higher priorities should come first"
+Spizixos canifrons,2,118,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus urostictus,6,127,0,"Always good to measure more if time permits, but higher priorities should come first"
+Ixos mcclellandii,8,150,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus barbatus,174,153,0,"Always good to measure more if time permits, but higher priorities should come first"
+Eurillas virens,4,181,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus cafer,53,210,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus goiavier,580,387,0,"Always good to measure more if time permits, but higher priorities should come first"
+Hypsipetes philippinus,19,430,0,"Always good to measure more if time permits, but higher priorities should come first"
+Eurillas latirostris,2,576,0,"Always good to measure more if time permits, but higher priorities should come first"
+Pycnonotus nieuwenhuisii,2,2,2,Already measured these two

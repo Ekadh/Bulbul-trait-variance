@@ -1,0 +1,601 @@
+Part 1: Load Bulbul_AVONET_data, AVONET_alldupes and Rob Barber data files
+```{r}
+library(tidyverse)
+library(openxlsx)
+library(stringr)
+
+bulbuls <- read.csv("../data/Bulbul_AVONET_data.csv")
+str(bulbuls)
+alldupes <- read.xlsx("../data/Duplicates/AVONET_alldupes.xlsx")
+str(alldupes)
+rob <- read.xlsx("../data/Duplicates/Rob_Barber_bulbul_data.xlsx")
+str(rob)
+
+#Checking bulbuls object to find duplicate specimen numbers
+duplicated_bulbuls <- bulbuls %>%
+        group_by(Specimen.number) %>%
+        summarise(count = n()) %>%
+        filter(count > 1)
+
+#Find all duplicated_bulbuls$Specimen.number that are NOT present in alldupes$
+unique_duplicated_bulbuls <- duplicated_bulbuls %>%
+        filter(!Specimen.number %in% alldupes$Specimen.number)
+
+#Remove first and last row of unique_duplicated_bulbuls
+unique_duplicated_bulbuls <- unique_duplicated_bulbuls[-c(1, nrow(unique_duplicated_bulbuls)), ]
+```
+Part 2: Make a separate list of rows called ER_dupes from the bulbuls dataset of specimen numbers present in unique_duplicated_bulbuls
+```{r}
+er_dupes <- bulbuls |>
+        filter(Specimen.number %in% unique_duplicated_bulbuls$Specimen.number)
+str(er_dupes)
+```
+Part 3: Now add all the Rob Barber data to the ER_dupes dataset
+```{r}
+rob <- rob |>
+  rename(
+    AviList = `Scientific_Name.(BirdTree)`,
+    Specimen.number = Number,
+    Beak.Length_Culmen = Bill_TotalCulmen,
+    Beak.Length_Nares = Bill_FromNostril,
+    Beak.Width = Bill_Width,
+    Beak.Depth = Bill_Depth,
+    Gape_Width = Gape.Width,
+    Tarsus.Length = Tarsus_Length,
+    Kipps.Distance = `Kipp's_Distance`,
+    Wing.Length = Wing_Chord,
+    Tail.Length = Tail_Length
+  )
+rob$Subspecies <- as.character(rob$Subspecies)
+rob$Comments <- as.character(rob$Comments)
+
+er_dupes <- bind_rows(er_dupes, rob) |>
+  select(any_of(intersect(names(er_dupes), names(rob))))
+str(er_dupes)
+write.csv(er_dupes, "../data/Duplicates/ER_dupes.csv", row.names = FALSE)
+```
+Part 3: Now load ER_dupes again and group correctly by Specimen.number
+```{r}
+er_dupes <- read.csv("../data/Duplicates/ER_dupes.csv")
+str(er_dupes)
+er_dupes <- er_dupes |>
+  group_by(Specimen.number, AviList) |>
+  arrange(Specimen.number, AviList, .by_group = TRUE)
+write.csv(er_dupes, "../data/Duplicates/ER_dupes.csv", row.names = FALSE)
+```
+Part 4: Bind rows with all_dupes and fill in the blanks
+```{r}
+er_dupes_clean <- er_dupes %>%
+  mutate(
+    # Create Unique.Specimen.Identifier
+    Unique.Specimen.Identifier = paste(AviList, Specimen.number, sep = "_"),
+    
+    # Split genus + species if needed
+    Species1 = word(AviList, 2),
+    
+    # Fill columns that exist in target but not here
+    Order1 = NA,
+    Sequence = NA,
+    Source = "NHMUK",
+    Secondary1 = Wing.Length - Kipps.Distance,
+    `Hand-wing.Index` = NA,
+    Sample.Number = NA,
+    Avonet.Protocol.Used = NA,
+    Protocol.both.pairs = NA,
+    Protocol.neither.pair = NA
+  ) %>%
+  
+  # Rename columns to match target
+  rename(
+    `Specimen.number` = Specimen.number,
+    `Sex` = Sex,
+    `Locality` = Locality,
+    `Country` = Country,
+    `Beak.Length_Culmen` = Beak.Length_Culmen,
+    `Beak.Length_Nares` = Beak.Length_Nares,
+    `Beak.Width` = Beak.Width,
+    `Beak.Depth` = Beak.Depth,
+    `Tarsus.Length` = Tarsus.Length,
+    `Wing.Length` = Wing.Length,
+    `Kipps.Distance` = Kipps.Distance,
+    `Tail.Length` = Tail.Length,
+    `Measurer` = Measurer
+  )
+str(er_dupes_clean)
+er_dupes_clean <- as.data.frame(er_dupes_clean)
+# Step 2: Ensure same column order as duplicates dataset
+er_dupes_clean <- er_dupes_clean %>%
+  select(names(alldupes))  # 'duplicates' is your target dataset
+
+# Step 3: Bind
+combined_data <- bind_rows(alldupes, er_dupes_clean)
+str(combined_data)
+write.csv(combined_data, "../data/Duplicates/combined_dupes.csv", row.names = FALSE)
+```
+Part 5: Now load combined_dupes and sort everything alphabetically by Order, then Family, then Species within that, after which we extract a bulbul_dupes file for all Pycnonotidae
+```{r}
+combined_data <- read.csv("../data/Duplicates/combined_dupes.csv")
+str(combined_data)
+combined_data <- combined_data %>%
+    arrange(Order1, Family, Unique.Specimen.Identifier)
+write.csv(combined_data, "../data/Duplicates/combined_dupes_sorted.csv", row.names = FALSE)
+
+bulbul_dupes <- combined_data %>%
+    filter(Family == "Pycnonotidae")
+str(bulbul_dupes)
+write.csv(bulbul_dupes, "../data/Duplicates/bulbul_dupes.csv", row.names = FALSE)
+```
+Next step: Correlations and repeatability of measurements for duplicated specimens
+```{r}
+bulbul_dupes <- read.csv("../data/Duplicates/Bulbul_Duplicates.csv")
+str(bulbul_dupes)
+
+library(dplyr)
+library(tidyr)
+library(rptR)
+library(ggplot2)
+
+# -----------------------------
+# 1. Define traits
+# -----------------------------
+traits <- c(
+  "Beak.Length_Culmen",
+  "Beak.Length_Nares",
+  "Beak.Width",
+  "Beak.Depth",
+  "Tarsus.Length",
+  "Wing.Length",
+  "Kipps.Distance",
+  "Tail.Length"
+)
+
+# -----------------------------
+# 2. Repeatability (rptR)
+# -----------------------------
+rpt_results <- lapply(traits, function(traits) {
+  rpt(
+    as.formula(paste(traits, "~ (1|Unique.Specimen.Identifier)")),
+    grname = "Unique.Specimen.Identifier",
+    data = bulbul_dupes,
+    datatype = "Gaussian",
+    nboot = 1000,
+    npermut = 500
+  )
+})
+
+names(rpt_results) <- traits
+
+# Extract repeatability estimates and 95% confidence intervals
+rpt_ci <- do.call(rbind, lapply(names(rpt_results), function(traits) {
+    data.frame(
+        Trait = traits,
+        R = rpt_results[[traits]]$R,
+        CI_lower = rpt_results[[traits]]$CI_emp$`2.5%`,
+        CI_upper = rpt_results[[traits]]$CI_emp$`97.5%`
+    )
+}))
+write.csv(rpt_ci, "../Results/Sensitivity/Bulbul_Duplicates_Repeatability.csv", row.names = FALSE)
+
+# -----------------------------
+# 3. Extract bootstrap values
+# -----------------------------
+boot_df <- do.call(rbind, lapply(names(rpt_results), function(traits) {
+  
+  boot_vals <- rpt_results[[traits]]$R_boot[,1]
+  
+  data.frame(
+    Trait = traits,
+    R = boot_vals
+  )
+}))
+
+# -----------------------------
+# 4. GLM across traits
+# -----------------------------
+# (tests whether repeatability differs among traits)
+
+glm_model <- glm(R ~ Trait, data = boot_df)
+
+summary(glm_model)
+anova(glm_model, test = "F")
+
+# -----------------------------
+# 5. Reshape to wide format
+# -----------------------------
+bulbul_wide <- bulbul_dupes %>%
+  arrange(Unique.Specimen.Identifier, Sample.Number) %>%
+  pivot_wider(
+    id_cols = Unique.Specimen.Identifier,
+    names_from = Sample.Number,
+    values_from = all_of(traits)
+  )
+
+# -----------------------------
+# 6. Pearson correlation
+# -----------------------------
+results_df <- tibble(
+    Trait = traits,
+    Pearson_Correlation = sapply(traits, function(trait) {
+        x <- bulbul_wide[[paste0(trait, "_1")]]
+        y <- bulbul_wide[[paste0(trait, "_2")]]
+        
+        cor(x, y, use = "complete.obs")
+    }),
+    CV = sapply(traits, function(trait) {
+        x <- bulbul_wide[[paste0(trait, "_1")]]
+        y <- bulbul_wide[[paste0(trait, "_2")]]
+        
+        means <- rowMeans(cbind(x, y), na.rm = TRUE)
+        sds <- apply(cbind(x, y), 1, sd, na.rm = TRUE)
+        cv <- sds / means
+        
+        mean(cv, na.rm = TRUE)
+    })
+)
+
+results_df
+write.csv(results_df, "../Results/Sensitivity/Bulbul_Duplicates_Correlations.csv", row.names = FALSE)
+
+# -----------------------------
+# 8. Optional: protocol comparison
+# -----------------------------
+bulbul_dupes$ProtocolGroup <- ifelse(
+  bulbul_dupes$Protocol.both.pairs == 1,
+  "Both_AVONET",
+  "Mixed_or_nonAVONET"
+)
+
+# Example: split and recompute correlations
+cor_by_protocol <- bulbul_dupes %>%
+  group_split(ProtocolGroup) %>%
+  setNames(unique(bulbul_dupes$ProtocolGroup)) %>%
+  lapply(function(df) {
+    
+    wide <- df %>%
+      arrange(Unique.Specimen.Identifier, Sample.Number) %>%
+      pivot_wider(
+        id_cols = Unique.Specimen.Identifier,
+        names_from = Sample.Number,
+        values_from = all_of(traits)
+      )
+    
+    sapply(traits, function(trait) {
+      cor(
+        wide[[paste0(trait, "_1")]],
+        wide[[paste0(trait, "_2")]],
+        use = "complete.obs"
+      )
+    })
+  })
+
+cor_by_protocol
+
+# -----------------------------
+# 9. Plot (example for one trait)
+# -----------------------------
+ggplot(bulbul_wide, aes(
+  x = Tail.Length_1,
+  y = Tail.Length_2
+)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  theme_classic() +
+  labs(
+    x = "Measurement 1",
+    y = "Measurement 2",
+    title = "Repeatability of Tail Length"
+  )
+
+ggsave("../Results/Sensitivity/Bulbuls_Tail_Length_Repeatability.png", width = 6, height = 6)
+```
+Now let's just do the same for all oscines to keep in hand
+```{r}
+avonet_dupes <- read.csv("../data/Duplicates/AVONET_Duplicates.csv")
+str(avonet_dupes)
+
+suboscine_families <- c(
+  # Acanthisitti
+  "Acanthisittidae",
+  
+  # Old World suboscines
+  "Philepittidae",
+  "Eurylaimidae",
+  "Calyptomenidae",
+  "Sapayoidae",
+  "Pittidae",
+  
+  # New World suboscines
+  "Melanopareiidae",
+  "Conopophagidae",
+  "Thamnophilidae",
+  "Grallariidae",
+  "Rhinocryptidae",
+  "Formicariidae",
+  "Furnariidae",
+  "Pipridae",
+  "Cotingidae",
+  "Tityridae",
+  "Oxyruncidae",
+  "Onychorhynchidae",
+  "Tyrannidae"
+)
+
+oscine_dupes <- subset(
+  avonet_dupes,
+  Order1 == "PASSERIFORMES" &
+  !Family %in% suboscine_families
+)
+str(oscine_dupes)
+unique(oscine_dupes$Family)
+
+write.csv(oscine_dupes, "../data/Duplicates/AVONET_oscine_duplicates.csv", row.names = FALSE)
+
+#Now load it and do the process again
+oscine_dupes <- read.csv("../data/Duplicates/AVONET_oscine_duplicates.csv")
+str(oscine_dupes)
+
+# -----------------------------
+# 1. Define traits
+# -----------------------------
+traits <- c(
+  "Beak.Length_Culmen",
+  "Beak.Length_Nares",
+  "Beak.Width",
+  "Beak.Depth",
+  "Tarsus.Length",
+  "Wing.Length",
+  "Kipps.Distance",
+  "Tail.Length"
+)
+
+# -----------------------------
+# 2. Repeatability (rptR)
+# -----------------------------
+rpt_results <- lapply(traits, function(trait) {
+    rpt(
+        as.formula(paste(trait, "~ (1|Unique.Specimen.Identifier) + (1|Family)")),
+        grname = c("Unique.Specimen.Identifier", "Family"),
+        data = oscine_dupes,
+        datatype = "Gaussian",
+        nboot = 1000,
+        npermut = 500
+    )
+})
+
+names(rpt_results) <- traits
+
+# Extract repeatability estimates and 95% confidence intervals
+rpt_ci <- do.call(rbind, lapply(names(rpt_results), function(trait) {
+  data.frame(
+    Trait = trait,
+    R_Specimen = rpt_results[[trait]]$R["Unique.Specimen.Identifier"],
+    R_Family = rpt_results[[trait]]$R["Family"],
+    CI_lower = rpt_results[[trait]]$CI_emp$`2.5%`[1],
+    CI_upper = rpt_results[[trait]]$CI_emp$`97.5%`[1]
+  )
+}))
+
+write.csv(rpt_ci, "../Results/Sensitivity/oscine_Duplicates_Repeatability.csv", row.names = FALSE)
+
+# -----------------------------
+# 3. Extract bootstrap values
+# -----------------------------
+boot_df <- do.call(rbind, lapply(names(rpt_results), function(traits) {
+  
+  boot_vals <- rpt_results[[traits]]$R_boot[,1]
+  
+  data.frame(
+    Trait = traits,
+    R = boot_vals
+  )
+}))
+
+# -----------------------------
+# 4. GLM across traits
+# -----------------------------
+# (tests whether repeatability differs among traits)
+
+glm_model <- glm(R ~ Trait, data = boot_df)
+
+summary(glm_model)
+anova(glm_model, test = "F")
+
+# -----------------------------
+# 5. Reshape to wide format
+# -----------------------------
+oscine_wide <- oscine_dupes %>%
+  arrange(Unique.Specimen.Identifier, Sample.Number) %>%
+  pivot_wider(
+    id_cols = Unique.Specimen.Identifier,
+    names_from = Sample.Number,
+    values_from = all_of(traits)
+  )
+
+# -----------------------------
+# 6. Pearson correlation
+# -----------------------------
+results_df <- tibble(
+    Trait = traits,
+    Pearson_Correlation = sapply(traits, function(trait) {
+        x <- oscine_wide[[paste0(trait, "_1")]]
+        y <- oscine_wide[[paste0(trait, "_2")]]
+        
+        cor(x, y, use = "complete.obs")
+    }),
+    CV = sapply(traits, function(trait) {
+        x <- oscine_wide[[paste0(trait, "_1")]]
+        y <- oscine_wide[[paste0(trait, "_2")]]
+        
+        means <- rowMeans(cbind(x, y), na.rm = TRUE)
+        sds <- apply(cbind(x, y), 1, sd, na.rm = TRUE)
+        cv <- sds / means
+        
+        mean(cv, na.rm = TRUE)
+    })
+)
+
+results_df
+write.csv(results_df, "../Results/Sensitivity/oscine_Duplicates_Correlations.csv", row.names = FALSE)
+
+# -----------------------------
+# 8. Optional: protocol comparison
+# -----------------------------
+oscine_dupes$ProtocolGroup <- ifelse(
+  oscine_dupes$Protocol.both.pairs == 1,
+  "Both_AVONET",
+  "Mixed_or_nonAVONET"
+)
+
+# Example: split and recompute correlations
+cor_by_protocol <- oscine_dupes %>%
+  group_split(ProtocolGroup) %>%
+  setNames(unique(oscine_dupes$ProtocolGroup)) %>%
+  lapply(function(df) {
+    
+    wide <- df %>%
+      arrange(Unique.Specimen.Identifier, Sample.Number) %>%
+      pivot_wider(
+        id_cols = Unique.Specimen.Identifier,
+        names_from = Sample.Number,
+        values_from = all_of(traits)
+      )
+    
+    sapply(traits, function(trait) {
+      cor(
+        wide[[paste0(trait, "_1")]],
+        wide[[paste0(trait, "_2")]],
+        use = "complete.obs"
+      )
+    })
+  })
+
+cor_by_protocol
+
+# -----------------------------
+# 9. Plot (example for one trait)
+# -----------------------------
+ggplot(oscine_wide, aes(
+  x = Tail.Length_1,
+  y = Tail.Length_2
+)) +
+  geom_point() +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  theme_classic() +
+  labs(
+    x = "Measurement 1",
+    y = "Measurement 2",
+    title = "Repeatability of Tail Length"
+  )
+
+ggsave("../Results/Sensitivity/oscines_Tail_Length_Repeatability.png", width = 6, height = 6)
+```
+One more analysis: Checking how many specimens are required to capture 90% of the variation in each trait for the 10 most sampled species
+```{r}
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv")
+str(bulbuls)
+
+traits <- c(
+  "Beak.Length_Culmen",
+  "Beak.Length_Nares",
+  "Beak.Width",
+  "Beak.Depth",
+  "Tarsus.Length",
+  "Wing.Length",
+  "Kipps.Distance",
+  "Tail.Length"
+)
+
+top_species <- bulbuls %>%
+  group_by(AviList) %>%
+  summarise(n = sum(!is.na(Beak.Length_Culmen))) %>%  # pick a well-sampled trait
+  arrange(desc(n)) %>%
+  slice(1:10) %>%
+  pull(AviList)
+
+cv_fun <- function(x) {
+  x <- x[!is.na(x)]
+  if(length(x) < 2) return(NA)
+  sd(x) / mean(x)
+}
+
+full_cv <- bulbuls %>%
+  filter(AviList %in% top_species) %>%
+  group_by(AviList) %>%
+  summarise(across(all_of(traits), cv_fun, .names = "CV_{.col}"))
+
+#Permutation/subsampling function
+sample_cv <- function(data, trait, n, n_iter = 100) {
+  
+  vals <- data[[trait]]
+  vals <- vals[!is.na(vals)]
+  
+  if(length(vals) < n) return(NA)
+  
+  replicate(n_iter, {
+    sample_vals <- sample(vals, n)
+    sd(sample_vals) / mean(sample_vals)
+  })
+}
+
+library(purrr)
+
+results <- list()
+
+for(sp in top_species) {
+  
+  sp_data <- bulbuls %>% filter(AviList == sp)
+  
+  for(trait in traits) {
+    
+    vals <- sp_data[[trait]]
+    vals <- vals[!is.na(vals)]
+    
+    if(length(vals) < 10) next  # skip poorly sampled
+    
+    full_val <- cv_fun(vals)
+    
+    sizes <- seq(5, length(vals), by = 5)
+    
+    for(n in sizes) {
+      
+      cv_samples <- sample_cv(sp_data, trait, n, n_iter = 100)
+      
+      results[[length(results)+1]] <- data.frame(
+        Species = sp,
+        Trait = trait,
+        SampleSize = n,
+        CV_mean = mean(cv_samples, na.rm = TRUE),
+        CV_sd = sd(cv_samples, na.rm = TRUE),
+        Full_CV = full_val,
+        Proportion = mean(cv_samples, na.rm = TRUE) / full_val
+      )
+    }
+  }
+}
+
+results_df <- do.call(rbind, results)
+
+#Can set alternate thresholds as well, default is 0.95 for 95% of the variation captured, but could also look at 0.90 or 0.99 for example
+threshold <- 0.95
+
+min_sample_sizes <- results_df %>%
+  group_by(Species, Trait) %>%
+  filter(Proportion >= threshold) %>%
+  summarise(Min_N = min(SampleSize), .groups = "drop")
+
+#Now to calculate mean minimum sample size per trait
+mean_min_sample_size <- min_sample_sizes %>%
+  group_by(Trait) %>%
+  summarise(Mean_Min_N = mean(Min_N, na.rm = TRUE), .groups = "drop")
+
+write.csv(min_sample_sizes, "../Results/Sensitivity/Bulbul_Sample_Size_CV.csv", row.names = FALSE)
+write.csv(mean_min_sample_size, "../Results/Sensitivity/Bulbul_Mean_Traitwise_Sample_Size_CV.csv", row.names = FALSE)
+
+ggplot(results_df, aes(x = SampleSize, y = Proportion)) +
+  geom_line() +
+  geom_hline(yintercept = 0.95, linetype = "dashed") +
+  facet_grid(Trait ~ Species, scales = "free_y") +
+  theme_bw()
+
+ggsave("../Results/Sensitivity/Bulbul_Sample_Size_CV.png", width = 12, height = 8)
+```

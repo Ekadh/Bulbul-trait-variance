@@ -113,3 +113,96 @@ ggplot() +
 
 ggsave("../results/Bulbul_Specimen_Localities_Map.png", width = 8, height = 6)
 ```
+Add the lat and long columns from the bulbul unique localities data frame to the integrated bulbul data frame, matching by specimen numbers
+```{r}
+unique_localities <- read.csv("../data/Bulbul_unique_localities.csv", stringsAsFactors = FALSE)
+str(unique_localities)
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
+str(bulbuls)
+#First need to separate the specimen numbers in the unique localities data frame into individual rows
+localities_long <- unique_localities %>%
+  separate_rows(Specimen.number, sep = ", ") %>%
+  rename(Specimen.number = Specimen.number)
+#Now we can merge the localities data (but only the lat and long columns) with the bulbuls data
+bulbuls_with_localities <- bulbuls %>%
+  left_join(localities_long %>% select(Specimen.number, Lat, Lon), by = "Specimen.number")
+str(bulbuls_with_localities)
+write.csv(bulbuls_with_localities, "../data/Bulbul_AVONET_data_integrated_with_localities.csv", row.names = FALSE)
+```
+Now use bulbul_unique_localities.csv and append all the missing specimen numbers and localities for bulbuls
+```{r}
+library(stringr)
+
+bulbuls_unique_localities <- read.csv("../data/Bulbul_unique_localities.csv", stringsAsFactors = FALSE)
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
+
+# Split specimen numbers into individual rows
+geo_specimens <- bulbuls_unique_localities %>%
+  separate_rows(Specimen.number, sep = ",") %>%
+  mutate(Specimen.number = str_trim(Specimen.number))
+
+bulbuls_remaining <- bulbuls %>%
+  filter(!is.na(Specimen.number)) %>%
+  filter(!(Specimen.number %in% geo_specimens$Specimen.number))
+
+# Clean locality
+bulbuls_remaining <- bulbuls_remaining %>%
+  mutate(Locality = str_squish(Locality))
+
+# Create lookup (deduplicated)
+bulbuls_lookup <- bulbuls %>%
+  select(Specimen.number, AviList) %>%
+  distinct(Specimen.number, .keep_all = TRUE)
+
+# Join cleanly
+bulbuls_remaining <- bulbuls_remaining %>%
+  select(-AviList) %>%   # remove empty column if present
+  left_join(bulbuls_lookup, by = "Specimen.number")
+
+# Summarise
+new_localities <- bulbuls_remaining %>%
+  filter(!is.na(Locality) & Locality != "") %>%
+  group_by(Locality, Country) %>%
+  summarise(
+    Specimen.number = paste(unique(Specimen.number), collapse = ", "),
+    AviList = paste(unique(AviList), collapse = ", "),
+    n_specimens = n(),
+    .groups = "drop"
+  )
+
+new_localities <- new_localities %>%
+  rename(
+    LocalityString = Locality,
+    Country = Country
+  ) %>%
+  mutate(
+    State = "",
+    County = "",
+    Lat = NA,
+    Lon = NA,
+    `Correction Status` = "",
+    Precision = "",
+    `Error Polygon` = "",
+    `Error Polygon (circular polygon)` = "",
+    Multiplot = "",
+    AviList = AviList,
+    Specimen.number = Specimen.number,
+    n_specimens = n_specimens
+  ) %>%
+  select(
+    LocalityString, Country, State, County, Lat, Lon,
+    `Correction Status`, Precision, `Error Polygon`,
+    `Error Polygon (circular polygon)`, Multiplot,
+    AviList, Specimen.number, n_specimens
+  )
+
+final_dataset <- bind_rows(
+  bulbuls_unique_localities,
+  new_localities
+)
+
+str(final_dataset)
+
+final_dataset$Code <- NA
+write.csv(final_dataset, "../data/Bulbul_final_georeferenced_localities.csv", row.names = FALSE)
+```

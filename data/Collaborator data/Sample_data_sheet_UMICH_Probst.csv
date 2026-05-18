@@ -1,25 +1,533 @@
-﻿catalognumber,country,species_genus,priority,Total culmen,Length of bill from nostril,Bill width,Bill depth,Gape width,Tarsus length,Tail length,Wing length,First secondary length,Comments
-184887,India,Spizixos canifrons,Y,10.88,7.37,5.39,6.51,10.96,20.03,82.16,86.34,82.46,
-184889,India,Spizixos canifrons,Y,11.46,7.7,5.18,6.96,11.43,19.21,86.07,92.85,81.53,
-190616,India,Spizixos canifrons,Y,11.51,6.49,6.01,7.7,11.9,18.89,86.76,89.65,80.78,
-184880,India,Spizixos canifrons,Y,11.7,7.04,6.27,7.09,12.21,19.46,88.13,99.09,85.64,
-184900,India,Spizixos canifrons,Y,11.78,6.61,5.5,7.94,11.64,20.51,91.48,91.61,81.9,
-184883,India,Spizixos canifrons,Y,11.88,7.91,5.42,7.14,11.84,21.22,88.53,90.96,80.06,
-190615,India,Spizixos canifrons,Y,12.12,8.28,5.81,7.6,10.98,19.63,82.4,84.28,75.78,
-184882,India,Spizixos canifrons,Y,12.49,7.27,6.19,6.5,11.27,19.49,90.5,88.49,79.4,
-184898,India,Spizixos canifrons,Y,12.56,8.31,5.26,7.41,9.83,21.82,94.73,96.54,86.76,
-184895,India,Spizixos canifrons,Y,12.72,7.71,5.26,7.57,11.57,19.57,95.18,93.64,85.12,
-184897,India,Spizixos canifrons,Y,12.78,6.19,5.77,7.55,11.64,19.06,89.4,93.01,81.84,
-184896,India,Spizixos canifrons,Y,12.97,7.46,5.28,7.74,11.54,20.8,95.89,92.98,81.36,
-184881,India,Spizixos canifrons,Y,12.98,7.87,6.11,7.13,12.9,20.69,96.11,92.13,80.07,
-184902,India,Spizixos canifrons,Y,13.04,7.45,6.69,7.99,11.82,19.88,91.62,93.92,81.52,
-184901,India,Spizixos canifrons,Y,13.12,5.98,4.94,7.61,10.61,19.7,91.77,90.92,82.19,
-184891,India,Spizixos canifrons,Y,13.21,7.6,5.67,7.58,12.84,20.4,94.69,96.15,80.98,
-184886,India,Spizixos canifrons,Y,13.3,8.37,6.61,7.15,12.39,20.45,NA,95.42,82,No tail on specimen
-184894,India,Spizixos canifrons,Y,13.48,7.11,5.27,7.38,12.06,19.94,91.68,94.54,79.77,
-184885,India,Spizixos canifrons,Y,13.56,8.8,6.42,7.87,11.78,20.05,NA,99.71,83.6,No tail on specimen
-184884,India,Spizixos canifrons,Y,13.79,7.05,5.47,6.96,10.94,19.82,85.22,89.25,78.42,
-23379,Malaysia,Pycnonotus zeylanicus,Y,16.45,8.77,5.34,7.13,12.46,26.27,120.81,118.54,110.08,
-23564,Malaysia,Pycnonotus zeylanicus,Y,17.25,12.65,6.19,7.76,16.6,27.1,107.15,108.94,103.26,
-24051,Malaysia,Pycnonotus zeylanicus,Y,17.94,11.69,4.87,7.74,11.3,29.83,117.87,119.3,106.91,
-23561,Malaysia,Pycnonotus zeylanicus,Y,19.3,11.71,6.08,7.51,15.25,25.85,111.23,109.81,103.55,
+Family,Scientific_Name,Collection,Number/Code,Date collected,Locality,Country,Sex,Total.culmen,Length.of.bill.from.nostril,Bill.width,Bill.depth,Gape.width,Tarsus.length,Tail.length,Wing.length,First.secondary.length,Subspecies,Comments,Lifestage,Measurer
+Pycnonotidae,Hypsipetes borbonicus,University of Michigan Museum of Zoology,25152,,no specific locality,Mauritius,?,23.02,11.6,6.5,7.72,11.43,26.76,113.58,131.04,105.21,,,,Charlotte M. Probst
+Pycnonotidae,Hypsipetes guimarasensis,University of Michigan Museum of Zoology,206405,9/1/1982,"Lake Balinsasayao, Abaca Ridge",Philippines,male,24.88,14.61,5.92,6.99,13.05,21.19,101.53,107.5,93.5,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,68997,2/14/1929,Chapa,North Vietnam,male,23.1,15.52,4.87,5.67,11.63,17.83,103.47,106.79,87.72,similis,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,89752,2/17/1905,Pestroke,India,female,23.16,15.04,4.99,6.21,11.73,18.01,98.81,106.43,86.66,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185530,9/28/1951,"Khasi Hills, Mawrygkneng",India,male,23.25,14.81,5.72,6.28,11.47,19.75,99.22,101.25,84.54,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185531,10/21/1951,"Khasi Hills, Mawrygkneng",India,male,22.7,14.9,6.12,6.08,12.45,18.38,97.44,104.31,87.39,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185532,11/2/1951,"Khasi Hills, Mawrygkneng",India,female,22.87,14.4,5.49,6.06,13.75,19.1,89.54,98.69,84.42,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185533,11/2/1951,"Khasi Hills, Mawrygkneng",India,female,21.82,13.91,5.83,6.06,11.6,17.59,99.9,101.08,88.15,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185534,11/16/1951,"Khasi Hills, Mawrygkneng",India,female,22.86,12.86,5.04,5.52,10.57,19.42,98.86,102.34,85.68,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185535,11/3/1951,"Khasi Hills, Mawrygkneng",India,male,23.63,14.72,5.59,5.74,12.23,18.86,NA,100.94,87.11,,no tail,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185536,11/3/1951,"Khasi Hills, Mawrygkneng",India,male,20.91,13.54,5.37,5.8,10.98,17.5,104.22,105.04,89.23,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185537,11/5/1951,"Khasi Hills, Mawrygkneng",India,female,23.65,14.26,5.01,6.72,11.86,16.55,106.28,101.36,87.58,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185538,11/16/1951,"Khasi Hills, Mawrygkneng",India,female,20.51,13.27,4.67,5.57,11.07,16.78,103.73,106.44,92.4,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185539,11/16/1951,"Khasi Hills, Mawrygkneng",India,female,20.04,12.26,4.76,5.65,9.75,18.35,85.37,98.9,83.31,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185540,11/26/1951,"Khasi Hills, Mawrygkneng",India,female,33.29,24.83,15.84,15.69,19.95,28.96,107.49,112.9,96.93,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185541,11/26/1951,"Khasi Hills, Mawrygkneng",India,male,21.91,14.26,5.88,5.68,10.65,19.25,113.62,107.5,89.16,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185542,11/28/1951,"Khasi Hills, Mawrygkneng",India,male,22.99,13.49,5.24,5.68,11.31,19.06,98.8,108.03,89.39,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185543,12/1/1951,"Khasi Hills, Mawrygkneng",India,male,24.89,15.73,5.5,6.92,12.33,20.38,105.64,110.05,88.81,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185544,12/1/1951,"Khasi Hills, Mawrygkneng",India,male,22.58,16.42,5.8,6.7,10.15,18.46,101.51,101.47,86.42,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185545,12/1/1951,"Khasi Hills, Mawrygkneng",India,,21.68,11.92,4.33,5.44,11.01,17.57,99.46,104.52,85.02,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185546,12/6/1951,"Khasi Hills, Mawrygkneng",India,female,22.54,14.68,4.84,6.27,12.11,17.86,110.47,112.02,94.83,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185547,12/7/1951,"Khasi Hills, Mawrygkneng",India,female,21.96,15.12,5.22,5.44,10.75,16.75,97.07,101.21,83.64,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185548,12/10/1951,"Khasi Hills, Mawrygkneng",India,male,22.22,14.56,5.57,5.64,10.36,19.26,106.41,111.28,89.75,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185549,12/14/1951,"Khasi Hills, Mawrygkneng",India,male,23.21,14.95,5.55,6,11.11,18.23,103.37,106.53,90.52,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185550,9/13/1949,"Khasi Hills, Mawphlang",India,male,18.3,10.87,4.21,4.77,10.19,18.42,91.32,96.36,83.96,,"maxilla broken, total culmen and length of bill from nostril are to tip of mandible",,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185551,9/13/1949,"Khasi Hills, Mawphlang",India,female,17.39,11.39,4.38,5.3,12.16,17.65,79.34,97.67,82.16,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185552,9/16/1949,"Khasi Hills, Mawphlang",India,male,24.04,15.34,5.69,5.8,11.7,17.03,107.54,104.94,89.47,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185553,9/16/1949,"Khasi Hills, Mawphlang",India,male,23.75,15.97,5.56,6.09,11.09,17.5,108.35,103.82,89.75,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185554,8/22/1952,"Khasi Hills, Mawphlang",India,female,22.74,13.52,5.57,5.31,11.31,16.92,102.09,97.5,82.25,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185555,8/28/1952,"Khasi Hills, Mawphlang",India,male,21.97,12.7,4.31,5.41,7.43,17.66,90.35,91.34,79.89,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185556,12/31/1952,"Khasi Hills, Mawphlang",India,female,21.06,12.78,4.95,5.76,13.06,17.68,91.68,99.34,86.64,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185557,9/5/1952,"Khasi Hills, Mawphlang",India,male,24.05,15.81,5.82,5.74,10.28,21.36,107.06,111.62,93.52,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185558,9/11/1949,"Khasi Hills, Mawphlang",India,male,29.84,19.42,10.83,11.17,16,23.7,109.7,108.54,92.39,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185559,9/11/1952,"Khasi Hills, Mawphlang",India,female,25.19,14.97,5.02,5.6,14.4,17.87,93.78,95.28,81.92,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185560,9/11/1952,"Khasi Hills, Mawphlang",India,female,23.55,13.8,4.78,5.67,12.05,15.52,95.48,94.79,82.99,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185561,9/11/1952,"Khasi Hills, Mawphlang",India,male,22,13.09,4.59,5.4,10.63,18.45,89.55,97.89,86.17,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185562,9/24/1952,"Khasi Hills, Mawphlang",India,male,23.46,14.48,5.08,7.1,11.42,17.64,104.63,102.08,84.35,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185563,10/1/1952,"Khasi Hills, Mawphlang",India,male,21.96,14.55,4.86,5.46,10.7,16.76,98.75,101.48,82.4,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185564,10/3/1952,"Khasi Hills, Mawphlang",India,female,22.75,14.63,5.42,5.73,10.37,19.93,94.68,94.02,80.5,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185565,10/5/1952,"Khasi Hills, Mawphlang",India,female,23.51,14.65,5.27,5.77,11.32,18.31,94.34,99.7,88.47,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185566,10/6/1952,"Khasi Hills, Mawphlang",India,male,28.17,20.23,9.88,10.76,18.16,27.53,122.18,115.41,92.56,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185567,10/15/1952,"Khasi Hills, Mawphlang",India,female,20.67,12.09,5.08,5.81,11.17,18.26,106.86,102.87,86.05,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185568,10/12/1952,"Khasi Hills, Mawphlang",India,female,27.52,18.72,10.11,10.86,16.16,23.61,106,106.96,84.29,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185569,10/19/1952,"Khasi Hills, Mawphlang",India,female,28.08,20.41,10.89,10.71,17.37,22.31,104.73,107.28,90.61,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185570,10/27/1952,"Khasi Hills, Mawphlang",India,female,20.59,11.9,5,5.51,12.33,16.32,98.84,99.59,82.11,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185571,11/27/1952,"Khasi Hills, Mawphlang",India,female,21.52,13.44,5.33,5.91,12.32,16.84,110.75,108.94,92.8,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185572,12/20/1952,"Khasi Hills, Mawphlang",India,male,23.72,17.36,9.57,10.59,14.92,21.17,105.15,100.47,84.46,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185573,12/19/1952,"Khasi Hills, Mawphlang",India,female,20.8,14.3,5.02,5.83,10.22,18.59,100.54,103.71,87.61,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185574,12/28/1952,"Khasi Hills, Mawphlang",India,male,26.05,17.76,9.83,10.51,16.14,23.85,102.08,102.48,87.1,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185575,12/30/1952,"Khasi Hills, Mawphlang",India,male,26.01,19.11,10.34,10.58,16.4,16.06,98.91,112.31,92.11,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185576,1/2/1953,"Khasi Hills, Mawphlang",India,female,21.57,13.52,4.98,6.08,12.41,10.6,107.31,101.21,85.55,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185577,1/11/1953,"Khasi Hills, Mawphlang",India,male,21.45,15.34,5.53,5.81,10.66,17.72,97.56,99.38,85.41,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185578,1/12/1953,"Khasi Hills, Mawphlang",India,male,19.62,14.03,4.99,6.21,9.11,17.47,99.22,100.92,83.77,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185580,7/8/1953,"Khasi Hills, Mawphlang",India,,21.04,13.35,5.88,6.06,12.71,17.73,95.63,94.15,81.81,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185581,8/29/1954,"Khasi Hills, Mawphlang",India,female,22.88,13.3,4.87,5.67,11.7,18.22,96.82,94.88,83.7,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185582,6/17/1954,"Khasi Hills, Mawphlang",India,male,22.32,12.88,5.22,6.14,12.03,17.96,95.6,102.2,81.53,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185584,7/24/1949,Laitlyngkot,India,female,24.03,17.25,5.17,5.77,10.33,14.84,101.6,98.52,85.6,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185585,7/26/1949,Laitlyngkot,India,female,20.64,12.59,5.4,6.09,12.36,18.76,103.82,103.63,87.44,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185586,8/18/1949,Pynursla,India,male,20.99,12.66,5.52,6.27,12.39,18.29,98.12,99.33,87.31,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185588,8/25/1949,Pynursla,India,male,22.3,15.03,5.33,5.89,11.79,19.68,95.73,106.51,86.71,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185589,8/27/1949,Pynursla,India,male,24.77,14.24,6.03,6.07,11.75,22.25,98.47,99.11,88.95,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185590,9/1/1949,Pynursla,India,male,22.68,13.16,5.72,6.09,12.63,19.32,101.07,105.79,86.67,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185591,9/2/1949,Pynursla,India,male,24.72,15.13,5.5,5.45,11.28,17.31,103.72,103.69,89.65,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185592,10/21/1949,Shillong Peak,India,male,21.74,14.3,4.68,6.28,11.44,17.88,107.93,110.46,90.27,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185593,4/18/1952,Cherrapunji,India,male,24.4,16.85,10.28,11.12,17.77,24.24,108.03,121.46,94.21,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185594,4/27/1952,Cherrapunji,India,male,NA,NA,10.45,10.96,17.71,22.75,105.32,110.68,92.71,,bill broken,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185595,4/27/1952,Cherrapunji,India,male,21.91,12.45,4.75,6.02,11.45,18.44,87.83,99.3,86.49,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185596,4/28/1952,Cherrapunji,India,female,22.3,12.26,5.05,5.77,10.77,18.83,95.08,102.57,89.52,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185597,8/1/1952,Cherrapunji,India,male,30.87,19.7,10.3,10.91,15.86,23.95,99.51,110.61,95.33,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185598,8/6/1952,Cherrapunji,India,male,30.63,21.09,10.76,11.39,17.53,24.02,107.43,111.63,90.13,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185599,1/22/1950,Tura Mountain,India,male,NA,NA,5.4,6.37,11.59,19.33,103.1,106.48,88.81,,bill broken,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185600,1/24/1950,Tura Mountain,India,female,20.59,14.22,5.03,6.07,11.91,19.48,94.51,91.98,81.19,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185601,1/30/1950,Tura Mountain,India,female,20.32,14.26,5.27,5.8,10.17,18.27,103.47,99.73,83.76,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185602,2/1/1950,Tura Mountain,India,female,21.63,14.94,5.59,5.76,10.39,18.84,100.68,104.01,85.79,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185603,2/2/1950,Tura Mountain,India,male,24.01,15.19,5.52,6.15,10.67,17.71,96.11,108,90.35,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185604,2/3/1950,Tura Mountain,India,male,22.05,13.97,4.99,5.97,11.03,19.67,102.02,110.16,91.31,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185605,2/5/1950,Tura Mountain,India,female,21.96,13.78,4.81,6.28,10.33,18.19,98.4,102.69,85.11,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185606,2/6/1950,Tura Mountain,India,female,23,14.91,6.03,5.82,11.03,18.29,101.97,104.45,84.41,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185607,2/13/1950,Tura Mountain,India,male,22.73,13.57,5.3,5.74,13.21,18.66,99.03,100.76,84.09,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185608,2/16/1950,Tura Mountain,India,female,20.66,13.97,4.17,5.66,11.5,16.35,102.08,99.91,86.5,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185609,3/10/1950,"Nokrek, near",India,male,25.32,15.64,6.46,6.11,13.72,17.55,101.91,108.74,88.44,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185610,1/21/1951,Kohima,India,female,23.58,14.56,5.4,6,10.15,18.41,94.83,103.8,87.92,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185611,4/5/1950,Kohima,India,male,24.54,14.82,5.05,6.23,9.13,17.02,103.11,104.3,89.79,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185612,6/6/1950,Kohima,India,female,22.18,13.2,5.23,6.2,10.94,17.97,102.8,101.65,85.39,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185613,6/7/1950,Kohima,India,male,22.56,14.22,5.62,6.71,10.63,16.8,103.78,106.91,89.36,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185614,6/8/1950,Kohima,India,male,23.36,14.69,5.29,6.38,11.03,17.19,99.46,102.15,85.22,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185615,6/21/1950,Kohima,India,,24.33,15.32,5.57,5.91,11.68,14.76,106.04,108.04,86.11,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185616,7/10/1950,Kohima,India,male,22.42,13.36,5.27,6.8,11.03,18.08,108.4,109.92,91.64,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185617,8/5/1950,Tackubama,India,male,24.81,15.21,5.22,6.34,11.65,19.03,106.7,108,90.42,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185618,8/6/1950,Tackubama,India,female,23.74,13.22,4.67,6.17,9.63,17.79,106.51,105.83,88.12,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185619,8/8/1950,Tackubama,India,female,22.66,13.76,5.36,5.5,11.12,19.31,102.08,101.53,83.58,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185620,2/5/1953,Sangau,India,female,25.32,14.84,6.46,6.11,11.59,18.33,95.16,96.46,82.14,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185621,2/8/1953,Sangau,India,male,22.71,14.87,5.88,6.12,12.42,20.03,114.29,108.21,89.46,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185622,2/8/1953,Sangau,India,female,24.42,16.44,5.43,5.79,11.02,19.52,108.18,103.36,86.52,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185623,2/9/1953,Sangau,India,male,23.1,15.02,5.43,6.52,12.3,18.62,102.55,99.7,87.15,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185624,2/9/1953,Sangau,India,female,21.99,14.25,4.71,5.68,11.28,16.9,104.92,103.08,86.67,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185625,2/11/1953,Sangau,India,female,23.56,15.02,5.09,5.96,10.69,18.69,110.87,104.66,88.44,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185626,2/15/1953,Sangau,India,female,22.3,13.98,5.45,5.71,10.78,17.38,90.61,91,77.44,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185627,2/20/1953,Sangau,India,female,23.1,13.92,5.73,6.05,12.23,19.17,101.89,102.82,87.17,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185628,2/24/1953,Sangau,India,female,22.64,13.96,5.09,6.03,11.29,15.99,97.66,102.15,85.38,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185629,2/27/1953,Sangau,India,male,22.74,13.46,5.55,6.82,12.2,18.11,109.93,108.94,89.49,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185630,4/6/1951,Hmuntha,India,female,22.31,14.08,5.18,5.92,11.66,16.15,98.02,101.98,83.23,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185631,3/30/1953,Blue Mountain,India,male,23.97,13.23,4.78,6.63,10.36,19.63,107.53,110.22,90.25,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185632,5/2/1951,Laikul,India,female,22.59,14.23,4.95,6.54,12.23,19.34,102.69,106.59,87.91,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185633,5/2/1951,Laikul,India,female,21.07,13.68,5.57,5.94,9.76,18.48,103.77,101.34,85.17,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185634,5/6/1951,Laikul,India,male,25.13,15.91,5.74,6.18,12.57,19.6,106.45,102.74,85.51,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185635,5/7/1951,Laikul,India,male,23.46,15.09,4.92,6,12.09,18.42,106.26,103.06,84.83,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185636,5/7/1951,Laikul,India,male,24.27,14.89,5.1,5.63,11.95,16.35,107.45,108.93,85.54,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185637,5/10/1951,Laikul,India,male,23.66,14.41,4.85,6.27,10.65,19.2,105.64,105.14,89.03,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185638,10/6/1950,Karong,India,female,22.66,15.5,4.72,5.38,11.2,19.42,104.94,102.28,88.41,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185639,10/15/1950,Karong,India,female,22.82,14.23,5.57,6.21,10.93,20.16,99.77,97.49,83.77,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185642,12/7/1950,Karong,India,male,22.47,14.45,4.65,5.72,10.82,17.64,103.19,106.21,88.34,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185643,12/7/1950,Karong,India,female,22.51,14.22,4.97,5.56,10.19,19.51,106.96,104.11,87.1,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185644,12/7/1950,Karong,India,female,21.45,14,5.52,5.71,10.54,18.93,98.11,103.37,87.92,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185645,12/7/1950,Karong,India,,22.38,14.75,5.04,5.91,9.98,16.08,93.94,101.73,85.03,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185646,12/17/1950,Karong,India,male,19.39,11.66,4.24,5.8,11.45,17.35,106.83,98.75,81.93,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185647,12/18/1950,Karong,India,,21.44,14.07,5.1,5.63,12.39,18.38,105.59,101.44,86.01,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185648,12/18/1950,Karong,India,male,23.12,13.65,5.11,6.37,11.59,18.04,111.48,108.55,91.8,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185649,12/18/1950,Karong,India,female,21.75,13.01,5.15,5.61,11.35,17.56,96.03,102.04,84.59,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185650,12/23/1950,Karong,India,male,23.24,14.71,5.06,6.23,9.14,16.75,106.98,106.91,90.76,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185651,12/23/1950,Karong,India,male,23.1,15.27,5.83,6.36,11.14,18.81,112.04,111.55,90.76,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185652,12/25/1950,Karong,India,female,20.96,14.85,4.83,5.71,10.07,16.65,97.65,99.05,85.56,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185653,12/25/1950,Karong,India,female,20.67,12.47,4.66,5.39,12.08,18.06,98.84,101.01,86.67,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185654,12/25/1950,Karong,India,female,23.55,14.02,4.69,5.79,12.1,17.96,104.13,100.21,84.65,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185655,12/26/1950,Karong,India,female,22.72,12.8,5.04,5.89,9.67,16.99,97.94,99.04,83.05,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185656,12/26/1950,Karong,India,male,22.88,15.11,5.32,6.24,10.93,18.66,112.9,111.85,91.57,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185657,1/2/1951,Karong,India,female,20.74,12.55,4.37,5.51,10.87,17.42,102.4,104.25,84.93,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185658,1/2/1951,Karong,India,male,23.89,13.91,4.42,5.69,11.19,19.19,103.2,102.74,83.5,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185659,1/3/1951,Karong,India,male,24.1,13.64,5.1,6.19,10.35,20.06,96.79,101.67,86.23,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,185660,1/3/1951,Karong,India,male,22.65,14.47,5.5,5.74,10.07,21.19,105.44,106.35,90.81,,,,Charlotte M. Probst
+Pycnonotidae,Ixos mcclellandii,University of Michigan Museum of Zoology,209117,12/5/1956,no specific locality,Nepal,male,24.23,15.85,4.43,5.9,11.18,17.26,99.87,107.88,89.61,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus aurigaster,University of Michigan Museum of Zoology,68996,3/1/1929,Lai Chau,North Vietnam,male,17.44,10.33,4.92,5.5,12.58,23.67,96.79,96.11,86.16,chrysorrhoides,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus aurigaster,University of Michigan Museum of Zoology,116871,8/28/1922,Buitenzorg,Indonesia,?,15.88,8.22,4.36,5.24,10.69,24.09,81.05,85.24,72.27,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,89743,08-30-1885,no specific locality,South Africa,male,17.66,9.24,4.9,6.48,10.78,22.56,83.73,91.24,81.07,layardi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,89744,3/10/1913,"Bitye, River Ja",Cameroon,female,16.28,8.59,4.34,5.31,12.32,22.66,81.47,91.67,82.22,gabonensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,94956,7/22/1937,"Mount Meru, E side",Tanzania,male,16.81,9.2,4.23,5.45,10.19,21.78,82.37,91.21,83.49,tricolor,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,94957,7/22/1937,"Mount Meru, E side",Tanzania,female,16.16,8.56,5.05,6.33,12.64,20.64,77.02,85.07,79.24,tricolor,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,156348,6/23/1961,Igallula,Tanzania,female,16.75,9.08,5.06,4.99,10.11,21.16,85.39,87.93,77.77,tricolor,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,156656,7/16/1961,Ulu,Kenya,male,13.91,8.11,3.5,4.18,10.77,20.96,74.38,82.89,74.19,tricolor,juvenile,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,159509,1/18/1964,Kilwa Masoko,Tanzania,male,17.32,9.13,4.63,5.39,11.13,22.92,85.24,93.31,82.65,layardi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,159510,1/24/1964,Kilwa Masoko,Tanzania,female,16.65,7.52,4.18,5.99,11.8,21.76,78.39,84.71,73.97,layardi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,202383,1/22/1979,Banyo,Cameroon,?,17.96,9.32,4.56,5.95,9.8,20.76,86.39,94.63,82.3,gabonensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,202813,8/6/1979,"Andara-Kavango, Okavango River, NE",Namibia,male,17.83,9.09,4.85,5.25,12.67,22.95,91.33,95.44,86.4,tricolor,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,202814,8/6/1979,"Andara-Kavango, Okavango River, NE",Namibia,male,17.69,9.72,4.72,5.55,11.22,22.13,92.26,97.97,86.11,tricolor,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,202815,8/20/1979,"Andara-Kavango, Okavango River, NE",Namibia,male,18.67,9.88,4.82,5.63,12.26,22.6,96.51,101.09,87.8,tricolor,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,202816,6/18/1979,"Andara-Kavango, Okavango River, NE",Namibia,female,15.76,8.55,4.7,5.09,10.08,20.16,86.18,94.77,83.89,tricolor,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,202817,7/23/1979,"Andara-Kavango, Okavango River, NE",Namibia,female,16.45,9.11,4.47,5.64,11.01,21.56,86.89,94.94,82.07,tricolor,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,203977,11/6/1980,Banyo,Cameroon,female,18.18,8.87,4.54,5.93,11.63,21.71,92.05,90.19,80.21,gabonensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,207164,4/27/1984,"Birket Qarun, near",Egypt,male,16.25,8.98,4.33,6.01,10.25,22.17,84.67,90.14,82,arsinoe,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,209714,,"Nairobi, 19 mi NW",Kenya,?,16.75,8.75,4.53,5.16,11.7,20.27,82.66,91.99,83.33,tricolor,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,210189,1/12/1965,Shimba Hills,Kenya,male,15.14,8.05,3.99,4.56,9.34,20.74,76.47,83.2,76.2,layardi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,211416,10/7/1963,"Save River, Zinave",Mozambique,female,17.95,8.77,4.54,5.24,9.67,20.76,80.85,86.16,77.22,layardi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,211417,10/6/1963,"Save River, Zinave",Mozambique,male,17.93,8.33,4.74,6.32,11.73,20.57,84.16,92.6,81.08,layardi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,214769,8/18/1968,"Dondo, near, Dondo Forest",Mozambique,male,18.04,9.19,4.69,5.45,10.39,22.95,76.38,91.34,82.83,layardi,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,214770,8/29/1968,"Tica, 25 mi S, near Buzi River",Mozambique,male,16.06,9.22,4.8,5.82,10.52,20.58,86.78,93.67,83.6,layardi,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,215105,4/30/1969,"Hlatikulu, Ingwavuma River",Swaziland,female,16.67,8.36,4.48,5.52,10.33,24.13,81.48,87.8,77.24,,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,215106,3/25/1969,"Hlatikulu, Ingwavuma River",Swaziland,male,16.26,9.31,5.2,5.95,14.13,22.8,88.32,93.16,80.8,layardi,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,215107,3/30/1969,"Hlatikulu, Ingwavuma River",Swaziland,male,16.23,8.38,4.43,5.72,11.11,21.25,92.4,93.27,84.56,layardi,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,215111,4/30/1969,"Hlatikulu, Ingwavuma River",Swaziland,male,15.37,7.96,4.35,5.61,12.28,21.46,87.31,90.62,79.62,layardi,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,216015,4/20/1957,"Dikuluwe, Lualaba River",Zaire,male,17.07,8.82,3.63,5.16,11.62,21.69,84.29,98.71,83.52,tricolor,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,216016,5/1/1957,"Dikuluwe, Lualaba River",Zaire,male,15.96,8.17,3.35,5.01,9.73,21.36,80.42,91.5,78.08,tricolor,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,216850,9/9/1966,Zambezi Rapids,Zambia,male,16.04,8.99,4.46,6.43,9.68,19.46,91,92.27,81.1,tricolor,bill open by 1.2 mm,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,216851,8/3/1968,"Zaria, 5 Mi NW",Nigeria,female,16.38,9.65,4.54,5.51,10.83,22.59,89.82,91.68,83.25,,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,224079,2/20/1985,Wadi Kansisrob,Egypt,male,16.29,9.4,4.08,5.03,9.16,20.51,76.51,85.65,77.07,arsinoe,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,224080,2/20/1985,Wadi Kansisrob,Egypt,female,16.12,8.49,4.15,4.94,8.88,21.05,81.32,87.56,77.22,arsinoe,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,224081,2/22/1985,Wadi Aideib,Egypt,female,14.99,7.86,4.54,4.87,10.18,20.8,78.22,84.27,75.6,arsinoe,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,224082,2/22/1985,Wadi Aideib,Egypt,female,16.55,7.43,3.56,5.08,8.77,21.14,80.11,86.25,76.56,arsinoe,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,232417,10/20/1992,Ngaoundere,Cameroon,female,15.24,9.79,4.2,5.02,11.01,22.19,82.35,92.67,80.28,inornatus,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,235189,2/21/1998,Banjul,Gambia,male,18.04,9.45,4.22,5.1,10.79,19.74,92.63,93.87,82.56,inornatus,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus barbatus,University of Michigan Museum of Zoology,235190,2/20/1998,Banjul,Gambia,?,17.1,8.85,4.29,5.27,10.33,21.93,89.14,96.8,85.87,inornatus,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78927,1/5/1933,"Larji, 4 mi above",India,male,16.64,8.18,5.29,6.11,12.11,23.98,101.11,101.84,84.5,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78928,1/16/1933,Baijnath,India,male,18.26,9.76,4.95,6.38,11.27,23.62,107.84,107.86,96.07,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78931,4/14/1933,Bhadwar,India,male,18,9.94,5.03,5.42,10.79,23.54,99.39,101.68,88.45,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78932,4/18/1933,Bhadwar,India,male,19.05,10.38,5.37,6.31,11.84,23.37,98.86,101.77,90.04,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78933,4/24/1933,Bhadwar,India,male,18.48,9.66,5.18,6.46,11.63,23.8,96.25,106.64,90.13,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78934,4/26/1933,Bhadwar,India,female,16.84,7.68,4.43,5.45,13.37,23.54,92.62,95.32,83.24,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78935,4/27/1933,Bhadwar,India,female,18.17,8.49,4.37,5.52,10.91,24.27,95.61,98.94,85.19,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78936,4/30/1933,Bhadwar,India,female,16.16,8.01,4.36,4.8,11.28,20.31,89.21,95.74,82.38,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78938,6/13/1933,Bhuin,India,female,18.67,8.75,4.95,5.97,12.3,25.34,87.55,92.95,81.66,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78939,11/15/1933,Arsu,India,male,18.85,8.68,4.71,5.94,12.3,22.37,91.09,99.61,89.82,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78940,11/16/1933,Arsu,India,male,17,9.76,4.39,5.79,13.81,22.48,96.9,100.29,86.72,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78941,11/18/1933,Arsu,India,female,17.61,8.51,4.76,5.82,10.66,22.67,93.04,95.74,84.11,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78943,11/21/1933,Arsu,India,female,16.88,8.27,4.43,4.76,14.32,22.41,82.13,88.54,80.23,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78944,1/9/1933,Kulu,India,male,18.9,9.91,4.64,5.92,11.09,23.76,103.33,103.05,91.13,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78945,12/3/1933,Kulu,India,female,18.27,9.35,4.38,5.58,11.1,20.96,90.99,95.33,84.73,intermedius,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78948,1/19/1933,Sirsa,India,male,15.38,7.49,4.14,5.95,10.62,19.7,89.24,91.87,80.31,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78950,1/22/1933,Sirsa,India,male,16.92,8.21,4.92,5.85,12.28,20.13,84.56,92.07,80.57,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78951,1/29/1933,Sirsa,India,female,16.7,8.06,4.23,5.66,10.5,19.8,87.77,91.89,76.84,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78952,1/29/1933,Sirsa,India,male,NA,NA,3.89,6.27,11.44,21.97,88.07,93.08,80.42,humayuni,bill broken at tip,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78953,1/30/1933,Sirsa,India,male,17.07,8.49,4.28,6.21,11.92,21.36,86.16,89.25,77.39,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78954,1/31/1933,Sirsa,India,female,14.74,7,4.27,5.68,9.98,23.71,78.57,88.49,78.53,humayuni,"tip of maxilla broken, bill measurements to tip of mandible",,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78955,2/1/1933,Sirsa,India,female,14.32,7.51,4.9,5.27,11.27,20.23,86.77,91.84,79.05,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,78956,2/15/1933,Lahore,Pakistan,male,15.64,7.89,4.48,5.68,11.54,21.14,91.28,98.37,85.38,humayuni,"tip of maxilla broken, bill measurements to tip of mandible",,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,98288,1/21/1938,Londa,India,female,16.09,7.44,4.47,4.93,11.91,21.67,80.66,87.6,77.88,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,98289,1/23/1938,Londa,India,female,16.72,9.07,4.44,6,10.88,21.86,82.36,85.24,76.28,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184915,1/27/1938,Londa,India,female,14.96,8.75,4.54,4.88,11.56,21.63,87.37,84.53,76.8,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184916,2/8/1938,Londa,India,female,16.93,7.83,4.51,5.55,11.72,24.29,88.63,88.8,81.13,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184917,2/22/1938,Jagalbed,India,female,16.17,8.26,3.78,5.44,11.67,24.22,80.78,88.12,77.73,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184918,8/1/1946,Belwani-Kisli,India,female,12.34,6.88,4.08,4.78,10.62,21.39,63.85,79.32,73.21,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184919,8/3/1946,Belwani-Kisli,India,female,14.53,7.27,4,4.75,10.53,20.09,75.21,81.44,73.62,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184920,3/1/1946,Bheraghat,India,male,17.19,8.25,4.62,5.87,11.31,22.16,94.03,94.26,83.99,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184921,3/1/1946,Bheraghat,India,male,16.3,8.84,4.53,5.28,12.35,19.81,82.51,94.49,82.49,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184923,3/19/1946,Bheraghat,India,male,16.62,8.58,5.36,5.56,11.78,19.59,91.21,94.38,81.46,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184925,10/26/1946,Bheraghat,India,male,17.19,8.65,3.98,5.08,12.7,21.75,83.82,89.77,82.31,humayuni,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184926,3/30/1947,Rangirum,India,male,18.95,9.48,4.48,6.04,13.27,21.38,107.14,100.03,88.85,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184927,4/21/1947,Chitlang,Nepal,male,18.78,9.51,4.77,6.2,13.14,23.87,102.8,101.32,90.53,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184928,4/24/1947,Chitlang,Nepal,male,18.5,8.73,4.05,5.16,13.29,23.54,95.77,99.57,88.21,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184929,4/30/1951,Laikul,India,female,20.42,8.68,4.68,5.36,11.87,23.84,NA,95.8,86.14,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184930,5/8/1951,Laikul,India,female,16.8,8.76,4.18,4.94,10.71,22.44,94.99,94.36,84.04,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184931,2/21/1950,"Nokrek, near",India,female,17.31,8.67,5,5.56,11.55,23.19,108.43,102.68,93.08,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184932,2/22/1950,"Nokrek, near",India,male,20.12,10.57,5.5,5.56,11.13,24.28,95.43,101.81,88.98,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184933,2/26/1950,"Nokrek, near",India,female,18.63,10.4,5.04,5.79,13.96,23.5,96.73,95.68,85.01,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184934,2/27/1950,"Nokrek, near",India,male,18.16,10.73,4.76,5.77,12.12,23.83,97.89,100.36,87.89,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184935,3/5/1950,"Nokrek, near",India,male,20.48,10.54,3.66,5.13,11.81,23.67,101.72,103.73,91.04,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184936,4/19/1951,Haflong,India,female,18.49,9.55,5.25,5.91,12.14,25.22,86.31,92.89,82.31,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184937,4/20/1951,Haflong,India,male,18.88,9.95,4.87,5.86,11.35,23.89,97.27,100.76,85.41,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184938,4/20/1951,Haflong,India,male,19.04,9.53,4.46,5.3,11.61,23.63,106.79,105.36,91.93,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184939,4/21/1951,Haflong,India,female,19.74,8.45,4.94,5.92,13.81,23.4,91.6,91.6,83.25,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184940,4/22/1951,Haflong,India,female,18.39,9.72,4.04,4.91,11.28,22.55,102.09,96.05,86.21,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184941,4/23/1951,Haflong,India,male,18.86,9.65,4.2,6.03,11.76,23.23,86.02,95.73,83.62,bengalensis,bill open by 1.36 mm,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184942,4/23/1951,Haflong,India,male,19.03,9.49,4.56,5.13,11.56,24.27,103.28,99.34,85.81,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184943,2/10/1952,Menoka,India,female,18.8,10.13,5.02,5.43,12.02,22.2,91.14,94.54,84.05,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184944,8/1/1949,Pynursla,India,male,19.65,10.55,4.96,5.81,12.06,24.14,97.78,104.27,86.88,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184946,9/8/1949,Pynursla,India,female,17.87,9.07,4.66,5.74,10.47,21.5,93.44,97.86,87.46,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184947,7/31/1949,Laitlyngkot,India,male,18.46,8.73,3.89,5.36,10.91,23.09,90.93,93.45,84.06,cafer,,Juvenile,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184948,7/31/1949,Laitlyngkot,India,male,18.71,9.24,4.79,5.71,11.34,25.64,92.04,96.06,86.99,cafer,,Juvenile,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184949,7/18/1949,Laitlyngkot,India,male,18.22,9.38,4.26,5.65,11.26,25.41,95.99,96.94,87.65,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184950,5/6/1952,Cherrapunji,India,male,19.28,10.24,5.33,5.52,12.35,24.73,97.58,101.21,90.5,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184951,5/9/1952,Cherrapunji,India,male,19.63,11.21,4.04,5.05,12.86,23.99,NA,102.12,90.65,cafer,no tail,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184952,5/14/1952,Cherrapunji,India,m?,18.22,8.66,4.85,5.51,10.91,22.24,95.25,97.85,84.72,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184953,5/15/1952,Cherrapunji,India,female,18.8,8.8,4.76,5.65,12.65,20.21,89.97,95.67,83.97,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184956,7/1/1952,Cherrapunji,India,male,18.46,10.04,3.97,5.43,12.15,21.55,93.02,102.85,90.49,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184957,8/2/1952,Cherrapunji,India,female,18.79,9.53,4.28,4.86,11.44,22.99,79.4,86.13,72.6,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184958,8/2/1952,Cherrapunji,India,female,14.98,7.87,4.78,5.61,10.89,22.1,84.76,88.44,80.65,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184959,8/11/1952,Cherrapunji,India,male,20.17,9.87,4.82,5.75,12.52,22.58,102.4,104.24,90.96,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184960,11/10/1949,Palasbari,India,male,18.79,9.71,4.38,5.98,12.13,23.23,98.28,97.27,84.05,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184961,11/12/1949,Palasbari,India,male,19.62,9.69,4.53,5.89,12.93,23.07,101.52,105.97,89.79,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184964,7/20/1951,Palasbari,India,male,18.2,9.6,4.31,5.7,12.19,23.15,99.74,100.83,88.98,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184965,12/22/1951,Palasbari,India,male,17.68,9.13,4.93,5.56,13.06,23.43,95.14,101.56,87.24,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184966,7/31/1951,Palasbari,India,female,18.13,8.88,4.61,5.53,11.72,20.42,87.84,94.19,85.29,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184967,8/5/1951,Palasbari,India,m?,17.55,9.81,4.31,5.6,11.42,23.89,91,97.26,85.13,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184970,12/16/1951,Palasbari,India,female,17.7,9.37,4.37,5.68,12.26,22.27,95.83,96.67,83.84,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184971,12/22/1951,Palasbari,India,female,19.63,8.77,4.18,5.44,11.5,22.96,101.92,90.49,77.77,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184972,1/24/1952,Palasbari,India,male,18.53,9.55,4.6,5.93,12.5,19.91,96.53,103.32,88.71,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184973,1/25/1952,Palasbari,India,female,19.08,9.8,4.39,5.16,12.81,22.48,88.56,91.58,76.44,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184974,1/25/1952,Palasbari,India,male,19.13,10.23,4.45,5.57,12.51,21.35,96.72,102.35,89.58,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184975,1/29/1952,Palasbari,India,female,18.15,10.35,4.62,5.3,13.36,22.69,89.03,92.58,81.15,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184977,3/21/1952,Palasbari,India,male,17.27,9.4,4.84,5.4,12.07,25.17,87.81,96.05,83.71,cafer,"specimen had only one tail feather, an outer retrix",,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184978,3/21/1952,Palasbari,India,female,17.28,8.91,4.93,5.49,12.76,23.57,98.06,98.79,87.83,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184981,5/10/1953,Palasbari,India,female,17.07,9.91,5.26,5.32,12.04,23.43,87.49,95.3,82.32,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184982,5/15/1953,Palasbari,India,male,18.89,10.4,4.93,5.87,14.38,24.39,92.88,100.4,86.71,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184983,10/13/1949,"Khasi Hills, Mawphlang",India,female,15.34,7.98,4.18,5.01,11.35,21.68,83.89,92.25,79.03,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184984,10/9/1949,"Khasi Hills, Mawphlang",India,female,16.76,8.68,4.31,5.13,12.07,23.69,98.16,96.28,84.79,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184985,9/3/1952,"Khasi Hills, Mawphlang",India,female,18.38,9.28,4,5.82,11.17,24.69,86.47,90.29,82.79,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184987,9/23/1952,"Khasi Hills, Mawphlang",India,female,16.94,9.4,4.72,5.52,12.33,24.04,84.12,92.14,82.53,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184988,10/7/1952,"Khasi Hills, Mawphlang",India,male,17.31,9.22,5.25,5.82,13.23,21.79,94.58,97.41,85.73,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184989,10/20/1952,"Khasi Hills, Mawphlang",India,male,18.88,10.98,5,6.12,11.53,22.82,99.74,98.44,86.68,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184990,10/26/1952,"Khasi Hills, Mawphlang",India,female,16.95,9.2,5.65,5.7,12.01,24.28,103.78,95.64,76.88,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184992,11/13/1952,"Khasi Hills, Mawphlang",India,male,16.92,9.31,4.93,6.4,12.31,22.31,88.96,98.36,86.14,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184993,11/21/1952,"Khasi Hills, Mawphlang",India,female,18.04,10.19,4.69,5.89,11.55,21.83,90.11,95.6,84.6,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184994,11/24/1952,"Khasi Hills, Mawphlang",India,male,18.46,10.35,4.31,5.6,13.57,24.31,93.93,101.53,91.35,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184995,12/29/1952,"Khasi Hills, Mawphlang",India,male,18.7,9.65,4.04,6.13,12.87,25.34,95.36,101.24,86.36,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184996,12/29/1952,"Khasi Hills, Mawphlang",India,female,17.37,10.51,4.68,5.83,11.01,23.47,93.44,94.39,82.46,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184998,12/31/1952,"Khasi Hills, Mawphlang",India,male,17.53,10.47,5.56,5.77,12.9,22.91,102.36,102.53,90.73,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,184999,1/10/1953,"Khasi Hills, Mawphlang",India,,19.16,9.06,4.21,5.1,12.39,21.77,102.21,93.41,81.61,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185000,1/11/1953,"Khasi Hills, Mawphlang",India,male,18.78,9.83,4.14,5.53,11.77,24.48,97.86,100.96,88.13,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185001,1/11/1953,"Khasi Hills, Mawphlang",India,male,18.61,9.94,5.15,5.75,11.39,24.12,100.1,99.74,87.51,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185002,1/15/1953,"Khasi Hills, Mawphlang",India,male,19.54,9.67,4.71,5.37,12.39,24.55,98.34,97.2,84.97,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185004,2/19/1954,"Khasi Hills, Mawphlang",India,female,18.42,10.39,4.23,5.45,11.88,23.51,91.49,99.18,86.76,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185005,5/1/1954,"Khasi Hills, Mawphlang",India,female,13.93,7.16,3.14,4.21,9.29,20.64,63.44,83.75,76.59,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185010,10/13/1951,"Khasi Hills, Mawrygkneng",India,male,17.21,8.69,3.83,5.68,13.17,24.49,88.57,87.61,78.35,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185011,10/14/1951,"Khasi Hills, Mawrygkneng",India,male,19.3,9.83,4.41,5.34,12.83,23.73,92.32,90.21,81.02,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185012,10/14/1951,"Khasi Hills, Mawrygkneng",India,male,18.02,11.56,4.95,5.54,10.97,24.1,88.75,94.89,84.66,cafer,only two tail feathers,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185013,10/14/1951,"Khasi Hills, Mawrygkneng",India,female,17.84,9.86,4.52,5.27,11.17,24.03,92.96,92.3,83.32,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185015,10/15/1951,"Khasi Hills, Mawrygkneng",India,female,19.25,8.83,4.2,4.94,12.03,24.26,82.98,89.67,79.32,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185016,10/15/1951,"Khasi Hills, Mawrygkneng",India,male,19.38,9.97,4.63,5.59,11.69,23.25,91.62,99.32,88.41,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185017,10/20/1951,"Khasi Hills, Mawrygkneng",India,female,17.54,9.23,4.26,5.09,12.61,23.2,92.55,97.41,85.28,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185018,10/21/1951,"Khasi Hills, Mawrygkneng",India,female,19.28,9.08,4.42,NA,13.17,22.79,82.14,92.93,80.39,cafer,"mandible broken off,no depth measurement",,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185019,10/21/1951,"Khasi Hills, Mawrygkneng",India,male,19.69,9.27,5,5.84,11.9,24.62,94.25,97.23,86.34,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185020,10/22/1951,"Khasi Hills, Mawrygkneng",India,male,20.04,9.63,4.31,5.39,12.97,22.64,89.29,97.07,87.41,cafer,some tail molt - pinfeathers present,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185021,10/22/1951,"Khasi Hills, Mawrygkneng",India,male,17.92,9.83,4.7,5.32,12.72,25.54,90.37,103.46,88.29,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185023,10/24/1951,"Khasi Hills, Mawrygkneng",India,male,17.45,8.89,4.87,6.51,13.41,21.67,96.26,96.19,85.49,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185024,10/25/1951,"Khasi Hills, Mawrygkneng",India,female,18.35,9.76,4.95,5.65,13.22,21.94,87.54,88.43,75.22,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185025,10/26/1951,"Khasi Hills, Mawrygkneng",India,male,19.63,11.29,4.87,5.5,11.04,23.38,79.95,92,79.85,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185027,10/28/1951,"Khasi Hills, Mawrygkneng",India,male,19.31,9.96,4.91,5.81,13.86,24.18,95.81,98.92,85.26,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185028,10/28/1951,"Khasi Hills, Mawrygkneng",India,male,17.26,9.72,5.45,5.49,12.7,21.69,100,101.99,89.42,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185030,10/30/1951,"Khasi Hills, Mawrygkneng",India,female,17.35,9.09,4.52,5.26,14.15,23.63,87.64,89.83,78.06,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185031,10/30/1951,"Khasi Hills, Mawrygkneng",India,male,18.66,10.33,5.12,5.51,12.98,23.24,98.79,105.29,90.95,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185032,10/31/1951,"Khasi Hills, Mawrygkneng",India,female,17.77,9.42,4.95,5.32,11.51,21.27,94.04,96.64,86.02,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185033,11/2/1951,"Khasi Hills, Mawrygkneng",India,female,17.68,8.84,4.1,5.29,13.21,22.63,92.56,90.69,77.63,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185034,11/21/1951,"Khasi Hills, Mawrygkneng",India,female,19.29,10.49,4.53,4.79,11.16,22.68,89.49,96.48,82.77,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185035,11/21/1951,"Khasi Hills, Mawrygkneng",India,male,17.46,9.21,4.77,5.59,14.28,22.56,94.82,97.14,86.62,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185036,11/21/1951,"Khasi Hills, Mawrygkneng",India,male,18.68,10.11,3.94,5.19,11.38,23.62,90.02,102.66,89.16,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185037,11/26/1951,"Khasi Hills, Mawrygkneng",India,male,17.9,10.08,4,5.4,11.88,25.68,99,100.79,90.62,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185038,11/26/1951,"Khasi Hills, Mawrygkneng",India,female,17.98,10.24,4.91,5.9,10.8,21.11,93.25,99.92,84.51,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185039,11/28/1951,"Khasi Hills, Mawrygkneng",India,male,18.08,9.49,4.73,5.82,11.28,23.37,93.83,102.29,87.21,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185040,11/30/1951,"Khasi Hills, Mawrygkneng",India,female,18.12,9.16,4.27,5.16,11.77,24,77.97,88.99,81.11,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185041,11/30/1951,"Khasi Hills, Mawrygkneng",India,male,19.13,10.86,4.68,5.68,12.3,22.73,104.93,101.48,89.67,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185042,11/30/1951,"Khasi Hills, Mawrygkneng",India,male,16.02,10.06,4.48,5.32,13.09,22.64,91.49,93.05,82.96,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185043,12/4/1951,"Khasi Hills, Mawrygkneng",India,male,18.18,10.27,4.57,5.64,12.89,24.92,86.09,100.81,87.91,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185044,12/4/1951,"Khasi Hills, Mawrygkneng",India,male,18.86,9.58,5.12,5.93,11.43,23.67,95.32,105.05,88.34,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185045,12/7/1951,"Khasi Hills, Mawrygkneng",India,female,17.49,9.95,4.49,5.68,10.63,22.72,91,96.35,85.76,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185046,12/8/1951,"Khasi Hills, Mawrygkneng",India,female,17.23,8.72,4.22,4.9,10.89,21.3,76.2,97.71,83.75,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185047,12/12/1951,"Khasi Hills, Mawrygkneng",India,male,18.44,8.89,4.5,5.77,12.32,23.86,99.54,102.92,90.69,cafer,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185048,10/11/1950,Karong,India,female,16.11,7.72,4.97,4.5,10.57,24.85,89.42,90.29,78.57,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185049,10/16/1950,Karong,India,male,17.59,9.36,4.29,5.88,12.98,24.65,NA,98.26,84.53,stanfordi,"tail appears either to be molting or removed for a tail prep--only 1 feather, length 54.58 mm",,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185050,10/28/1950,Karong,India,female,17.39,9.62,4.36,5.12,11.53,24.3,96.86,106.26,92.44,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185051,11/26/1950,Karong,India,male,19.1,9.57,4.84,6.06,12.69,23.51,102.06,98.08,88.66,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185052,12/1/1950,Karong,India,male,17.82,9.08,4.47,5.84,12.38,24.07,91.83,93.76,83.15,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185053,12/18/1950,Karong,India,male,19.3,8.95,4.76,5.17,13.24,24.39,101.77,106.07,89.06,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185055,6/15/1950,Kohima,India,male,16.64,6.79,4.36,4.81,12.21,24.45,82.4,85.76,81.12,stanfordi,juv?,[Immature],Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185056,6/21/1950,Kohima,India,female,16.73,8.78,5.03,5.17,12.47,20.63,94.29,91.25,81.09,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185062,7/3/1950,Kohima,India,male,16.3,6.93,3.87,4.98,10.21,23.16,71.08,86.01,81.93,stanfordi,juv?,[Immature],Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185063,7/10/1950,Kohima,India,male,18.55,9.88,4.81,5.65,12.42,23.37,93.99,100.56,88.87,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185065,7/11/1950,Kohima,India,male,17.74,9.03,5.01,5.27,12.27,22.36,91.18,91.06,85.68,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185066,9/14/1950,Kohima,India,male,17.75,9.08,4.7,5.39,10.37,24.72,85.23,102.44,91.86,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185072,2/8/1953,Sangau,India,male,19.33,9.45,4.25,5.32,11.52,22.81,98.77,102.38,90.61,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185073,2/8/1953,Sangau,India,female,17.39,8.75,4.41,5.22,11.6,23.62,93.12,94.55,84.22,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185074,2/9/1953,Sangau,India,female,17.57,9.68,4.54,5.11,10.44,22.98,85.35,91,82.39,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185075,2/15/1953,Sangau,India,male,16.35,8.57,4.27,5.6,13.61,23.9,92.42,95.57,81.86,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185076,2/17/1953,Sangau,India,female,17.23,9.54,4.51,4.81,11.42,22.01,89.81,91.94,80.17,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185077,2/18/1953,Sangau,India,female,18.67,9.09,4.42,5.19,12.93,22.64,89.45,90.99,79.24,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185078,4/9/1951,Chhinchhip,India,male,18.7,10.96,4.63,5.51,10.5,25.23,101.5,98.11,85.81,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185079,4/9/1951,Chhinchhip,India,male,18.47,10.24,4.54,5.25,11.05,24.86,106.92,99.68,87.98,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185080,4/10/1951,Chhinchhip,India,female,16.8,8.83,4.8,5.4,12.58,21.75,90.1,90.46,80.05,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185081,5/7/1951,Hmuntha,India,female,18.92,9.29,4.47,5.19,12.63,23.44,94.09,91.31,79.94,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185082,4/11/1951,Pai Khai,India,male,19.82,11.29,5.12,5.68,12.29,24.47,104.91,101.08,88.31,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185083,4/9/1951,Zabauk,India,female,18.08,10.42,4.81,5.09,11.11,21.75,88.24,92.95,81.31,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,185084,3/24/1951,Aizawl,India,male,19.57,10.6,5.05,5.99,13.34,24.77,100.15,102.76,90.11,stanfordi,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,189924,3/19/1953,Sangau,India,female,17.77,8.75,4.04,5.51,12.92,22.14,86.2,94.18,80.73,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,190618,7/14/1955,"Khasi Hills, Mawphlang",India,female,17.12,7.56,4.77,5.94,13.66,21.78,80.25,88.27,80.75,bengalensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus cafer,University of Michigan Museum of Zoology,243631,4/22/1937,Udaipur,India,male,17.28,9.37,4.7,6.59,11.65,21.73,83.13,96.78,80.7,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,29422,11-16-1887,Isabela,Philippines,male,15.47,8.84,4.37,4.95,9.02,16.77,79.28,81.96,71.19,suluensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,71301,4/9/1910,Cotabato,Philippines,female,15.53,8.13,4.58,4.84,9.57,18.4,75.3,77.74,71.37,suluensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,72662,1/24/1928,Bangkok,Thailand,female,17.08,8.46,4.71,6.21,11.69,20.67,81.03,80.8,73.63,analis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,72663,3/2/1929,Chantaboon  = Chantibun,Thailand,female,16.75,9.16,4.41,5.13,10.8,19.84,77.13,82.92,74.43,analis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,89741,6/23/1903,Mount Kina Balu,Malaysia,female,13.61,6.84,3.75,5.02,7.96,18.37,72.37,77.14,70.13,analis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113733,4/26/1945,no specific locality,Philippines,female,14.33,7.99,4.96,4.52,9.09,18.44,74.69,71.71,66.67,goiavier,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113734,4/25/1945,no specific locality,Philippines,male,15.44,9.18,4.91,4.96,9.38,NA,78.74,76.06,70.61,goiavier,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113735,4/26/1945,no specific locality,Philippines,female,13.82,6.24,3.58,5.05,7.74,19.2,79.5,71.61,65.82,goiavier,bill tip broken,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113736,4/28/1945,no specific locality,Philippines,male,15.25,8.33,4.76,5.38,10.62,20.28,76.46,78.18,72.83,goiavier,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113737,4/29/1945,no specific locality,Philippines,female,15.85,8.77,4.76,5.32,9.97,19.91,73.38,72.03,66.56,goiavier,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113738,4/27/1945,no specific locality,Philippines,female,15.24,8.28,4.5,4.96,10.21,21.66,72.24,72.89,66.34,goiavier,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113745,5/13/1945,no specific locality,Philippines,female,14.55,7.55,5.11,5.19,10.26,19.9,84.88,75.66,71.34,goiavier,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113988,6/8/1945,Malamaui island,Philippines,female,15.63,8.49,3.92,4.96,10.7,20.9,76.86,71.27,64.97,suluensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113989,6/8/1945,Malamaui island,Philippines,male,15.77,8.91,4.56,5.43,10.13,20.67,78.17,82.03,74.35,suluensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113990,6/8/1945,Malamaui island,Philippines,male,16.75,8.13,4.71,5.6,11.4,19.84,76.55,77.63,69.63,suluensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113991,10/4/1945,Malamaui island,Philippines,female,14.95,7.54,4.52,4.95,9.01,20.41,72.54,76.87,69.49,suluensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,113992,10/4/1945,Malamaui island,Philippines,male,14.95,7.76,3.98,4.96,10.87,20.52,79.88,81.66,73.63,suluensis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,134644,5/24/1953,Los Banos,Philippines,male,16.29,8.18,4.18,5.1,10.42,20.15,82.78,84.01,74.88,goiavier,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus goiavier,University of Michigan Museum of Zoology,134645,5/10/1953,Cabuyao,Philippines,female,15.95,8.41,3.73,5.2,9.66,20.37,80.66,79.09,67.64,goiavier,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,68995,2/23/1929,Phong Tho,North Vietnam,male,14.94,8.46,4.48,4.83,8.16,19.98,88.21,85.59,75.91,,,Adult,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,98282,2/8/1938,Londa,India,male,16.71,9.08,4.33,5.49,10.01,19.79,84.92,81.96,73.26,fuscicaudatus,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,98283,1/10/1938,Londa,India,female,15.65,8.39,4.58,5.06,11.07,18.84,82.9,85.52,76.28,fuscicaudatus,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185217,3/10/1937,Kodaikanal,India,male,17.1,8.47,4.85,4.96,11.27,20.27,86.86,85.88,77.13,fuscicaudatus,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185218,1/8/1938,Londa,India,male,16.61,8.9,4.39,5.25,10.5,17.74,80.24,81.67,71.75,fuscicaudatus,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185220,1/24/1938,Londa,India,female,15.35,7.74,4.16,4.58,10.67,19.01,74.56,78.96,70.46,fuscicaudatus,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185221,1/26/1938,Londa,India,male,17.58,9.09,4.06,4.95,9.11,20.75,79.17,82.24,70.67,fuscicaudatus,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185222,2/13/1938,Londa,India,male,15.37,8.2,4.76,4.61,10.55,19.98,84.14,83.28,75.97,fuscicaudatus,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185223,2/25/1938,Jagalbed,India,male,17.25,8.36,3.8,4.61,9.98,18.73,80.68,81.45,74.89,fuscicaudatus,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185224,7/25/1946,Jagalbed,India,female,14.32,7.82,4.16,4.96,10.28,18.93,75.36,79.35,70.16,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185225,7/31/1946,Belwani-Kisli,India,female,13.7,6.47,3.97,4.02,8.5,19.14,67.41,72.58,67,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185226,8/2/1946,Belwani-Kisli,India,female,12.46,6.76,3.96,4.54,9.19,17.92,66.96,73.79,69.36,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185227,8/4/1946,Belwani-Kisli,India,female,14.22,6.92,4.05,4.68,10.31,19.86,75.19,76.01,69.63,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185228,1/18/1950,Phulbari,India,male,15.46,8.96,4.64,5.02,10.95,19.98,87.42,85.45,75.27,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185229,2/8/1950,Phulbari,India,female,15.12,9.05,4.33,4.6,9.34,17.51,NA,78.63,70.28,emeria,no tail,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185230,2/11/1950,Tura Mountain,India,female,15.65,7.91,4.2,4.48,9,17.2,86.23,82.74,72.77,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185231,3/24/1950,Tura Mountain,India,male,15.52,9.28,4.31,5.1,9.48,19.86,83.85,84.5,75.16,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185232,3/25/1950,Tura Mountain,India,male,16.32,8.36,4.84,4.97,9.91,21.32,82.89,83.99,71.65,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185233,3/29/1950,Tura Mountain,India,female,15.86,7.88,3.97,4.79,9.7,20.21,78.34,79.85,71.13,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185234,3/30/1950,Tura Mountain,India,male,15.43,9.37,4.24,5.59,10.42,19.7,83.34,81.82,74.11,emeria,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185235,8/28/1950,Tackubama,India,female,13.42,7.26,3.24,3.79,8.78,20.83,69.17,79.11,68.73,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185236,7/2/1950,Kohima,India,female,14.77,7.99,4.37,5.38,9.64,20.17,81.26,83.79,74.34,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185237,9/20/1950,Kohima,India,female,14.5,7.11,3.74,4.75,8.67,20.27,77.67,78.35,71.88,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185238,1/31/1951,Nichuguard,India,female,15.19,8.53,4.6,5.01,10.07,21.59,87.6,89.06,80.28,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185239,2/1/1951,Nichuguard,India,female,16.88,8.63,4.62,4.96,11.89,21.47,85.45,86.26,75.68,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185240,2/4/1951,Nichuguard,India,male,16.44,8.72,4.92,4.99,10.71,22,90.12,90.51,78.57,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185241,4/24/1953,Kaladyne Ferry,India,male,15.67,8.63,4.92,4.69,9.59,20.13,76.96,74.67,67.16,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185242,1/4/1950,Hahim Bazar,India,female,14.44,7.78,4.7,5.46,9.87,21.92,84.26,83.79,74,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185243,1/4/1950,Hahim Bazar,India,male,17.23,8.37,4.72,5.4,11.52,21.42,93.71,91.52,80.68,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185244,1/5/1950,Hahim Bazar,India,female,13.68,8.63,4.38,4.46,10.89,20.69,68.09,87.99,79.52,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185245,4/19/1951,Kangpokpi,India,male,17.13,9.08,4.2,5.1,9.67,22.81,83.75,87.33,77.32,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185246,4/20/1951,Kangpokpi,India,female,17.02,9.57,4.08,5.25,10.45,21.41,86.36,89.72,76.97,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185249,5/4/1951,Laikul,India,female,16.03,8.34,4.57,5.24,9.57,20.08,83.97,83.27,74.18,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185250,2/5/1952,Rani,India,male,19.07,9.21,4.94,5.3,9.38,22.69,87.76,87.13,76.19,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185251,2/5/1952,Rani,India,male,17.52,9.79,4.73,5.83,10.79,18.94,88.87,90.95,80.45,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185252,2/5/1952,Rani,India,male,17.02,9.44,4.76,5.61,9.64,21.44,88.16,89.91,75.31,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185253,2/5/1952,Rani,India,male,16.16,9.7,5.07,5.18,11.45,19.89,88.53,89.51,78.73,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185254,2/5/1952,Rani,India,male,16.64,8.8,5.18,5.2,11.16,20.82,83.61,85.44,73.82,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185255,6/18/1953,"Khasi Hills, Mawphlang",India,,16.86,8.62,4.79,5.08,11.29,22.43,85.78,86.73,77.32,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185256,2/16/1952,Menoka,India,female,16.86,9.33,4.93,5.3,11.53,21.03,82.09,84.9,73.82,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185257,2/20/1952,Menoka,India,male,16.13,9.77,5.43,6.13,11,19.89,94.89,91.93,81.52,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185258,2/21/1952,Menoka,India,male,15.71,9.2,4.52,5.6,11.5,21.64,87.25,87.49,77.68,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185259,4/2/1952,Agia,India,male,17.19,8.97,5.32,5.65,11.96,19.18,88.89,88.09,78.34,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185260,4/2/1952,Agia,India,female,15.84,8.94,4.48,4.75,11.73,20.71,77.4,81.12,72.14,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185261,4/3/1952,Agia,India,male,14.98,7.96,5.6,5.31,10.92,20.96,89.93,84.18,77.72,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185262,6/8/1952,Cherrapunji,India,female,16.32,9.06,4.51,4.8,9.38,19.17,71.96,78.17,71.19,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185263,6/8/1952,Cherrapunji,India,female,15.43,7.96,4.65,5.57,8.47,20.4,74.13,81.88,70.36,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185264,6/18/1953,"Khasi Hills, Mawphlang",India,,18.1,8.01,4.33,5.01,9.24,20.17,87.25,87.42,77.68,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185265,10/13/1950,Karong,India,male,15.02,8.72,4.79,5.01,9.32,20.68,81.4,86.96,81.01,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185266,10/14/1950,Karong,India,male,15.86,8.26,4.37,4.92,8.91,20.59,89.39,86.21,77.19,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185267,10/26/1950,Karong,India,male,15.02,8.52,4.53,5.21,10.08,20.5,80.32,87.45,75.86,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185268,10/26/1950,Karong,India,male,15.93,8.78,5.01,5.47,10.38,22.98,100.37,94.02,81.71,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185269,10/27/1950,Karong,India,female,14.64,8.2,4.76,5.29,10.88,18.08,90.49,82.46,73.26,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185270,11/3/1950,Karong,India,male,7.93,8.93,4.91,5.11,10.08,19.55,93.55,87.16,78.02,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185271,11/8/1950,Karong,India,male,15.12,8.63,4.53,5.07,11.08,20.85,78.31,88.41,76.09,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185272,11/8/1950,Karong,India,male,14.37,8.02,4.75,5.33,10.59,NA,94.49,88.4,79.56,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185273,11/21/1950,Karong,India,male,14.87,8.03,4.51,4.99,9.63,22.55,92.09,89.52,77.89,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185274,11/27/1950,Karong,India,male,16.36,8.89,3.55,4.94,11.49,19.18,91.01,92.21,80.24,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185275,11/30/1950,Karong,India,female,13.85,7.8,3.84,4.36,8.87,21.8,75.51,81.93,73.19,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185276,12/12/1950,Karong,India,female,14.03,7.29,4.06,4.23,9.94,19.84,79.29,81.56,71.97,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185277,12/14/1950,Karong,India,female,14.73,8.59,4.4,4.9,11.11,23.01,80,87.43,77.07,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185278,12/14/1950,Karong,India,male,15.84,8.67,4.79,4.87,12,20.88,81.04,76.49,67.68,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185279,12/18/1950,Karong,India,female,15.04,7.67,4.31,5.33,9.49,21.83,91,88.45,81.36,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,185280,12/30/1950,Karong,India,female,17.79,8.22,4.5,5.06,8.81,20.21,93.49,89.03,79.06,monticola,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,209114,1/15/1954,Kanpur,India,female,15,8.08,4.88,5.03,10.53,18.66,76.4,78.04,67.75,pyrrhotis,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,210033,9/19/1964,Le Morne,Mascarene Islands,male,16.1,8.99,4.31,5.08,10.19,19.95,84.73,82.84,73.16,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,210034,9/6/1964,Le Morne,Mascarene Islands,male,16.26,8.7,4.71,5.43,9.48,21.47,82.17,82.42,75.71,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,210035,9/10/1964,Pl. Champaigne,Mascarene Islands,male,16.23,8.59,4.01,5.28,9.37,18.1,81.54,82.23,72.99,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,210036,9/2/1964,Beau Champ.,Mascarene Islands,female,15.01,8.34,4.6,4.88,10.79,20.62,82.92,80.31,72.78,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus jocosus,University of Michigan Museum of Zoology,236525,12/10/2000,"Quatre Bornes, near",Mascarene Islands,male,17.16,8.98,4.18,5.45,10.7,20.45,84.99,82.02,75.24,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus taivanus,University of Michigan Museum of Zoology,222643,3/24/1960,"Hua-Lien Hsien, 3 Mi E, (Formosa)",China,male,15.43,8.2,4,5.31,10.22,20.95,82.46,84.41,73.5,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus zeylanicus,University of Michigan Museum of Zoology,23379,08-10-1875,no specific locality,Malaysia,?,16.45,8.77,5.34,7.13,12.46,26.27,120.81,118.54,110.08,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus zeylanicus,University of Michigan Museum of Zoology,23561,08-10-1875,no specific locality,Malaysia,?,19.3,11.71,6.08,7.51,15.25,25.85,111.23,109.81,103.55,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus zeylanicus,University of Michigan Museum of Zoology,23564,08-10-1875,no specific locality,Malaysia,?,17.25,12.65,6.19,7.76,16.6,27.1,107.15,108.94,103.26,,,,Charlotte M. Probst
+Pycnonotidae,Pycnonotus zeylanicus,University of Michigan Museum of Zoology,24051,08-10-1875,no specific locality,Malaysia,?,17.94,11.69,4.87,7.74,11.3,29.83,117.87,119.3,106.91,,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184788,4/17/1952,Cherrapunji,India,female,17.14,7.65,5.48,7.61,10.11,18.99,82.44,93.11,82.37,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184789,4/19/1952,Cherrapunji,India,male,14.23,8.32,7.26,8.18,9.6,18.8,84.48,93.84,83.69,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184790,4/19/1952,Cherrapunji,India,male,14.91,8.99,6.07,7.41,11.03,17.32,85.55,97.69,84.33,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184791,4/20/1952,Cherrapunji,India,male,13.47,7.83,5.26,6.99,13.12,21.62,78.77,89.52,74.04,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184792,4/21/1952,Cherrapunji,India,male,14.29,7.5,6.16,7.53,11.82,19,92.07,94.47,80.69,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184793,4/21/1952,Cherrapunji,India,male,13.63,8.29,7.38,6.42,13.75,17.91,90.48,93.13,81.23,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184794,4/21/1952,Cherrapunji,India,male,13.33,8.35,6.54,7.86,11.18,18.82,90.21,95.72,84.42,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184795,5/28/1952,Cherrapunji,India,male,15.7,7.15,6.43,7.66,12.34,19.9,93.84,93.16,81.72,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184796,6/9/1952,Cherrapunji,India,female,14.36,7.37,5.49,6.77,11.56,19.59,104.01,96.5,77.38,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184797,6/9/1952,Cherrapunji,India,male,15.36,8.5,6.03,7.71,11.11,21.69,90.09,95.11,81.87,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184798,8/7/1949,Pynursla,India,male,14.49,7.44,5.98,5.97,11.52,18.6,88.79,86.39,77.81,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184800,8/23/1949,Pynursla,India,male,14.55,7.43,5.87,7.01,11.72,19.89,89.91,91.07,78.65,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184801,8/30/1949,Pynursla,India,female,11.12,5.97,5.48,6.32,10.39,20.41,85.63,92.18,81.73,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184802,7/9/1949,Laitlyngkot,India,male,12.97,7.59,5.79,7.32,11.29,20.85,92.61,94.37,80.46,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184803,7/9/1949,Laitlyngkot,India,female,14.45,7.98,6.08,6.98,11.41,21.15,91.59,91.72,81.42,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184804,7/15/1949,Laitlyngkot,India,male,14.22,7.36,5.7,6.95,11.68,20.58,92.97,92.52,81.7,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184805,7/15/1949,Laitlyngkot,India,female,13.93,7.15,5.14,6.11,10.87,19.18,87.49,83.3,73.45,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184806,7/30/1949,Laitlyngkot,India,female,13.45,7.3,5.36,7.29,10.92,19.2,91.05,88.94,78.75,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184807,7/31/1949,Laitlyngkot,India,female,12.64,5.63,3.96,5.09,8.53,15.85,55.49,77.1,70.6,canifrons,"metadata does not specify age but seems small--tail molting (pinfeathers), juv?",,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184808,7/31/1949,Laitlyngkot,India,female,14.91,7.2,5.68,7.26,10.83,21.26,87.19,92.11,80.26,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184809,8/1/1949,Laitlyngkot,India,female,13.84,5.96,5.03,6.64,11.36,18.48,93.61,91.19,80.9,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184811,8/3/1949,Laitlyngkot,India,male,13.38,6.64,5.76,7.14,10.49,20.92,85.93,89.77,80.92,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184812,8/3/1949,Laitlyngkot,India,male,13.74,8.02,6,7.17,10.95,18.08,88.12,90.33,77.09,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184813,8/3/1949,Laitlyngkot,India,male,13.2,6.38,4.98,5.29,10.87,19.48,65.48,86.69,78.96,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184815,8/4/1949,Laitlyngkot,India,male,13.89,7.41,6.51,7.18,11.25,20.49,96.42,94.17,82.59,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184816,8/20/1952,"Khasi Hills, Mawphlang",India,male,13.23,8.52,5.91,7.17,10.18,19.34,83.27,81.55,75.75,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184818,9/12/1949,"Khasi Hills, Mawphlang",India,female,13.42,6.95,4.52,6.96,11.38,20.31,94.41,93.77,81.28,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184819,9/14/1949,"Khasi Hills, Mawphlang",India,female,13.75,6.86,5.82,7.04,10.26,20.58,86.2,83.93,75.5,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184820,9/18/1949,"Khasi Hills, Mawphlang",India,female,11.79,6.86,4.66,5.69,9.22,18.84,73.23,85.87,78.12,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184821,10/14/1949,"Khasi Hills, Mawphlang",India,male,13.67,7.48,5.46,7.05,9.61,19.57,88.47,95.63,77.19,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184822,9/1/1952,"Khasi Hills, Mawphlang",India,female,13.94,7.1,5.23,6.93,11.25,19.78,89.28,94.23,83.03,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184823,9/3/1952,"Khasi Hills, Mawphlang",India,male,15.25,7.29,5.77,7.09,9.95,20.69,75.87,89.45,79.52,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184824,9/4/1952,"Khasi Hills, Mawphlang",India,female,15.03,8.56,5.66,7.94,10.84,20.21,91.47,91.95,82.7,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184825,11/5/1952,"Khasi Hills, Mawphlang",India,female,15,6.82,6.2,6.84,12.51,19.82,86.43,92.78,78.96,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184826,9/5/1952,"Khasi Hills, Mawphlang",India,male,14.37,7.13,6.1,7.47,11.22,20.22,87.72,94.76,83.24,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184828,9/7/1952,"Khasi Hills, Mawphlang",India,female,15.1,7.75,6.46,7.41,10.36,20.06,83.52,88,77.82,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184829,9/7/1952,"Khasi Hills, Mawphlang",India,male,15.24,8.35,5.64,6.92,9.42,19.58,85.38,91.11,79.09,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184832,11/10/1952,"Khasi Hills, Mawphlang",India,female,14.62,7.75,5.33,6.93,10.99,20.7,80.73,87.68,76.59,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184833,9/13/1952,"Khasi Hills, Mawphlang",India,,12.76,7.67,5,5.71,8.81,19.81,90.37,90.37,79.53,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184834,9/13/1952,"Khasi Hills, Mawphlang",India,female,15.15,8.56,5.05,7.32,10.14,20.35,85.46,91.03,81.74,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184835,9/22/1952,"Khasi Hills, Mawphlang",India,female,15.63,8.19,6.17,6.66,11.69,20.32,85.15,89.61,76.12,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184836,9/22/1952,"Khasi Hills, Mawphlang",India,,14.69,6.13,5.76,6.94,12.55,20.15,73.79,87.74,80.75,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184837,9/23/1952,"Khasi Hills, Mawphlang",India,,14.43,7.74,5.84,7.32,10.17,20.9,81.43,85.79,74.01,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184838,10/13/1952,"Khasi Hills, Mawphlang",India,female,14.02,7.41,6.53,7.44,11.38,17.52,93.31,97.05,80.37,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184839,10/17/1952,"Khasi Hills, Mawphlang",India,male,15.48,6.89,5.8,8.27,11.61,20.58,82.27,92.79,81,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184840,10/27/1952,"Khasi Hills, Mawphlang",India,female,15.36,7.79,5.95,8.04,12.62,21.13,86.06,91.1,79.15,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184841,10/29/1952,"Khasi Hills, Mawphlang",India,male,14.59,6.72,5.55,7.13,10.38,18.68,92.5,94.88,78.35,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184842,12/3/1952,"Khasi Hills, Mawphlang",India,male,13.75,6.38,4.85,7.11,10.98,19.25,91.11,94.18,83.45,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184843,12/13/1952,"Khasi Hills, Mawphlang",India,female,14.24,8.38,6.28,7.51,12.23,19.64,94.89,91.18,78.08,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184844,12/13/1952,"Khasi Hills, Mawphlang",India,male,15.66,8.15,5.81,6.98,10.25,19.27,79.26,88.57,75.7,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184845,12/21/1952,"Khasi Hills, Mawphlang",India,male,14,6.72,5.39,6.76,11.5,21,82.73,91.39,81.92,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184846,12/27/1952,"Khasi Hills, Mawphlang",India,female,13.35,6.42,4.92,7.36,11.63,17.6,78.91,89.5,76.66,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184848,12/27/1952,"Khasi Hills, Mawphlang",India,female,14.13,7.96,6.34,6.84,9.98,21.51,88.02,92.78,76.35,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184849,12/29/1952,"Khasi Hills, Mawphlang",India,female,14.33,8.23,5.97,7.78,10.96,20.84,85.22,93,82.98,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184850,12/31/1952,"Khasi Hills, Mawphlang",India,male,14.25,6.76,6.06,7.68,12,21.35,88.72,91.76,78.44,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184851,12/31/1952,"Khasi Hills, Mawphlang",India,male,13.97,7.41,6.25,7.07,11.77,21.4,88,92.87,79.41,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184852,12/31/1952,"Khasi Hills, Mawphlang",India,female,14.51,7.45,5.76,7.49,11.33,17.64,86.23,91.37,80.81,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184853,1/1/1953,"Khasi Hills, Mawphlang",India,female,13.15,7.34,5.02,6.8,10.24,21.22,83.62,90.1,78.12,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184854,1/4/1953,"Khasi Hills, Mawphlang",India,male,14.66,7.73,6.22,7.61,10.2,21.07,83.04,92.14,81.04,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184855,1/4/1953,"Khasi Hills, Mawphlang",India,female,14.28,8.27,5.42,7.54,12.46,19.31,88.76,92.72,80.34,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184858,1/16/1953,"Khasi Hills, Mawphlang",India,male,13.21,5.96,5.85,6.84,10.35,19.83,85.99,95.7,81.57,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184859,6/24/1953,"Khasi Hills, Mawphlang",India,female,13.41,7.58,5.07,6.88,11.2,20.01,89.59,87.03,79.46,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184860,6/30/1953,"Khasi Hills, Mawphlang",India,male,15.18,7.6,6.41,8.05,14.53,19.95,84.36,94.85,78.78,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184861,7/2/1953,"Khasi Hills, Mawphlang",India,female,15.78,7.6,5.65,6.96,11.9,20.9,89.56,94.71,79.07,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184862,7/4/1953,"Khasi Hills, Mawphlang",India,female,13.83,7.65,5.45,6.45,9.7,21.5,83.13,88.84,78.68,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184864,7/18/1953,"Khasi Hills, Mawphlang",India,female,14.76,7.54,5.55,7.19,11.2,19.79,NA,87.2,79.58,canifrons,no tail,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184865,12/2/1953,"Khasi Hills, Mawphlang",India,male,13.56,6.52,5.65,7.4,11.31,20.35,96.16,95.71,81.78,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184868,6/4/1954,"Khasi Hills, Mawphlang",India,male,14.42,6.7,6.62,7.25,11.73,18.72,87.01,91.69,80.52,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184869,6/14/1954,"Khasi Hills, Mawphlang",India,male,13.47,7.17,5.87,7.26,10.88,18.99,81.66,95.39,85.22,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184870,7/1/1954,"Khasi Hills, Mawphlang",India,,12.95,6.52,4.73,5.75,10.21,18.57,71.42,82.25,73.8,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184871,7/7/1954,"Khasi Hills, Mawphlang",India,,14.23,7.61,5.23,6.76,10.1,20.24,82.7,88.02,80.1,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184872,7/12/1954,"Khasi Hills, Mawphlang",India,male,13.77,7.22,5.98,6.97,10.09,19.44,86.54,89.41,79.68,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184873,7/14/1954,"Khasi Hills, Mawphlang",India,female,13.27,7.31,5,6.46,11.44,20.28,73.6,84.11,75.77,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184874,7/14/1954,"Khasi Hills, Mawphlang",India,male,14.53,7.45,5.71,7.33,10.44,20.18,86.38,87.67,79.27,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184875,7/20/1954,"Khasi Hills, Mawphlang",India,female,14.03,7.55,5.95,6.93,10.23,19.53,88.65,89.39,79.89,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184876,8/6/1954,"Khasi Hills, Mawphlang",India,female,14.03,7.14,6.15,6.68,10.8,21.61,87.84,86.73,78.97,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184877,9/13/1954,"Khasi Hills, Mawphlang",India,male,13.53,6.65,6.04,7.47,11.11,20.03,88.84,94.68,84.05,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184878,11/23/1950,Karong,India,male,12.95,6.69,5.82,6.65,11.42,17.98,91.99,99.87,84.76,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184879,12/3/1950,Karong,India,male,13.54,7.46,6.22,6.4,11.97,20.31,91.48,101.75,87.01,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184880,12/3/1950,Karong,India,male,11.7,7.04,6.27,7.09,12.21,19.46,88.13,99.09,85.64,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184881,12/5/1950,Karong,India,,12.98,7.87,6.11,7.13,12.9,20.69,96.11,92.13,80.07,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184882,12/7/1950,Karong,India,female,12.49,7.27,6.19,6.5,11.27,19.49,90.5,88.49,79.4,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184883,12/7/1950,Karong,India,female,11.88,7.91,5.42,7.14,11.84,21.22,88.53,90.96,80.06,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184884,7/28/1950,Tackubama,India,female,13.79,7.05,5.47,6.96,10.94,19.82,85.22,89.25,78.42,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184885,7/28/1950,Tackubama,India,male,13.56,8.8,6.42,7.87,11.78,20.05,NA,99.71,83.6,canifrons,no tail,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184886,7/29/1950,Tackubama,India,male,13.3,8.37,6.61,7.15,12.39,20.45,NA,95.42,82,canifrons,no tail,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184887,9/11/1950,Kohima,India,female,10.88,7.37,5.39,6.51,10.96,20.03,82.16,86.34,82.46,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184888,9/12/1950,Kohima,India,female,13.04,6.56,5.29,6.5,9.69,17.64,83.01,81.53,73.54,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184889,2/7/1953,Sangau,India,male,11.46,7.7,5.18,6.96,11.43,19.21,86.07,92.85,81.53,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184890,2/10/1953,Sangau,India,male,14.51,6.14,5.71,7.06,12.2,21.76,81.78,92.04,79.61,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184891,2/12/1953,Sangau,India,female,13.21,7.6,5.67,7.58,12.84,20.4,94.69,96.15,80.98,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184892,2/13/1953,Sangau,India,male,15.42,6.83,5.79,7.19,13.12,19.97,81.81,92.3,80.18,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184893,2/16/1953,Sangau,India,male,14.1,7.85,6.42,7.67,11.52,19.97,90.98,94.68,81.93,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184894,3/19/1953,Sangau,India,female,13.48,7.11,5.27,7.38,12.06,19.94,91.68,94.54,79.77,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184895,4/6/1953,Blue Mountain,India,male,12.72,7.71,5.26,7.57,11.57,19.57,95.18,93.64,85.12,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184896,4/9/1953,Blue Mountain,India,male,12.97,7.46,5.28,7.74,11.54,20.8,95.89,92.98,81.36,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184897,4/9/1953,Blue Mountain,India,female,12.78,6.19,5.77,7.55,11.64,19.06,89.4,93.01,81.84,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184898,4/13/1953,Blue Mountain,India,male,12.56,8.31,5.26,7.41,9.83,21.82,94.73,96.54,86.76,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184900,4/6/1951,Hmuntha,India,female,11.78,6.61,5.5,7.94,11.64,20.51,91.48,91.61,81.9,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184901,4/7/1951,Hmuntha,India,male,13.12,5.98,4.94,7.61,10.61,19.7,91.77,90.92,82.19,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,184902,4/7/1951,Hmuntha,India,female,13.04,7.45,6.69,7.99,11.82,19.88,91.62,93.92,81.52,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,190613,5/8/1955,"Khasi Hills, Mawphlang",India,male,14.19,7.66,4.76,7.34,9.87,19.97,88.79,92.07,80.3,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,190614,7/12/1955,"Khasi Hills, Mawphlang",India,male,13.38,7.74,5.44,7.36,10.5,20.2,83.23,83.29,73.02,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,190615,7/5/1955,"Khasi Hills, Mawphlang",India,?,12.12,8.28,5.81,7.6,10.98,19.63,82.4,84.28,75.78,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,190616,9/7/1955,"Khasi Hills, Mawphlang",India,male,11.51,6.49,6.01,7.7,11.9,18.89,86.76,89.65,80.78,canifrons,,,Charlotte M. Probst
+Pycnonotidae,Spizixos canifrons,University of Michigan Museum of Zoology,190617,5/10/1955,"Khasi Hills, Mawphlang",India,female,13.43,7.06,5.73,7.22,10.84,19.92,88.15,91.03,80.78,canifrons,,,Charlotte M. Probst

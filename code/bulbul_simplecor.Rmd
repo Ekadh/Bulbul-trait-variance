@@ -191,24 +191,21 @@ ggplot(morphospace_area,
 Part 6: Time for brms modeling! But first, phylogeny building
 ```{r}
 library(ape)
-
 phylogeny <- read.tree("../data/Phylogeny/mcc_dated_clements_McTavish_2025.nex")
 str(phylogeny)
 
 phylogeny <- phylogeny[[6]]
 
-tarsus_var$species_phylo <- gsub(" ", "_", tarsus_var$AviList)
+#Now remove the underscores from the tip labels in the phylogeny and replace them with spaces
+phylogeny$tip.label <- gsub("_", " ", phylogeny$tip.label)
 
-species_keep <- unique(bulbuls$AviList_tree)
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
 
-phylo_pruned <- drop.tip(
-  phylogeny,
-  setdiff(phylogeny$tip.label, species_keep)
-)
-str(phylo_pruned$edge.length)
+#Now only keep the tips from the phylogeny that are present in the AviList column of the bulbuls data frame
+phylogeny <- drop.tip(phylogeny, setdiff(phylogeny$tip.label, unique(bulbuls$AviList)))
+str(phylogeny)
 
-# Save the pruned tree for later use
-write.tree(phylo_pruned, "../data/Phylogeny/bulbul_phylogeny_pruned.nex")
+write.tree(phylogeny, "../data/Phylogeny/bulbul_phylogeny_pruned.nex")
 
 #Load it again if needed
 phylo_pruned <- read.tree("../data/Phylogeny/bulbul_phylogeny_pruned.nex")

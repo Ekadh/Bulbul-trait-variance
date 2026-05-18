@@ -12,6 +12,9 @@ str(flmnh)
 #UPLB Museum of Natural History (UPLB) dataset - Phillipines
 uplb <- read.xlsx("../data/Collaborator data/Sample_data_sheet_uplb_philippines.xlsx")
 str(uplb)
+uplb$Bill_TotalCulmen <- as.numeric(uplb$Bill_TotalCulmen)
+uplb$Bill_FromNostril <- as.numeric(uplb$Bill_FromNostril)
+uplb$KD <- uplb$Wing_Chord - uplb$Sec1_Length
 #Only keep row 34 and beyond
 uplb <- uplb[34:nrow(uplb), ]
 #SYSU Guangzhou dataset - China
@@ -20,6 +23,8 @@ str(sysu)
 #Steinhardt MNH - Israel
 steinhardt <- read.xlsx("../data/Collaborator data/Sample_data_sheet_Steinhardt_NihanD_Israel.xlsx")
 str(steinhardt)
+steinhardt$Number <- as.character(steinhardt$Number)
+steinhardt$Subspecies <- as.character(steinhardt$Subspecies)
 #Field data 1: Wenyi Zhou's field data from China
 field1 <- read.xlsx("../data/Collaborator data/Sample_data_sheet_Wenyi_Zhou_China.xlsx")
 str(unique(field1$sp.latin))
@@ -34,46 +39,98 @@ field1 <- field1 |>
     "Hypsipetes leucocephalus"
   ))
 str(field1)
+field1$Country_WRI <- "China"
+field1$Measurer <- "Wenyi Zhou"
+field1$Source <- "Field1"
 #Field data 2: Peter Mikula and Martin Hromada's field data from Angola
 field2 <- read.xlsx("../data/Collaborator data/Mikula-Hromada_Sample data sheet.xlsx")
 str(field2)
 field2 <- field2 |>
   filter(Family == "Pycnonotidae")
 str(field2)
+field2$Comments <- as.character(field2$Comments)
+field2$Wing_Chord <- as.numeric(field2$Wing_Chord)
+field2$Date.collected <- as.character(field2$Date.collected)
+field2$Collection <- "Field1"
+field2$Measurer[field2$Measurer == "Peter Mikula"] <- "PM"
+field2$Measurer[field2$Measurer == "Martin Hromada"] <- "MH"
 #LSUMNS bulbul data: David Vander Pluym
 lsumns <- read.xlsx("../data/Collaborator data/Bulbul_Vander_Pluym.xlsx")
 str(lsumns)
+lsumns$Measurer <- "DVP"
 lsumns$KD <- lsumns$Wing_Chord - lsumns$Sec_1
+lsumns$`Number/Code` <- as.character(lsumns$`Number/Code`)
 #Museum data from Peter Mikula (measured by Martin Bulla) - National Museum, Prague, Czechia
 nmpc <- read.xlsx("../data/Collaborator data/Bulla&Mikula_bulbuls_NMP_export.xlsx")
 str(nmpc)
 nmpc$KD <- nmpc$Wing_Chord - nmpc$Sec_1
+nmpc$Measurer <- "MB"
 #Cambridge University Museum of Zoology (CUMZ) dataset - UK (part measured by Carla only, Elizabeth yet to be added)
-cumz <- read.xlsx("../data/Collaborator data/Sample data sheet CJD.xlsx")
+cumzcarla <- read.xlsx("../data/Collaborator data/Sample data sheet CJD.xlsx")
+cumzelizabeth <- read.xlsx("../data/Collaborator data/Sample data sheet EMS.xlsx")
+cumz <- bind_rows(cumzcarla, cumzelizabeth)
 str(cumz)
-cumz$KD <- cumz$Wing_Chord - cumz$Sec_1
+for (i in 1:nrow(cumz)) {
+  if (cumz$Measurer[i] == "Carla du Toit") {
+    cumz$Measurer[i] <- "CJD"
+  } else if (cumz$Measurer[i] == "Elizabeth Steell") {
+    cumz$Measurer[i] <- "EMS"
+  }
+}
+cumz$Date.collected <- as.numeric(cumz$Date.collected)
 #UMICH initial dataset - Probst
 umich <- read.csv("../data/Collaborator data/Sample_data_sheet_UMICH_Probst.csv")
 str(umich)
 umich$KD <- umich$Wing.length - umich$First.secondary.length
+umich$Measurer <- "CMP"
+umich$Number.Code <- as.character(umich$Number.Code)
 #NMNH dataset - Manila, Philippines
 nmnh <- read.xlsx("../data/Collaborator data/Sample_data_sheet_NMNH_Philippines.xlsx")
 str(nmnh)
 nmnh$Bill_Width <- as.numeric(nmnh$Bill_Width)
 nmnh$Bill_Depth <- as.numeric(nmnh$Bill_Depth)
 nmnh$Tarsus_Length <- as.numeric(nmnh$Tarsus_Length)
+nmnh$Subspecies <- as.character(nmnh$Subspecies)
+nmnh$Comments <- as.character(nmnh$Comments)
 #Universitas Andalas dataset - Indonesia
 ua <- read.xlsx("../data/Collaborator data/Sample_data_sheet_UA_Muhammad.xlsx")
 str(ua)
-#Kansas University Natural History Museum (KUNHM) dataset - Camila Mendes and 1 more colleague
+ua$Measurer <- "MNJ"
+ua$Subspecies <- as.character(ua$Subspecies)
+#Kansas University Natural History Museum (KUNHM) dataset - Camila Meneses and 1 more colleague
 ku <- read.xlsx("../data/Collaborator data/Sample_data_sheet_KU_CamilaMendes.xlsx")
 str(ku)
+ku$Measurer[ku$Measurer == "Camila Meneses"] <- "CM"
+ku$Measurer[ku$Measurer == "Kier Mitchel Pitogo"] <- "KMP"
 #Royal Ontario Museum (ROM) dataset - Vedant Gattani
-rom <- read.xlsx("../data/Collaborator data/Sample_data_sheet_ROM_Vedant.xlsx")
+rom <- read.xlsx("../data/Collaborator data/Sample_data_sheet_ROM_VG.xlsx")
 str(rom)
 rom$KD <- rom$Wing_Chord - rom$Sec_1
+rom$Date.collected <- as.numeric(rom$Date.collected)
+rom$Measurer <- "VG"
+#Taiwan Biodiversity Research Institute (TBRI) dataset - Taiwan
+tbri <- read.xlsx("../data/Collaborator data/Sample_data_sheet_TBRI_Stephanie.xlsx")
+str(tbri)
+tbri$Measurer <- "SYC"
+#David Vander Pluym's dataset 2
+lsumns2 <- read.xlsx("../data/Collaborator data/Bulbul_Vander_Pluym_part2.xlsx")
+str(lsumns2)
+lsumns2$Measurer <- "DVP"
+lsumns2$KD <- lsumns2$Wing_Chord - lsumns2$Sec_1
+lsumns2$`Number/Code` <- as.character(lsumns2$`Number/Code`)
+lsumns2$Date.collected <- as.character(lsumns2$Date.collected)
+#Kunming Institute of Zoology (KIZ) dataset - China (Liu Yang and Yue Wu)
+kiz <- read.xlsx("../data/Collaborator data/Sample_data_sheet_KIZ_LiuYang.xlsx")
+#Change sex column from 1 and 2 to M and F, and make it a character column
+kiz$sex <- as.character(kiz$sex)
+kiz$sex[kiz$sex == "1"] <- "M"
+kiz$sex[kiz$sex == "2"] <- "F"
+#Make Scientific_Name of Brachypodius melanocephalos to Microtarsus melanoleucos to match AVONET
+kiz$Scientific_Name[kiz$Scientific_Name == "Brachypodius melanocephalos"] <- "Microtarsus melanoleucos"
+str(kiz)
+kiz$Measurer <- "YW"
 
-ua <- ua |>
+rom <- rom |>
   rename(
     AviList = Scientific_Name,
     Beak.Length_Culmen = Bill_TotalCulmen,
@@ -82,9 +139,30 @@ ua <- ua |>
     Beak.Depth = Bill_Depth,
     Gape_Width = Gape.Width,
     Tarsus.Length = Tarsus_Length,
-    Kipps.Distance = `Kipp's_Distance`,
+    Kipps.Distance = KD,
     Wing.Length = Wing_Chord,
-    Tail.Length = Tail_Length
+    Tail.Length = Tail_Length,
+    Country_WRI = Country,
+    Specimen.number = `Number/Code`,
+    Locality = Locality,
+    Sex = Sex,
+    Subspecies = Subspecies,
+    Comments = Comments,
+    Measurer = Measurer,
+    Source = Collection
+  )
+
+field1 <- field1 |>
+  rename(
+    AviList = sp.latin,
+    Tarsus.Length = tarsus,
+    Wing.Length = wing.chord,
+    Tail.Length = tail,
+    Country_WRI = Country_WRI,
+    Specimen.number = band.number,
+    Sex = sex,
+    Measurer = Measurer,
+    Source = Source
   )
 
 traits <- c(
@@ -98,6 +176,18 @@ traits <- c(
 "Tail.Length",
 "Gape_Width"
 )
+
+#Merging step with AVONET data - do NOT remove any columns from the AVONET data frame, just add new rows for UMich specimens, and leave NA where information/columns are missing in UMich but present in AVONET
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv")
+bulbuls2 <- bind_rows(
+  bulbuls,
+  rom %>% select(any_of(names(bulbuls)))
+) %>%
+  select(all_of(names(bulbuls)))
+str(bulbuls2)
+
+write.csv(bulbuls2, "../data/Bulbul_AVONET_data_integrated.csv", row.names = FALSE)
+
 
 #AVONET means for each trait, by species
 avonet_means <- bulbuls |>
@@ -114,17 +204,17 @@ avonet_points <- merge(
 )
 
 #Museum means for each trait, by species
-ua_means <- ua |>
+rom_means <- rom |>
   group_by(AviList) |>
   summarise(
     across(all_of(traits), ~mean(.x, na.rm=TRUE)),
     .groups="drop"
   )
-ua_points <- merge(
-  ua,
+rom_points <- merge(
+  rom,
   avonet_means,
   by="AviList",
-  suffixes=c("_ua","_mean")
+  suffixes=c("_rom","_mean")
 )
 
 comparison <- merge(
@@ -169,13 +259,13 @@ ggplot(comparison_long,
 
 
 #Method 2: Highlighting species with specimen measurements in the SYSU dataset, and comparing those to the AVONET means for those species
-ua_species <- ua_points %>%
-    filter(!is.na(Wing.Length_ua)) %>%
+rom_species <- rom_points %>%
+    filter(!is.na(Wing.Length_rom)) %>%
     pull(AviList) %>%
     unique()
 
 avonet_points_filtered <- avonet_points %>%
-    dplyr::filter(AviList %in% ua_species)
+    dplyr::filter(AviList %in% rom_species)
 
 avonet_long <- avonet_points_filtered %>%
   pivot_longer(
@@ -193,12 +283,12 @@ avonet_long <- avonet_points_filtered %>%
   filter(Trait == Trait_mean) %>%
   select(AviList, Trait, specimen, mean)
 
-ua_long <- ua_points %>%
+rom_long <- rom_points %>%
   pivot_longer(
-    cols = ends_with("_ua"),
+    cols = ends_with("_rom"),
     names_to = "Trait",
-    names_pattern = "(.*)_ua",
-    values_to = "ua"
+    names_pattern = "(.*)_rom",
+    values_to = "rom"
   ) %>%
   pivot_longer(
     cols = ends_with("_mean"),
@@ -207,7 +297,7 @@ ua_long <- ua_points %>%
     values_to = "mean"
   ) %>%
   filter(Trait == Trait_mean) %>%
-  select(AviList, Trait, ua, mean)
+  select(AviList, Trait, rom, mean)
 
 ggplot() +
 
@@ -218,10 +308,11 @@ ggplot() +
   ) +
 
   geom_point(
-    data = ua_long,
-    aes(mean, ua),
+    data = rom_long,
+    aes(mean, rom),
     colour = "#D55E00",
     shape = 17,
+    alpha = 0.4,
     size = 1
   ) +
 
@@ -234,14 +325,14 @@ ggplot() +
   facet_wrap(~Trait, scales = "free") +
 
   theme_classic() +
-  theme(legend.position = "bottom") +
+  theme(legend.position = "none") +
 
   labs(
     x = "AVONET species mean",
     y = "Specimen measurement"
   )
 
-ggsave("../results/Collaborator data comparisons/ua_comparison_Muhammad.pdf", width = 12, height = 8)
+ggsave("../results/Collaborator data comparisons/ROM_comparison_VG.pdf", width = 12, height = 8)
 
 
 #Checking for specimens that are > 3 standard deviations from the AVONET mean for that species, for any trait
