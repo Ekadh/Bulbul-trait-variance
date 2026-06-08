@@ -326,14 +326,13 @@ write.csv(harvard_priority, "../data/Holdings/Harvard_priority_list.csv", row.na
 ```
 Need a specimen counts file that instead counts specimens per species required to reach a target of 30 specimens per species in the integrated dataset, excluding species that already have 30 or more specimens
 ```{r}
-bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated.csv")
+bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated_3traits.csv")
 str(bulbul_specimen_counts)
-bulbul_specimen_counts <- bulbul_specimen_counts[bulbul_specimen_counts$Freq < 30, ]
-bulbul_specimen_counts$Specimens.required.to.reach.30 <- 30 - bulbul_specimen_counts$Freq
+bulbul_specimen_counts$Specimens.required.to.reach.30 <- pmax(0, 30 - bulbul_specimen_counts$n)
 str(bulbul_specimen_counts)
 #Now to remove Freq column and only keep the Species and Specimens.required.to.reach.30 columns while also ordering by highest to lowest number of specimens required
 bulbul_specimen_counts <- bulbul_specimen_counts[order(-bulbul_specimen_counts$Specimens.required.to.reach.30), ]
-bulbul_specimen_counts <- bulbul_specimen_counts[, c("Var1", "Specimens.required.to.reach.30")]
+bulbul_specimen_counts <- bulbul_specimen_counts[, c("AviList", "Specimens.required.to.reach.30")]
 colnames(bulbul_specimen_counts) <- c("Species", "Specimens.required.to.reach.30")
 str(bulbul_specimen_counts)
 write.csv(bulbul_specimen_counts, "../data/Bulbul_specimen_counts_to_reach_30.csv", row.names = FALSE)
@@ -495,6 +494,20 @@ traits <- c(
 "Tail.Length"
 )
 
+#Filter to keep only rows with specimen numbers that are not NA, empty OR duplicates of specimen numbers in bulbuls dataset, and also only keep rows with locality information that is not NA or empty
+njcollar <- njcollar %>%
+  filter(
+    !is.na(Specimen.number) & Specimen.number != "" &
+    !is.na(Locality) & Locality != "" &
+    Sex != "m juv" &
+    !(Specimen.number %in% bulbuls$Specimen.number)
+  )
+str(njcollar)
+
+#Change 'm' to 'M' and 'f' to 'F' in the Sex column
+njcollar$Sex <- ifelse(njcollar$Sex == "u", "U", njcollar$Sex)
+
+
 #Merging step with AVONET data - do NOT remove any columns from the AVONET data frame, just add new rows for UMich specimens, and leave NA where information/columns are missing in UMich but present in AVONET
 bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv")
 bulbuls2 <- bind_rows(
@@ -505,6 +518,8 @@ bulbuls2 <- bind_rows(
 str(bulbuls2)
 
 write.csv(bulbuls2, "../data/Bulbul_AVONET_data_integrated.csv", row.names = FALSE)
+new_bulcount <- table(bulbuls2$AviList)
+mean(new_bulcount)
 
 #AVONET means for each trait, by species
 avonet_means <- bulbuls |>
@@ -695,6 +710,15 @@ str(bulbuls_filtered)
 
 bulbul_specimen_counts <- bulbuls_filtered %>%
   count(AviList)
+
+# Add species with 0 specimens
+all_species <- unique(bulbuls$AviList)
+bulbul_specimen_counts <- tibble::tibble(
+  AviList = all_species
+) %>%
+  left_join(bulbul_specimen_counts, by = "AviList") %>%
+  mutate(n = replace_na(n, 0))
+
 write.csv(bulbul_specimen_counts, "../data/Bulbul_specimen_counts_integrated_3traits.csv", row.names = FALSE)
 str(bulbul_specimen_counts)
 
@@ -1029,6 +1053,7 @@ species_selection %>%
 ```
 Re-trying the phylogeny figure as one plot
 ```{r}
+library(ggtreeExtra)
 phylo_data_before <- phylo_data %>%
   select(
     Species,
@@ -1129,5 +1154,554 @@ final_plot <- plot_grid(
 ```
 Last plot needed for meeting: A museum map with all data source lat-longs, then the radius of circle is determined by number of specimens they provided
 ```{r}
+museums <- read.xlsx("../data/Holdings/Museum_map.xlsx")
+str(museums)
+
+bulbuls_raw <- read.csv("../data/Bulbul_RAW_AVONET_data.csv", stringsAsFactors = FALSE)
+str(bulbuls_raw)
+
+#Rename bulbuls$Source to bulbuls$`Source/Collection`
+bulbuls_raw <- bulbuls_raw %>%
+  rename(`Source/Collection` = Source)
+
+#Now count the number of specimens provided by each museum in the bulbuls dataset, matching by the `Source/Collection` column in the bulbuls dataset
+specimen_counts <- bulbuls_raw %>%
+  group_by(`Source/Collection`) %>%
+  summarise(Specimen.count = n(), .groups = "drop")
+
+#Now load everything again and finish the map
+```{r}
+library(maps)
+
+museum_data <- read.xlsx("../data/Holdings/Museum_map.xlsx")
+str(museum_data)
+
+museum_data <- museum_data %>%
+  mutate(
+    Count = ifelse(
+      is.na(Expected.sample.size),
+      Specimen.counts,
+      Expected.sample.size
+    ),
+    
+    Count_type = ifelse(
+      is.na(Expected.sample.size),
+      "Observed",
+      "Predicted"
+    ),
+    
+    AVONET_status = ifelse(
+      AVONET.2 == "Y",
+      "After data collection",
+      "AVONET 1.0"
+    )
+  )
+
+museum_data <- museum_data %>%
+  mutate(
+    Count_bin = cut(
+      Count,
+      breaks = c(0, 10, 50, 100, 250, 500, 999, Inf),
+      labels = c(
+        "1–10",
+        "11–50",
+        "51–100",
+        "101–250",
+        "251–500",
+        "501–999",
+        "1000+"
+      )
+    )
+  )
+
+world_map <- map_data("world")
+
+museum_data <- museum_data %>%
+  mutate(
+    Museum_status = case_when(
+      !is.na(Expected.sample.size) ~ "Predicted data (n = 3163 specimens)",
+      AVONET.2 == "Y" ~ "New data (n = 5607 specimens)",
+      AVONET.2 == "N" ~ "AVONET 1.0 (n = 2020 specimens)"
+    )
+  )
+
+ggplot() +
+  
+  geom_polygon(
+    data = world_map,
+    aes(
+      x = long,
+      y = lat,
+      group = group
+    ),
+    fill = "grey95",
+    color = "grey70",
+    linewidth = 0.2
+  ) +
+  
+  geom_point(
+    data = museum_data,
+    aes(
+      x = Longitude,
+      y = Latitude,
+      size = Count_bin,
+      color = Museum_status
+    ),
+    shape = 21,
+    fill = NA,
+    stroke = 1.3,
+    alpha = 1
+  ) +
+  
+  scale_color_manual(
+    values = c(
+      "AVONET 1.0 (n = 2020 specimens)" = "red",
+      "New data (n = 5607 specimens)" = "steelblue",
+      "Predicted data (n = 3163 specimens)" = "darkorange"
+    )
+  ) +
+  
+  scale_size_manual(
+    values = c(
+      "1–10" = 1,
+      "11–50" = 2,
+      "51–100" = 4,
+      "101–250" = 6,
+      "251–500" = 8,
+      "501–999" = 10,
+      "1000+" = 14
+    ),
+    drop = FALSE
+  ) +
+  
+  coord_fixed(1.3) +
+  
+  xlim(-180, 180) +
+  ylim(-60, 85) +
+  
+  guides(
+
+  color = guide_legend(
+  title = NULL,
+  override.aes = list(
+    fill = NA,
+    shape = 21,
+    linewidth = 1.3,
+    size = 5
+  )
+),
+
+size = guide_legend(
+  title = "Specimen count",
+  override.aes = list(
+    size = c(
+      2,
+      3.5,
+      5.5,
+      7.5,
+      9.5,
+      11.5,
+      14
+    ),
+    colour = "black"
+  )
+)
+
+) +
+  theme_void() +
+
+theme(
+
+  legend.position = "right",
+
+  panel.background = element_rect(
+    fill = "white",
+    color = NA
+  ),
+
+  plot.background = element_rect(
+    fill = "white",
+    color = NA
+  ),
+
+  legend.title = element_text(
+  size = 16,
+  face = "bold"
+),
+
+legend.text = element_text(
+  size = 13
+),
+
+legend.key.height = unit(
+  0.85,
+  "cm"
+),
+
+legend.key.width = unit(
+  0.85,
+  "cm"
+),
+
+legend.spacing.y = unit(
+  0.10,
+  "cm"
+)
+
+)
+
+ggsave(
+  "../results/Museum_map/museum_collection_map.pdf",
+  width = 16,
+  height = 12
+)
+```
+Now a map color-coded by number of specimens per country
+```{r}
+library(tidyverse)
+library(maps)
+
+country_counts <- bulbuls %>%
+  filter(!is.na(Country_WRI)) %>%
+  count(
+    Country_WRI,
+    name = "Specimen_count"
+  )
+
+world_map <- map_data("world")
+
+world_map_counts <- world_map %>%
+  left_join(
+    country_counts,
+    by = c("region" = "Country_WRI")
+  ) %>%
+  mutate(
+    Specimen_count = replace_na(
+      Specimen_count,
+      0
+    ),
+    
+    Count_bin = case_when(
+      Specimen_count == 0 ~ "0",
+      Specimen_count < 10 ~ "1–9",
+      Specimen_count < 50 ~ "10–49",
+      Specimen_count < 100 ~ "50–99",
+      Specimen_count < 500 ~ "100–499",
+      Specimen_count < 1000 ~ "500–999",
+      TRUE ~ "1000+"
+    )
+  )
+
+world_map_counts <- world_map_counts %>%
+  mutate(
+    Count_bin = factor(
+      Count_bin,
+      levels = c(
+        "0",
+        "1–9",
+        "10–49",
+        "50–99",
+        "100–499",
+        "500–999",
+        "1000+"
+      )
+    )
+  )
+
+# Plot
+ggplot(
+  world_map_counts,
+  aes(
+    long,
+    lat,
+    group = group,
+    fill = Count_bin
+  )
+) +
+
+  geom_polygon(
+    color = "grey60",
+    linewidth = 0.15
+  ) +
+
+scale_fill_manual(
+  values = c(
+    "0" = "grey90",
+    "1–9" = "#fee5d9",
+    "10–49" = "#fcbba1",
+    "50–99" = "#fc9272",
+    "100–499" = "#fb6a4a",
+    "500–999" = "#de2d26",
+    "1000+" = "#a50f15"
+  ),
+  drop = FALSE,
+  name = "Individuals (n = 7627)",
+  guide = guide_legend(
+    reverse = TRUE,
+    
+    keyheight = unit(1.2, "cm"),
+    keywidth = unit(1.2, "cm")
+  )
+) +
+
+  coord_fixed(
+  1.3,
+  xlim = c(-20, 160),
+  ylim = c(-40, 60)
+) +
+  theme_void() +
+  theme(
+  legend.position = "right",
+
+  legend.title = element_text(
+    size = 18,
+    face = "bold"
+  ),
+
+  legend.text = element_text(
+    size = 16
+  ),
+
+  legend.key.height = unit(1.2, "cm"),
+  legend.key.width = unit(1.2, "cm"),
+
+  legend.spacing.y = unit(0.25, "cm")
+)
+
+ggsave(
+  "../results/Museum_map/country_specimen_counts_map.pdf",
+  width = 16,
+  height = 12
+)
+
+setdiff(
+  unique(country_counts$Country_WRI),
+  unique(world_map$region)
+)  
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Belgian Congo"] <- "Democratic Republic of the Congo"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Congo"] <- "Democratic Republic of the Congo"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Congo, Dem. Rep. of the"] <- "Democratic Republic of the Congo"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Comoros Islands"] <- "Comoros"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "DRC"] <- "Democratic Republic of the Congo"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Gabon?"] <- "Gabon"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Hong Kong"] <- "China"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Indonesia (Java)"] <- "Indonesia"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Indonesia (probably"] <- "Indonesia"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Liberia (?)"] <- "Liberia"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Maritius"] <- "Mauritius"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Mascarene Islands"] <- "Mauritius"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Phillippines"] <- "Philippines"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "United Republic of Tanzania"] <- "Tanzania"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "Zaire"] <- "Democratic Republic of the Congo"
+bulbuls$Country_WRI[bulbuls$Country_WRI == "France"] <- "FFrance"
+
+```
+Now I need one file with the plotting data, that includes specimen-level trait data, attached to range size and ecological niceh breadth
+```{r}
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
+str(bulbuls)
+range_sizes <- read.csv("../data/Bulbul_rangesize.csv", stringsAsFactors = FALSE)
+str(range_sizes)
+
+#Check for differences in AviList between the two data frames
+setdiff(
+  unique(bulbuls$AviList),
+  unique(range_sizes$AviList)
+)
+
+setdiff(
+  unique(range_sizes$AviList),
+  unique(bulbuls$AviList)
+)
+
+#Add Museum/Field column
+bulbuls <- bulbuls %>%
+  mutate(
+    Data.source = ifelse(
+      Source != "Field1",
+      "Museum",
+      "Field"
+    )
+  )
+
+#Make any trait values that are 3 SD away from the mean for that trait in that species into NA, where SD is calculated from the specimen measurements for that trait for that species in the bulbuls data frame
+bulbuls <- bulbuls %>%
+  group_by(AviList) %>%
+  mutate(
+    Beak.Length_Culmen = ifelse(
+      abs(Beak.Length_Culmen - mean(Beak.Length_Culmen, na.rm = TRUE)) > 3 * sd(Beak.Length_Culmen, na.rm = TRUE),
+      NA,
+      Beak.Length_Culmen
+    ),
+    Beak.Width = ifelse(
+      abs(Beak.Width - mean(Beak.Width, na.rm = TRUE)) > 3 * sd(Beak.Width, na.rm = TRUE),
+      NA,
+      Beak.Width
+    ),
+    Beak.Depth = ifelse(
+      abs(Beak.Depth - mean(Beak.Depth, na.rm = TRUE)) > 3 * sd(Beak.Depth, na.rm = TRUE),
+      NA,
+      Beak.Depth
+    ),
+    Tarsus.Length = ifelse(
+      abs(Tarsus.Length - mean(Tarsus.Length, na.rm = TRUE)) > 3 * sd(Tarsus.Length, na.rm = TRUE),
+      NA,
+      Tarsus.Length
+    ),
+    Wing.Length = ifelse(
+      abs(Wing.Length - mean(Wing.Length, na.rm = TRUE)) > 3 * sd(Wing.Length, na.rm = TRUE),
+      NA,
+      Wing.Length
+    ),
+    Gape_Width = ifelse(
+      abs(Gape_Width - mean(Gape_Width, na.rm = TRUE)) > 3 * sd(Gape_Width, na.rm = TRUE),
+      NA,
+      Gape_Width
+    ),
+    Tail.Length = ifelse(
+      abs(Tail.Length - mean(Tail.Length, na.rm = TRUE)) > 3 * sd(Tail.Length, na.rm = TRUE),
+      NA,
+      Tail.Length
+    )
+  ) %>%
+  ungroup()
+
+#Now merge it all
+bulbul_rangesize <- bulbuls %>%
+  left_join(
+    range_sizes %>%
+      select(
+        AviList,
+        Range.Size,
+        Mass,
+        Migration,
+        Habitat,
+        Habitat.Density,
+        Trophic.Level,
+        Trophic.Niche,
+        Primary.Lifestyle
+      ) %>%
+      distinct(AviList, .keep_all = TRUE),
+    by = "AviList"
+  )
+str(bulbul_rangesize)
+
+write.csv(bulbul_rangesize, "../data/Bulbul_plotting.csv", row.names = FALSE)
+```
+Yale Peabody Museum holdings and priority list creation
+```{r}
+ypm <- read.xlsx("../data/Holdings/YPM_holdings.xlsx")
+str(ypm)
+
+# Extract species and subspecies
+ypm_parsed <- ypm %>%
+  mutate(
+    taxon_string = str_match(Holdings, ":\\s*([^:]+):")[,2],
+    
+    Species = str_extract(taxon_string, "^[A-Z][a-zA-Z-]+\\s+[a-zA-Z-]+"),
+    
+    Subspecies = str_match(
+      taxon_string,
+      "^[A-Z][a-zA-Z-]+\\s+[a-zA-Z-]+\\s+([a-zA-Z-]+)"
+    )[,2]
+  )
+
+# Count specimens per species-subspecies combination
+YPM_summary <- ypm_parsed %>%
+  count(
+    Species,
+    Subspecies,
+    name = "Specimen.count.in.YPM"
+  ) %>%
+  arrange(desc(Specimen.count.in.YPM))
+
+YPM_summary
+
+#Now need to match the specimen counts from AVONET to the YPM summary, and create a priority list for YPM based on the number of specimens they have for each species, and the number of specimens in AVONET, with the goal of reaching 30 specimens in AVONET for each species. The priority list should include the species name, the number of specimens in YPM, the number of specimens in AVONET, and the number of specimens needed from YPM to reach 30 specimens in AVONET.
+bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated_3traits.csv", stringsAsFactors = FALSE)
+ypm_priority <- YPM_summary %>%
+  left_join(
+    bulbul_specimen_counts %>%
+      select(AviList, Specimen.count.in.AVONET = n),
+    by = c("Species" = "AviList")
+  ) %>%
+  mutate(
+    Specimen.count.in.AVONET = ifelse(
+      is.na(Specimen.count.in.AVONET),
+      0,
+      Specimen.count.in.AVONET
+    ),
+    Requested.samples = ifelse(
+      Specimen.count.in.AVONET < 30,
+      pmin(
+        30 - Specimen.count.in.AVONET,
+        Specimen.count.in.YPM
+      ),
+      0
+    )
+  ) %>%
+  select(
+    Species,
+    Subspecies,
+    Specimen.count.in.YPM,
+    Specimen.count.in.AVONET,
+    Requested.samples
+  ) %>%
+  arrange(Specimen.count.in.AVONET)
+
+#Write to xlsx
+write.xlsx(ypm_priority, "../data/Holdings/YPM_priority_list.xlsx", rowNames = FALSE)
+
+#Load it again and redo the Specimen.count.in.AVONET and Requested.samples columns to make sure they are correct, and then write it again
+ypm_priority <- read.xlsx("../data/Holdings/YPM_priority_list.xlsx")
+str(ypm_priority)
+
+ypm_priority <- ypm_priority %>%
+  left_join(
+    bulbul_specimen_counts %>%
+      select(AviList, Specimen.count.in.AVONET = n),
+    by = c("Species" = "AviList")
+  ) %>%
+  mutate(
+    Specimen.count.in.AVONET = ifelse(
+      is.na(Specimen.count.in.AVONET),
+      0,
+      Specimen.count.in.AVONET
+    ),
+    Requested.samples = ifelse(
+      Specimen.count.in.AVONET < 30,
+      pmin(
+        30 - Specimen.count.in.AVONET,
+        Specimen.count.in.YPM
+      ),
+      0
+    )
+  ) %>%
+  select(
+    Species,
+    Subspecies,
+    Specimen.count.in.YPM,
+    Specimen.count.in.AVONET,
+    Requested.samples
+  ) %>%
+  arrange(Specimen.count.in.AVONET)
+
+write.xlsx(ypm_priority, "../data/Holdings/YPM_priority_list.xlsx", rowNames = FALSE)
+```
+Making a revised targets file using vlookup
+```{r}
+targets <- read.xlsx("../data/Bulbul_target_list_8Jun_ER.xlsx")
+str(targets)
+
+revised <- read.xlsx("../data/Bulbul_specimen_counts_to_reach_30.xlsx")
+str(revised)
+
+revised <- revised %>%
+  left_join(
+    targets %>% select(Species, Notes),
+    by = "Species"
+  )
+str(revised)
+write.xlsx(revised, "../data/Bulbul_target_list_8Jun_ER.xlsx", rowNames = FALSE)
 
 ```

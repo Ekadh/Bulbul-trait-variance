@@ -1,86 +1,86 @@
 ,Species,Specimen count in KU collections,Current AVONET count,Comments
-1,Hypsipetes siquijorensis,14,2,"Priority species, definitely should measure all if possible"
-2,Bleda ugandae,12,5,"Priority species, definitely should measure all if possible"
-3,Hypsipetes mindorensis,7,6,"Priority species, definitely should measure all if possible"
-4,Phyllastrephus hypochloris,1,8,"Priority species, can add this one specimen from a new locality"
-5,Pycnonotus erythropthalmos,11,8,"Priority species, definitely should measure all if possible"
-7,Alophoixus finschii,3,10,Near Threatened species with decently large range
-6,Setornis criniger,3,10,"Very range restricted species with size dimorphism between sexes, need more specimens"
-8,Criniger olivaceus,10,13,"Vulnerable species with small range, need more specimens"
-9,Iole palawanensis,9,10,"Range restricted, would be good to measure"
-10,Hypsipetes everetti,53,13,"Range restricted, would be good to measure"
-11,Hypsipetes amaurotis,61,10,Abundant species but good to get more from outside mainland Japan
-12,Arizelocichla montana,5,10,"Restricted mountain greenbul, would be good to measure more"
-13,Arizelocichla tephrolaema,13,10,"Restricted mountain greenbul, would be good to measure more"
-14,Tricholestes criniger,7,16,Always good to get more
-15,Hypsipetes madagascariensis,3,10,"Range restricted, would be good to measure"
-16,Hypsipetes philippinus,230,10,"Range restricted, would be good to measure at least 10-20 more"
-17,Hypsipetes rufigularis,8,10,"Range restricted, would be good to measure"
-18,Pycnonotus melanoleucos,1,11,"Scarce species, can add this one specimen"
-19,Ixos mcclellandii,39,11,Can add more from India
-20,Ixos malaccensis,2,11,"Island bulbul, should add more specimens"
-21,Eurillas gracilis,9,14,"Need more museum specimens, current many are field specimens"
-22,Eurillas curvirostris,3,15,"Need more museum specimens, current many are field specimens"
-23,Phyllastrephus albigularis,7,11,"Need more museum specimens, current many are field specimens"
-24,Pycnonotus finlaysoni,10,10,"Abundant and widespread, should increase sampling for subpopulations"
-25,Ixos virescens,3,10,"Range restricted island bulbul, would be good to measure"
-26,Chlorocichla falkensteini,3,10,"Small range, can add more specimens"
-27,Hemixos castanonotus,32,10,"Widespread, should try and sample more"
-28,Hemixos flavala,7,10,"Widespread, should try and sample more"
-29,Atimastillas flavicollis,2,10,Always good to add more
-31,Baeopogon clamans,3,10,"Widespread, should try and sample more"
-32,Baeopogon indicator,1,10,"Widespread, should try and sample more"
-33,Thescelocichla leucopleura,7,10,"Widespread but habitat specific, monotypic genus, should try to sample more"
-35,Pycnonotus flavescens,8,11,Always good to add more
-36,Phyllastrephus strepitans,3,11,"Clear M-F differences, should measure more"
-37,Iole olivacea,5,13,Always good to add more
-39,Pycnonotus blanfordi,2,10,"Abundant within a small range, should sample more"
-40,Pycnonotus brunneus,10,10,"Widespread, should try and sample more"
-41,Hypsipetes leucocephalus,9,10,"Widespread, should try and sample more"
-42,Phyllastrephus xavieri,6,13,"Clear M-F differences, should measure more"
-43,Phyllastrephus poensis,13,11,Always good to add more
-44,Phyllastrephus poliocephalus,1,11,Always good to add more
-45,Alophoixus bres,42,10,Always good to add more
-46,Alophoixus ochraceus,19,10,Always good to add more
-47,Andropadus tephrolaemus,1,10,Always good to add more
-48,Phyllastrephus fischeri,1,10,Always good to add more
-49,Pycnonotus barbatus (ssp tricolor),2,44,"We have less of this subspecies, can add"
-50,Chlorocichla simplex,11,11,Always good to add more
-51,Criniger ndussumensis,3,11,Always good to add more
-52,Eurillas ansorgei,1,11,Always good to add more
-53,Iole propinqua,9,11,Always good to add more
-54,Ixonotus guttatus,2,11,Always good to add more
-55,Alophoixus pallidus,37,17,Always good to add more
-56,Bleda eximius,21,17,Always good to add more
-57,Pycnonotus cyaniventris,1,17,Always good to add more
-58,Andropadus gracilirostris,3,18,Always good to add more
-59,Pycnonotus atriceps,17,13,Always good to add more
-60,Pycnonotus plumosus,28,13,Always good to add more
-61,Criniger barbatus,27,14,Always good to add more
-62,Eurillas gracilis,9,14,Always good to add more
-63,Eurillas curvirostris,3,15,Always good to add more
-64,Criniger calurus,26,16,Always good to add more
-65,Criniger chloronotus,8,16,Always good to add more
-66,Alophoixus pallidus,37,17,Always good to add more
-67,Bleda eximius,21,17,Always good to add more
-68,Pycnonotus cyaniventris,1,17,Always good to add more
-69,Andropadus gracilirostris,3,18,Always good to add more
-70,Bleda canicapillus,33,19,Always good to add more
-71,Pycnonotus plumosus,28,13,Many specimens coming from other museums already
-72,Bleda syndactylus,46,95,No need for more unless a particular subpopulation
-73,Spizixos semitorques,25,20,No need for more unless a particular subpopulation
-74,Phyllastrephus icterinus,58,30,Can always add more but have enough specimens across range
-75,Bleda notatus,25,219,Already have enough with subpopulations
-76,Eurillas virens,118,153,Already have enough with subpopulations
-77,Eurillas latirostris,147,527,Already have enough with subpopulations
-78,Pycnonotus urostictus,116,10,"Lot more coming from UPLB, no need for more"
-79,Pycnonotus leucogenys,1,30,Already have enough with subpopulations
-80,Pycnonotus sinensis,7,30,Already have enough with subpopulations
-81,Pycnonotus goiavier,50,40,"No need for more, already have more coming from philippines"
-82,Pycnonotus eutilotus,4,20,"No need for more, already have more coming from philippines"
-83,Pycnonotus xanthopygos,1,21,"No need for more, already have subpopulation-level data"
-84,Pycnonotus aurigaster,1,30,Already have enough with subpopulations
-85,Pycnonotus leucogenys,1,30,Already have enough with subpopulations
-86,Pycnonotus jocosus,9,40,Already have enough with subpopulations
-87,Pycnonotus barbatus,46,44,Already have enough with subpopulations
-,Pycnonotus cafer,16,40,Already have enough with subpopulations
+1,Hypsipetes siquijorensis,,2,"Priority species, definitely should measure all if possible"
+2,Bleda ugandae,,5,"Priority species, definitely should measure all if possible"
+3,Hypsipetes mindorensis,,6,"Priority species, definitely should measure all if possible"
+4,Phyllastrephus hypochloris,,8,"Priority species, can add this one specimen from a new locality"
+5,Pycnonotus erythropthalmos,,8,"Priority species, definitely should measure all if possible"
+7,Alophoixus finschii,,10,Near Threatened species with decently large range
+6,Setornis criniger,,10,"Very range restricted species with size dimorphism between sexes, need more specimens"
+8,Criniger olivaceus,,13,"Vulnerable species with small range, need more specimens"
+9,Iole palawanensis,,10,"Range restricted, would be good to measure"
+10,Hypsipetes everetti,,13,"Range restricted, would be good to measure"
+11,Hypsipetes amaurotis,,10,Abundant species but good to get more from outside mainland Japan
+12,Arizelocichla montana,,10,"Restricted mountain greenbul, would be good to measure more"
+13,Arizelocichla tephrolaema,,10,"Restricted mountain greenbul, would be good to measure more"
+14,Tricholestes criniger,,16,Always good to get more
+15,Hypsipetes madagascariensis,,10,"Range restricted, would be good to measure"
+16,Hypsipetes philippinus,,10,"Range restricted, would be good to measure at least 10-20 more"
+17,Hypsipetes rufigularis,,10,"Range restricted, would be good to measure"
+18,Pycnonotus melanoleucos,,11,"Scarce species, can add this one specimen"
+19,Ixos mcclellandii,,11,Can add more from India
+20,Ixos malaccensis,,11,"Island bulbul, should add more specimens"
+21,Eurillas gracilis,,14,"Need more museum specimens, current many are field specimens"
+22,Eurillas curvirostris,,15,"Need more museum specimens, current many are field specimens"
+23,Phyllastrephus albigularis,,11,"Need more museum specimens, current many are field specimens"
+24,Pycnonotus finlaysoni,,10,"Abundant and widespread, should increase sampling for subpopulations"
+25,Ixos virescens,,10,"Range restricted island bulbul, would be good to measure"
+26,Chlorocichla falkensteini,,10,"Small range, can add more specimens"
+27,Hemixos castanonotus,,10,"Widespread, should try and sample more"
+28,Hemixos flavala,,10,"Widespread, should try and sample more"
+29,Atimastillas flavicollis,,10,Always good to add more
+31,Baeopogon clamans,,10,"Widespread, should try and sample more"
+32,Baeopogon indicator,,10,"Widespread, should try and sample more"
+33,Thescelocichla leucopleura,,10,"Widespread but habitat specific, monotypic genus, should try to sample more"
+35,Pycnonotus flavescens,,11,Always good to add more
+36,Phyllastrephus strepitans,,11,"Clear M-F differences, should measure more"
+37,Iole olivacea,,13,Always good to add more
+39,Pycnonotus blanfordi,,10,"Abundant within a small range, should sample more"
+40,Pycnonotus brunneus,,10,"Widespread, should try and sample more"
+41,Hypsipetes leucocephalus,,10,"Widespread, should try and sample more"
+42,Phyllastrephus xavieri,,13,"Clear M-F differences, should measure more"
+43,Phyllastrephus poensis,,11,Always good to add more
+44,Phyllastrephus poliocephalus,,11,Always good to add more
+45,Alophoixus bres,,10,Always good to add more
+46,Alophoixus ochraceus,,10,Always good to add more
+47,Andropadus tephrolaemus,,10,Always good to add more
+48,Phyllastrephus fischeri,,10,Always good to add more
+49,Pycnonotus barbatus (ssp tricolor),,44,"We have less of this subspecies, can add"
+50,Chlorocichla simplex,,11,Always good to add more
+51,Criniger ndussumensis,,11,Always good to add more
+52,Eurillas ansorgei,,11,Always good to add more
+53,Iole propinqua,,11,Always good to add more
+54,Ixonotus guttatus,,11,Always good to add more
+55,Alophoixus pallidus,,17,Always good to add more
+56,Bleda eximius,,17,Always good to add more
+57,Pycnonotus cyaniventris,,17,Always good to add more
+58,Andropadus gracilirostris,,18,Always good to add more
+59,Pycnonotus atriceps,,13,Always good to add more
+60,Pycnonotus plumosus,,13,Always good to add more
+61,Criniger barbatus,,14,Always good to add more
+62,Eurillas gracilis,,14,Always good to add more
+63,Eurillas curvirostris,,15,Always good to add more
+64,Criniger calurus,,16,Always good to add more
+65,Criniger chloronotus,,16,Always good to add more
+66,Alophoixus pallidus,,17,Always good to add more
+67,Bleda eximius,,17,Always good to add more
+68,Pycnonotus cyaniventris,,17,Always good to add more
+69,Andropadus gracilirostris,,18,Always good to add more
+70,Bleda canicapillus,,19,Always good to add more
+71,Pycnonotus plumosus,,13,Many specimens coming from other museums already
+72,Bleda syndactylus,,95,No need for more unless a particular subpopulation
+73,Spizixos semitorques,,20,No need for more unless a particular subpopulation
+74,Phyllastrephus icterinus,,30,Can always add more but have enough specimens across range
+75,Bleda notatus,,219,Already have enough with subpopulations
+76,Eurillas virens,,153,Already have enough with subpopulations
+77,Eurillas latirostris,,527,Already have enough with subpopulations
+78,Pycnonotus urostictus,,10,"Lot more coming from UPLB, no need for more"
+79,Pycnonotus leucogenys,,30,Already have enough with subpopulations
+80,Pycnonotus sinensis,,30,Already have enough with subpopulations
+81,Pycnonotus goiavier,,40,"No need for more, already have more coming from philippines"
+82,Pycnonotus eutilotus,,20,"No need for more, already have more coming from philippines"
+83,Pycnonotus xanthopygos,,21,"No need for more, already have subpopulation-level data"
+84,Pycnonotus aurigaster,,30,Already have enough with subpopulations
+85,Pycnonotus leucogenys,,30,Already have enough with subpopulations
+86,Pycnonotus jocosus,,40,Already have enough with subpopulations
+87,Pycnonotus barbatus,,44,Already have enough with subpopulations
+,Pycnonotus cafer,,40,Already have enough with subpopulations
