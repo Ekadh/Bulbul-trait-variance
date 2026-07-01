@@ -3,8 +3,8 @@
 2,Bleda ugandae,,5,"Priority species, definitely should measure all if possible"
 3,Hypsipetes mindorensis,,6,"Priority species, definitely should measure all if possible"
 4,Phyllastrephus hypochloris,,8,"Priority species, can add this one specimen from a new locality"
-5,Pycnonotus erythropthalmos,,8,"Priority species, definitely should measure all if possible"
-7,Alophoixus finschii,,10,Near Threatened species with decently large range
+5,Rubigula erythropthalmos,,8,"Priority species, definitely should measure all if possible"
+7,Iole finschii,,10,Near Threatened species with decently large range
 6,Setornis criniger,,10,"Very range restricted species with size dimorphism between sexes, need more specimens"
 8,Criniger olivaceus,,13,"Vulnerable species with small range, need more specimens"
 9,Iole palawanensis,,10,"Range restricted, would be good to measure"
@@ -16,7 +16,7 @@
 15,Hypsipetes madagascariensis,,10,"Range restricted, would be good to measure"
 16,Hypsipetes philippinus,,10,"Range restricted, would be good to measure at least 10-20 more"
 17,Hypsipetes rufigularis,,10,"Range restricted, would be good to measure"
-18,Pycnonotus melanoleucos,,11,"Scarce species, can add this one specimen"
+18,Microtarsus melanoleucos,,11,"Scarce species, can add this one specimen"
 19,Ixos mcclellandii,,11,Can add more from India
 20,Ixos malaccensis,,11,"Island bulbul, should add more specimens"
 21,Eurillas gracilis,,14,"Need more museum specimens, current many are field specimens"
@@ -33,7 +33,7 @@
 33,Thescelocichla leucopleura,,10,"Widespread but habitat specific, monotypic genus, should try to sample more"
 35,Pycnonotus flavescens,,11,Always good to add more
 36,Phyllastrephus strepitans,,11,"Clear M-F differences, should measure more"
-37,Iole olivacea,,13,Always good to add more
+37,Iole olivacea,,13,"Check for Iole crypta (subsp. cryptus), or Iole viridescens "
 39,Pycnonotus blanfordi,,10,"Abundant within a small range, should sample more"
 40,Pycnonotus brunneus,,10,"Widespread, should try and sample more"
 41,Hypsipetes leucocephalus,,10,"Widespread, should try and sample more"
@@ -44,7 +44,7 @@
 46,Alophoixus ochraceus,,10,Always good to add more
 47,Andropadus tephrolaemus,,10,Always good to add more
 48,Phyllastrephus fischeri,,10,Always good to add more
-49,Pycnonotus barbatus (ssp tricolor),,44,"We have less of this subspecies, can add"
+49,Pycnonotus barbatus,,44,"We have less of this subspecies, can add"
 50,Chlorocichla simplex,,11,Always good to add more
 51,Criniger ndussumensis,,11,Always good to add more
 52,Eurillas ansorgei,,11,Always good to add more
@@ -54,7 +54,7 @@
 56,Bleda eximius,,17,Always good to add more
 57,Pycnonotus cyaniventris,,17,Always good to add more
 58,Andropadus gracilirostris,,18,Always good to add more
-59,Pycnonotus atriceps,,13,Always good to add more
+59,Microtarsus melanocephalos,,13,Always good to add more
 60,Pycnonotus plumosus,,13,Always good to add more
 61,Criniger barbatus,,14,Always good to add more
 62,Eurillas gracilis,,14,Always good to add more

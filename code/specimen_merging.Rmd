@@ -78,6 +78,10 @@ for (i in 1:nrow(cumz)) {
   }
 }
 cumz$Date.collected <- as.numeric(cumz$Date.collected)
+#Cambridge University Museum of Zoology (CUMZ) dataset 2 - UK (measured by Elizabeth Steell)
+cumz2 <- read.xlsx("../data/Collaborator data/Sample data sheet EMS2.xlsx")
+str(cumz2)
+cumz2$Measurer <- "EMS"
 #UMICH initial dataset - Probst
 umich <- read.csv("../data/Collaborator data/Sample_data_sheet_UMICH_Probst.csv")
 str(umich)
@@ -206,10 +210,50 @@ phil$Country_WRI <- "Thailand"
 #Remove phil$Locality
 phil <- phil %>%
   select(-Locality)
-
+#Luke Powell's banding dataset from Equatorial Guinea
+luke <- read.xlsx("../data/Collaborator data/Sample_data_sheet_LP_EqGuinea.xlsx")
+str(luke)
+luke$Country_WRI <- "Equatorial Guinea"
+#Chima Nwaogu's common bulbul dataset from Nigeria
+chima <- read.xlsx("../data/Collaborator data/Sample_data_sheet_CJN_barbatus.xlsx")
+str(chima)
+chima <- chima %>%
+  filter(Age > 1)
+chima$Date.collected <- as.character(chima$Date.collected)
+#Maarten Hoepel's data from RMNH in the Netherlands
+maarten <- read.xlsx("../data/Collaborator data/Sample_data_sheet_MH_RMNH.xlsx")
+str(maarten)
+#Jaden Tran's data from University of Western Ontario, Canada
+uwo <- read.xlsx("../data/Collaborator data/Sample_data_sheet_JT_UWO.xlsx")
+str(uwo)
+uwo$Comments <- as.character(uwo$Comments)
+#Olivier Pauwels and René Marie Lafontaine's data from RBINS in Belgium
+rbins <- read.xlsx("../data/Collaborator data/Sample_data_sheet_RBINS.xlsx")
+str(rbins)
+rbins$Subspecies <- as.character(rbins$Subspecies)
+#Caroline Dingle's data from Burke Museum, University of Washington, USA
+burke <- read.xlsx("../data/Collaborator data/Sample_data_sheet_CJD_Burke.xlsx")
+str(burke)
+burke$Subspecies <- as.character(burke$Subspecies)
+#UMich 2nd dataset - measured by Brian Weeks
+umich2 <- read.csv("../data/Collaborator data/Sample_data_sheet_UMich_BRW.csv")
+str(umich2)
+umich2$KD <- umich2$Wing.length - umich2$First.secondary.length
+#ANSP dataset - measured by Luke J Musher
+ansp <- read.xlsx("../data/Collaborator data/Sample_data_sheet_LJM_ANSP.xlsx")
+str(ansp)
+ansp$`Kipp's_Distance` <- as.numeric( ansp$`Kipp's_Distance`)
+#RBINS dataset 2 - measured by Olivier Pauwels and René Marie Lafontaine
+rbins2 <- read.xlsx("../data/Collaborator data/Sample_data_sheet_RBINS2.xlsx")
+str(rbins2)
+rbins2$Subspecies <- as.character(rbins2$Subspecies)
+rbins2$Comments <- as.character(rbins2$Comments)
+#Cambridge again - measured by Carla du Toit, her second batch
+cdt2 <- read.xlsx("../data/Collaborator data/Sample data sheet CJD2.xlsx")
+str(cdt2)
 
 ####RENAME####
-naturalis2 <- naturalis2 |>
+cdt2 <- cdt2 |>
   rename(
     AviList = Scientific_Name,
     Beak.Length_Culmen = Bill_TotalCulmen,
@@ -228,24 +272,32 @@ naturalis2 <- naturalis2 |>
     Subspecies = Subspecies,
     Comments = Comments,
     Measurer = Measurer,
-    Source = Collection
+    Source = Collection,
+    #Mass = Mass,
+    Date.collected = Date.collected
   )
 
-phil <- phil |>
+umich2 <- umich2 |>
   rename(
-    AviList = AviList,
-    Tarsus.Length = Tarsus_Length,
-    Wing.Length = Wing.Chord,
-    Beak.Length_Culmen = Bill_TotalCulmen,
-    Beak.Width = Bill.Width,
-    Tail.Length = Tail_Length,
-    Country_WRI = Country_WRI,
-    Specimen.number = `Number/Code`,
+    AviList = Scientific.Name,
+    Tarsus.Length = Tarsus.length,
+    Wing.Length = Wing.length,
+    Beak.Length_Culmen = Total.culmen,
+    Beak.Length_Nares = Length.of.bill.from.nostril,
+    Beak.Width = Bill.width,
+    Beak.Depth = Bill.depth,
+    Gape_Width = Gape.width,
+    Kipps.Distance = KD,
+    Tail.Length = Tail.length,
+    Country_WRI = Country,
+    Specimen.number = CatalogNumber,
     Sex = Sex,
     Measurer = Measurer,
-    Date.collected = Date.collection,
-    Locality = Locality_PLNAME,
-    Mass = Mass
+    #Date.collected = Date.collected,
+    Locality = Locality,
+    Source = Collection,
+    Lat = Lat,
+    Lon = Lon
   )
 
 traits <- c(
@@ -271,17 +323,17 @@ for (trait in traits) {
       .groups = "drop"
     )
 
-  phil <- phil |>
+  cdt2 <- cdt2 |>
     left_join(avonet_stats, by = "AviList") |>
     mutate(
       !!trait := ifelse(
         !is.na(trait_sd) &
-        abs(.data[[trait]] - trait_mean) > 2 * trait_sd,
+        abs(.data[[trait]] - trait_mean) > 3 * trait_sd,
         NA,
         .data[[trait]]
       )
     ) |>
-    select(-trait_mean, -trait_sd)
+    dplyr::select(-trait_mean, -trait_sd)
 
 }
 
@@ -289,9 +341,9 @@ for (trait in traits) {
 bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv")
 bulbuls2 <- bind_rows(
   bulbuls,
-  phil %>% select(any_of(names(bulbuls)))
+  cdt2 %>% dplyr::select(any_of(names(bulbuls)))
 ) %>%
-  select(all_of(names(bulbuls)))
+  dplyr::select(all_of(names(bulbuls)))
 str(bulbuls2)
 write.csv(bulbuls2, "../data/Bulbul_AVONET_data_integrated.csv", row.names = FALSE)
 new_bulcount <- table(bulbuls2$AviList)
@@ -312,14 +364,14 @@ avonet_points <- merge(
 )
 
 #Museum means for each trait, by species
-phil_means <- phil |>
+cdt2_means <- cdt2 |>
   group_by(AviList) |>
   summarise(
     across(all_of(traits), ~mean(.x, na.rm=TRUE)),
     .groups="drop"
   )
-phil_points <- merge(
-  phil,
+cdt2_points <- merge(
+  cdt2,
   avonet_means,
   by="AviList",
   suffixes=c("_specimen","_mean")
@@ -369,13 +421,13 @@ ggplot(comparison_long,
 
 
 #Method 2: Highlighting species with specimen measurements in the SYSU dataset, and comparing those to the AVONET means for those species
-phil_species <- phil_points %>%
+cdt2_species <- cdt2_points %>%
     filter(!is.na(Wing.Length_specimen)) %>%
     pull(AviList) %>%
     unique()
 
 avonet_points_filtered <- avonet_points %>%
-    dplyr::filter(AviList %in% phil_species)
+    dplyr::filter(AviList %in% cdt2_species)
 
 avonet_long <- avonet_points_filtered %>%
   pivot_longer(
@@ -391,9 +443,9 @@ avonet_long <- avonet_points_filtered %>%
     values_to = "mean"
   ) %>%
   filter(Trait == Trait_mean) %>%
-  select(AviList, Trait, specimen, mean)
+  dplyr::select(AviList, Trait, specimen, mean)
 
-phil_long <- phil_points %>%
+cdt2_long <- cdt2_points %>%
   pivot_longer(
     cols = ends_with("_specimen"),
     names_to = "Trait",
@@ -407,7 +459,7 @@ phil_long <- phil_points %>%
     values_to = "mean"
   ) %>%
   filter(Trait == Trait_mean) %>%
-  select(AviList, Trait, specimen, mean)
+  dplyr::select(AviList, Trait, specimen, mean)
 
 ggplot() +
 
@@ -418,7 +470,7 @@ ggplot() +
   ) +
 
   geom_point(
-    data = phil_long,
+    data = cdt2_long,
     aes(mean, specimen),
     colour = "#D55E00",
     shape = 17,
@@ -442,7 +494,15 @@ ggplot() +
     y = "Specimen measurement"
   )
 
-ggsave("../results/Collaborator data comparisons/Phil comparison_Thailand.pdf", width = 12, height = 8)
+ggsave("../results/Collaborator data comparisons/Cambridge comparison_CDT2.pdf", width = 12, height = 8)
+
+
+#Load bulbuls again and remove any specimen rows that don't have any trait measurements for the traits we're interested in (Beak.Length_Culmen, Beak.Length_Nares, Beak.Width, Beak.Depth, Tarsus.Length, Wing.Length, Kipps.Distance, Tail.Length, Gape_Width)
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv")
+bulbuls <- bulbuls |>
+  filter(!is.na(Beak.Length_Culmen) | !is.na(Beak.Length_Nares) | !is.na(Beak.Width) | !is.na(Beak.Depth) | !is.na(Tarsus.Length) | !is.na(Wing.Length) | !is.na(Kipps.Distance) | !is.na(Tail.Length) | !is.na(Gape_Width))
+write.csv(bulbuls, "../data/Bulbul_AVONET_data_integrated.csv", row.names = FALSE)
+str(bulbuls)
 
 
 #Checking for specimens that are > 3 standard deviations from the AVONET mean for that species, for any trait
@@ -466,4 +526,29 @@ abs(florida_check$Beak.Length_Culmen - florida_check$culmen_mean) >
 2*florida_check$culmen_sd
 
 
+
+
+#Making the ANSP Beak.Length_Culmen measurements match current trait distribution in bulbuls by adding the difference between ANSP mean and bulbuls mean to each culmen measurement in ansp
+ansp_mean <- ansp |>
+  summarise(
+    ansp_culmen_mean = mean(Beak.Length_Culmen, na.rm=TRUE)
+  ) |>
+  pull(ansp_culmen_mean)
+
+bulbuls_mean <- bulbuls |>
+  filter(AviList %in% ansp$AviList) |>
+  summarise(
+    bulbuls_culmen_mean = mean(Beak.Length_Culmen, na.rm=TRUE)
+  ) |>
+  pull(bulbuls_culmen_mean)
+
+diff <- bulbuls_mean - ansp_mean
+
+df <- ansp |>
+  mutate(
+    Beak.Length_Culmen = Beak.Length_Culmen + diff
+  )
+
+#Put the modified ansp culmen data back into the ansp data frame
+ansp <- df
 ```

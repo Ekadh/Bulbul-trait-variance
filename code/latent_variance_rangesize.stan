@@ -3,48 +3,43 @@ data {
   int<lower=1> N;
   int<lower=1> S;
 
-  // Specimen-level response
-
   vector[N] wing;
 
-  // Species-level response
-
   vector[S] log_range;
+  vector[S] density;
+  vector[S] ESI;
 
-  // Species index
+  array[S] int<lower=0,upper=1> has_range;
+  array[S] int<lower=0,upper=1> has_density;
+  array[S] int<lower=0,upper=1> has_ESI;
 
   array[N] int<lower=1, upper=S> species;
 
-  // Sex
-
-  int<lower=1> n_sex;
-  array[N] int<lower=1, upper=n_sex> sex;
-
-  // Source
-
   int<lower=1> n_source;
   array[N] int<lower=1, upper=n_source> source;
-
-  // Phylogenetic Cholesky matrix
 
   matrix[S,S] L_A;
 }
 
 parameters {
 
-  // Global wing mean
+  // Global mean
 
   real alpha;
 
-  vector[n_sex] beta_sex;
+  // Random source effects
 
-  vector[n_source] beta_source;
+  vector[n_source] source_raw;
+
+  real<lower=0> sigma_source;
 
   // Species means
- 
+
   vector[S] species_mean_raw;
 
   real mu_mean;
+
+  real<lower=0> trait_mean;
 
   real<lower=0> sigma_mean;
 
@@ -58,45 +53,58 @@ parameters {
 
   // Range-size model
 
-  real alpha_R;
+  real alpha_range;
 
-  real beta_CV;
+  real beta_CV_range;
 
-  real<lower=0> sigma_R;
+  real<lower=0> sigma_range;
+
+  // Density model
+
+  real alpha_density;
+
+  real beta_CV_density;
+
+  real<lower=0> sigma_density;
+
+  // ESI model
+
+  real alpha_ESI;
+
+  real beta_CV_ESI;
+
+  real<lower=0> sigma_ESI;
+
 }
 
 transformed parameters {
 
-  // Species mean wing lengths
+  vector[n_source] source_effect;
 
   vector[S] log_species_mean;
 
   vector[S] species_mean;
 
-  // Species log-CVs
-
   vector[S] logCV;
-
-  // Species SDs
 
   vector[S] sigma_species;
 
-  // Mean model
+  source_effect =
+    sigma_source *
+    source_raw;
 
   log_species_mean =
     mu_mean +
-    sigma_mean * species_mean_raw;
+    sigma_mean *
+    species_mean_raw;
 
   species_mean =
     exp(log_species_mean);
 
-  // Phylogenetic log-CV model
-
   logCV =
     mu_logCV +
-    sigma_logCV * (L_A * z_logCV);
-
-  // Convert CV -> SD
+    sigma_logCV *
+    (L_A * z_logCV);
 
   for(i in 1:S){
 
@@ -105,79 +113,150 @@ transformed parameters {
       exp(logCV[i]);
 
   }
+
 }
 
 model {
 
+  //----------------------------------------------------------
   // Priors
+  //----------------------------------------------------------
 
-  alpha ~ normal(0, 5);
+  alpha ~ normal(0,5);
 
-  beta_sex ~ normal(0, 2);
+  source_raw ~ normal(0,1);
 
-  beta_source ~ normal(0, 2);
+  sigma_source ~ exponential(1);
 
-  // Species mean priors
-
-  mu_mean ~ normal(log(100), 1);
+  mu_mean ~ normal(log(trait_mean),1);
 
   sigma_mean ~ exponential(1);
 
   species_mean_raw ~ normal(0,1);
 
-  // log-CV priors
-
-  mu_logCV ~ normal(log(0.05), 1);
+  mu_logCV ~ normal(log(0.05),1);
 
   sigma_logCV ~ exponential(1);
 
   z_logCV ~ normal(0,1);
 
-  // Range-size priors
+  alpha_range ~ normal(0,5);
 
-  alpha_R ~ normal(0,5);
+  beta_CV_range ~ normal(0,1);
 
-  beta_CV ~ normal(0,1);
+  sigma_range ~ exponential(1);
 
-  sigma_R ~ exponential(1);
+  alpha_density ~ normal(0,5);
 
+  beta_CV_density ~ normal(0,1);
+
+  sigma_density ~ exponential(1);
+
+  alpha_ESI ~ normal(0,5);
+
+  beta_CV_ESI ~ normal(0,1);
+
+  sigma_ESI ~ exponential(1);
+
+  //----------------------------------------------------------
   // Specimen-level model
+  //----------------------------------------------------------
 
   for(n in 1:N){
 
     real mu_n;
 
     mu_n =
-      species_mean[species[n]] +
-      beta_sex[sex[n]] +
-      beta_source[source[n]];
 
-    wing[n] ~ normal(
-      mu_n,
-      sigma_species[species[n]]
-    );
+      species_mean[species[n]] +
+
+      source_effect[source[n]];
+
+    wing[n] ~
+
+      normal(
+
+        mu_n,
+
+        sigma_species[species[n]]
+
+      );
+
   }
 
-  // Species-level range-size model
+  //----------------------------------------------------------
+  // Species-level models
+  //----------------------------------------------------------
 
-  log_range ~ normal(
-    alpha_R +
-    beta_CV * logCV,
-    sigma_R
-  );
+  for(i in 1:S){
+
+    if(has_range[i] == 1){
+
+      log_range[i] ~
+
+        normal(
+
+          alpha_range +
+
+          beta_CV_range *
+
+          logCV[i],
+
+          sigma_range
+
+        );
+
+    }
+
+    if(has_density[i] == 1){
+
+      density[i] ~
+
+        normal(
+
+          alpha_density +
+
+          beta_CV_density *
+
+          logCV[i],
+
+          sigma_density
+
+        );
+
+    }
+
+    if(has_ESI[i] == 1){
+
+      ESI[i] ~
+
+        normal(
+
+          alpha_ESI +
+
+          beta_CV_ESI *
+
+          logCV[i],
+
+          sigma_ESI
+
+        );
+
+    }
+
+  }
+
 }
 
 generated quantities {
 
-  // Back-transformed CVs
-
   vector[S] CV_species;
-
-  // Predicted range size
 
   vector[S] predicted_range;
 
-  // Mean CV
+  vector[S] predicted_density;
+
+  vector[S] predicted_ESI;
 
   real mean_CV;
 
@@ -186,11 +265,41 @@ generated quantities {
     CV_species[i] =
       exp(logCV[i]);
 
+    predicted_range = rep_vector(0, S);
+    predicted_density = rep_vector(0, S);
+    predicted_ESI = rep_vector(0, S);
+
+  }
+
+  for(i in 1:S){
+
     predicted_range[i] =
-      alpha_R +
-      beta_CV * logCV[i];
+
+      alpha_range +
+
+      beta_CV_range *
+
+      logCV[i];
+
+    predicted_density[i] =
+
+      alpha_density +
+
+      beta_CV_density *
+
+      logCV[i];
+
+    predicted_ESI[i] =
+
+      alpha_ESI +
+
+      beta_CV_ESI *
+
+      logCV[i];
+
   }
 
   mean_CV =
     mean(CV_species);
+
 }

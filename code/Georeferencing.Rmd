@@ -132,77 +132,227 @@ write.csv(bulbuls_with_localities, "../data/Bulbul_AVONET_data_integrated_with_l
 Now use bulbul_unique_localities.csv and append all the missing specimen numbers and localities for bulbuls
 ```{r}
 library(stringr)
+library(tidyverse)
 
-bulbuls_unique_localities <- read.csv("../data/Bulbul_unique_localities.csv", stringsAsFactors = FALSE)
+bulbuls_localities <- read.csv("../data/Bulbul_final_georeferenced_localities_Batch1.csv", stringsAsFactors = FALSE)
 bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
 
-# Split specimen numbers into individual rows
-geo_specimens <- bulbuls_unique_localities %>%
+#Check for duplicate specimen numbers in bulbuls_localities
+bulbuls_localities %>%
   separate_rows(Specimen.number, sep = ",") %>%
-  mutate(Specimen.number = str_trim(Specimen.number))
+  mutate(Specimen.number = str_trim(Specimen.number)) %>%
+  count(Specimen.number) %>%
+  filter(n > 1)
 
-bulbuls_remaining <- bulbuls %>%
-  filter(!is.na(Specimen.number)) %>%
-  filter(!(Specimen.number %in% geo_specimens$Specimen.number))
+#Checking which specimen numbers in bulbuls_localities are present more than once in bulbuls
+locality_specimens <- bulbuls_localities %>%
+  separate_rows(Specimen.number, sep = ",") %>%
+  mutate(
+    Specimen.number = str_trim(Specimen.number)
+  ) %>%
+  pull(Specimen.number)
 
-# Clean locality
-bulbuls_remaining <- bulbuls_remaining %>%
-  mutate(Locality = str_squish(Locality))
+duplicate_matches <- bulbuls %>%
+  filter(
+    Specimen.number %in% locality_specimens
+  ) %>%
+  count(Specimen.number) %>%
+  filter(n > 1) %>%
+  arrange(desc(n))
 
-# Create lookup (deduplicated)
-bulbuls_lookup <- bulbuls %>%
-  select(Specimen.number, AviList) %>%
-  distinct(Specimen.number, .keep_all = TRUE)
+duplicate_matches
 
-# Join cleanly
-bulbuls_remaining <- bulbuls_remaining %>%
-  select(-AviList) %>%   # remove empty column if present
-  left_join(bulbuls_lookup, by = "Specimen.number")
+#Final merger
+locality_lookup <- bulbuls_localities %>%
+  separate_rows(Specimen.number, sep = ",") %>%
+  mutate(
+    Specimen.number = str_trim(Specimen.number)
+  ) %>%
+  select(
+    Specimen.number,
+    Lat,
+    Lon,
+    LocalityString
+  )
 
-# Summarise
-new_localities <- bulbuls_remaining %>%
-  filter(!is.na(Locality) & Locality != "") %>%
-  group_by(Locality, Country) %>%
+bulbuls <- bulbuls %>%
+  left_join(
+    locality_lookup,
+    by = "Specimen.number"
+  )
+str(bulbuls)
+write.csv(bulbuls, "../data/Bulbul_AVONET_data_integrated.csv", row.names = FALSE)
+
+##Before I get a new batch, I need to add a column to the bulbuls dataframe that is Locality_Corrected, which is the Locality values from the bulbuls_localities dataframe, matched by Specimen.number
+bulbuls <- bulbuls %>%
+  left_join(
+    locality_lookup %>% rename(Locality_Corrected = LocalityString),
+    by = "Specimen.number"
+  )
+
+# Create new georeferencing batch
+new_localities <- bulbuls %>%
+  filter(
+    is.na(Lat),
+    !is.na(Locality),
+    Locality != ""
+  ) %>%
+  mutate(
+    Locality = str_squish(Locality)
+  ) %>%
+  group_by(
+    Locality,
+    Country = Country_WRI,
+    Source
+  ) %>%
   summarise(
     Specimen.number = paste(unique(Specimen.number), collapse = ", "),
     AviList = paste(unique(AviList), collapse = ", "),
     n_specimens = n(),
     .groups = "drop"
-  )
-
-new_localities <- new_localities %>%
-  rename(
-    LocalityString = Locality,
-    Country = Country
   ) %>%
   mutate(
     State = "",
     County = "",
-    Lat = NA,
-    Lon = NA,
+    Lat = NA_real_,
+    Lon = NA_real_,
     `Correction Status` = "",
     Precision = "",
     `Error Polygon` = "",
     `Error Polygon (circular polygon)` = "",
     Multiplot = "",
-    AviList = AviList,
-    Specimen.number = Specimen.number,
-    n_specimens = n_specimens
+    Code = NA_character_
+  ) %>%
+  rename(
+    LocalityString = Locality
   ) %>%
   select(
-    LocalityString, Country, State, County, Lat, Lon,
-    `Correction Status`, Precision, `Error Polygon`,
-    `Error Polygon (circular polygon)`, Multiplot,
-    AviList, Specimen.number, n_specimens
+    LocalityString,
+    Country,
+    State,
+    County,
+    Lat,
+    Lon,
+    `Correction Status`,
+    Precision,
+    `Error Polygon`,
+    `Error Polygon (circular polygon)`,
+    Multiplot,
+    AviList,
+    Source,
+    Specimen.number,
+    n_specimens,
+    Code
   )
 
-final_dataset <- bind_rows(
-  bulbuls_unique_localities,
-  new_localities
+str(new_localities)
+
+write.csv(new_localities, "../data/Bulbul_final_georeferenced_localities.csv", row.names = FALSE)
+```
+Just checking which locality lat long bins would be best for the localiity-based random effect
+```{r}
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
+str(bulbuls)
+
+bulbuls %>%
+  filter(!is.na(Lat) & !is.na(Lon)) %>%
+  mutate(
+    locality =
+      paste(
+        round(Lat,1),
+        round(Lon,1)
+      )
+  ) %>%
+  count(AviList, locality)
+
+hist(table(bulbuls$locality))
+
+bulbuls <- bulbuls |>
+  mutate(
+    locality =
+      paste(
+        Lat,
+        Lon,
+        sep = "_"
+      )
+  )
+
+locality_sizes <-
+  bulbuls |>
+  count(AviList, locality)
+
+summary(locality_sizes$n)
+
+hist(locality_sizes$n,
+     breaks = 30)
+
+species_localities <-
+  bulbuls |>
+  group_by(AviList) |>
+  summarise(
+    n_localities =
+      n_distinct(locality)
+  )
+
+summary(
+  species_localities$n_localities
 )
 
-str(final_dataset)
+hist(
+  species_localities$n_localities
+)
 
-final_dataset$Code <- NA
-write.csv(final_dataset, "../data/Bulbul_final_georeferenced_localities.csv", row.names = FALSE)
+mean(
+  locality_sizes$n == 1
+)
+
+cluster_sizes <- c(
+  0.1,
+  0.25,
+  0.5,
+  1
+)
+
+for(s in cluster_sizes){
+
+  tmp <- bulbuls |>
+
+    mutate(
+
+      lat_cluster =
+        round(Lat/s)*s,
+
+      lon_cluster =
+        round(Lon/s)*s,
+
+      locality =
+        paste(
+          lat_cluster,
+          lon_cluster
+        )
+
+    ) |>
+
+    count(
+      AviList,
+      locality
+    )
+
+  cat("\n")
+
+  cat(
+    "Cluster size:",
+    s,
+    "degrees\n"
+  )
+
+  print(summary(tmp$n))
+
+  cat(
+    "Singleton proportion:",
+    mean(tmp$n==1),
+    "\n"
+  )
+
+}
 ```
