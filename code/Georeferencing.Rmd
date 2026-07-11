@@ -134,8 +134,8 @@ Now use bulbul_unique_localities.csv and append all the missing specimen numbers
 library(stringr)
 library(tidyverse)
 
-bulbuls_localities <- read.csv("../data/Bulbul_final_georeferenced_localities_Batch1.csv", stringsAsFactors = FALSE)
-bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
+bulbuls_localities <- read.csv("../data/Bulbul_final_georeferenced_localities_Batch2complete.csv", stringsAsFactors = FALSE)
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv", stringsAsFactors = FALSE)
 
 #Check for duplicate specimen numbers in bulbuls_localities
 bulbuls_localities %>%
@@ -162,26 +162,43 @@ duplicate_matches <- bulbuls %>%
 
 duplicate_matches
 
+#Remove all the duplicate rows from bulbuls that are in the duplicate_matches dataframe (but keep the first occurrence of each duplicate)
+bulbuls <- bulbuls %>%
+  group_by(Specimen.number) %>%
+  filter(
+    !(Specimen.number %in% duplicate_matches$Specimen.number & row_number() > 1)
+  ) %>%
+  ungroup()
+
 #Final merger
 locality_lookup <- bulbuls_localities %>%
   separate_rows(Specimen.number, sep = ",") %>%
   mutate(
     Specimen.number = str_trim(Specimen.number)
-  ) %>%
+  ) %>% rename(Locality_Corrected = LocalityString) %>%
   select(
     Specimen.number,
     Lat,
     Lon,
-    LocalityString
+    Locality_Corrected
   )
 
+## Update bulbuls with georeferenced values from locality_lookup for matching Specimen.number
+# Use left_join and coalesce to update Lat, Lon, Locality_Corrected only where NA
 bulbuls <- bulbuls %>%
   left_join(
     locality_lookup,
-    by = "Specimen.number"
-  )
+    by = "Specimen.number",
+    suffix = c("", ".lookup")
+  ) %>%
+  mutate(
+    Lat = coalesce(Lat, Lat.lookup),
+    Lon = coalesce(Lon, Lon.lookup),
+    Locality_Corrected = Locality_Corrected.lookup
+  ) %>%
+  select(-Lat.lookup, -Lon.lookup, -Locality_Corrected.lookup)
 str(bulbuls)
-write.csv(bulbuls, "../data/Bulbul_AVONET_data_integrated.csv", row.names = FALSE)
+write.csv(bulbuls, "../data/Bulbul_AVONET_data_integrated_trimmed.csv", row.names = FALSE)
 
 ##Before I get a new batch, I need to add a column to the bulbuls dataframe that is Locality_Corrected, which is the Locality values from the bulbuls_localities dataframe, matched by Specimen.number
 bulbuls <- bulbuls %>%
@@ -247,112 +264,312 @@ new_localities <- bulbuls %>%
 
 str(new_localities)
 
-write.csv(new_localities, "../data/Bulbul_final_georeferenced_localities.csv", row.names = FALSE)
+write.csv(new_localities, "../data/Bulbul_final_georeferenced_localities_Batch3.csv", row.names = FALSE)
 ```
 Just checking which locality lat long bins would be best for the localiity-based random effect
 ```{r}
-bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
-str(bulbuls)
+bulbul <- read.csv("../data/Bulbul_plotting_1Jul.csv", stringsAsFactors = FALSE)
+str(bulbul)
 
-bulbuls %>%
-  filter(!is.na(Lat) & !is.na(Lon)) %>%
-  mutate(
-    locality =
-      paste(
-        round(Lat,1),
-        round(Lon,1)
-      )
-  ) %>%
-  count(AviList, locality)
+locality_cluster_summary <- function(
+  data,
+  resolution
+){
 
-hist(table(bulbuls$locality))
-
-bulbuls <- bulbuls |>
-  mutate(
-    locality =
-      paste(
-        Lat,
-        Lon,
-        sep = "_"
-      )
-  )
-
-locality_sizes <-
-  bulbuls |>
-  count(AviList, locality)
-
-summary(locality_sizes$n)
-
-hist(locality_sizes$n,
-     breaks = 30)
-
-species_localities <-
-  bulbuls |>
-  group_by(AviList) |>
-  summarise(
-    n_localities =
-      n_distinct(locality)
-  )
-
-summary(
-  species_localities$n_localities
-)
-
-hist(
-  species_localities$n_localities
-)
-
-mean(
-  locality_sizes$n == 1
-)
-
-cluster_sizes <- c(
-  0.1,
-  0.25,
-  0.5,
-  1
-)
-
-for(s in cluster_sizes){
-
-  tmp <- bulbuls |>
-
+  dat_locality <-
+    data %>%
+    filter(
+      !is.na(Lat),
+      !is.na(Lon),
+      !is.na(AviList)
+    ) %>%
     mutate(
 
       lat_cluster =
-        round(Lat/s)*s,
+        round(
+          Lat / resolution
+        ) * resolution,
 
       lon_cluster =
-        round(Lon/s)*s,
+        round(
+          Lon / resolution
+        ) * resolution,
 
-      locality =
-        paste(
+      locality_cluster =
+        interaction(
+          AviList,
           lat_cluster,
-          lon_cluster
+          lon_cluster,
+          drop = TRUE
         )
 
-    ) |>
-
-    count(
-      AviList,
-      locality
     )
 
-  cat("\n")
+  cluster_sizes <-
+    dat_locality %>%
+    count(
+      AviList,
+      locality_cluster,
+      name = "n_specimens"
+    )
 
-  cat(
-    "Cluster size:",
-    s,
-    "degrees\n"
-  )
+  species_clusters <-
+    cluster_sizes %>%
+    group_by(
+      AviList
+    ) %>%
+    summarise(
 
-  print(summary(tmp$n))
+      n_clusters =
+        n(),
 
-  cat(
-    "Singleton proportion:",
-    mean(tmp$n==1),
-    "\n"
+      n_singleton_clusters =
+        sum(
+          n_specimens == 1
+        ),
+
+      prop_singleton_clusters =
+        mean(
+          n_specimens == 1
+        ),
+
+      .groups = "drop"
+
+    )
+
+  tibble(
+
+    resolution =
+      resolution,
+
+    n_specimens =
+      nrow(dat_locality),
+
+    n_species =
+      n_distinct(
+        dat_locality$AviList
+      ),
+
+    n_clusters =
+      nrow(cluster_sizes),
+
+    n_singleton_clusters =
+      sum(
+        cluster_sizes$n_specimens == 1
+      ),
+
+    prop_singleton_clusters =
+      mean(
+        cluster_sizes$n_specimens == 1
+      ),
+
+    n_specimens_in_singleton_clusters =
+      sum(
+        cluster_sizes$n_specimens[
+          cluster_sizes$n_specimens == 1
+        ]
+      ),
+
+    prop_specimens_in_singleton_clusters =
+      sum(
+        cluster_sizes$n_specimens[
+          cluster_sizes$n_specimens == 1
+        ]
+      ) /
+      sum(
+        cluster_sizes$n_specimens
+      ),
+
+    median_cluster_size =
+      median(
+        cluster_sizes$n_specimens
+      ),
+
+    mean_cluster_size =
+      mean(
+        cluster_sizes$n_specimens
+      ),
+
+    max_cluster_size =
+      max(
+        cluster_sizes$n_specimens
+      ),
+
+    median_clusters_per_species =
+      median(
+        species_clusters$n_clusters
+      ),
+
+    mean_clusters_per_species =
+      mean(
+        species_clusters$n_clusters
+      ),
+
+    n_species_one_cluster =
+      sum(
+        species_clusters$n_clusters == 1
+      ),
+
+    prop_species_one_cluster =
+      mean(
+        species_clusters$n_clusters == 1
+      )
+
   )
 
 }
+
+cluster_resolutions <-
+  c(
+    0.1,
+    0.25,
+    0.5,
+    1
+  )
+
+cluster_comparison <-
+  map_dfr(
+
+    cluster_resolutions,
+
+    ~ locality_cluster_summary(
+      data = bulbul,
+      resolution = .x
+    )
+
+  )
+
+cluster_comparison
+
+get_cluster_sizes <- function(
+  data,
+  resolution
+){
+
+  data %>%
+    filter(
+      !is.na(Lat),
+      !is.na(Lon),
+      !is.na(AviList)
+    ) %>%
+    mutate(
+
+      lat_cluster =
+        round(
+          Lat / resolution
+        ) * resolution,
+
+      lon_cluster =
+        round(
+          Lon / resolution
+        ) * resolution,
+
+      locality_cluster =
+        interaction(
+          AviList,
+          lat_cluster,
+          lon_cluster,
+          drop = TRUE
+        )
+
+    ) %>%
+    count(
+      AviList,
+      locality_cluster,
+      name = "n_specimens"
+    )
+
+}
+
+clusters_01 <-
+  get_cluster_sizes(
+    bulbul,
+    0.1
+  )
+
+clusters_025 <-
+  get_cluster_sizes(
+    bulbul,
+    0.25
+  )
+
+clusters_05 <-
+  get_cluster_sizes(
+    bulbul,
+    0.5
+  )
+
+clusters_1 <-
+  get_cluster_sizes(
+    bulbul,
+    1
+  )
+
+summary(
+  clusters_01$n_specimens
+)
+
+summary(
+  clusters_025$n_specimens
+)
+
+summary(
+  clusters_05$n_specimens
+)
+
+summary(
+  clusters_1$n_specimens
+)
+
+small_cluster_comparison <-
+  map_dfr(
+
+    cluster_resolutions,
+
+    function(res){
+
+      x <-
+        get_cluster_sizes(
+          bulbul,
+          res
+        )
+
+      tibble(
+
+        resolution =
+          res,
+
+        prop_n1 =
+          mean(
+            x$n_specimens == 1
+          ),
+
+        prop_n2 =
+          mean(
+            x$n_specimens == 2
+          ),
+
+        prop_n3 =
+          mean(
+            x$n_specimens == 3
+          ),
+
+        prop_n_le_2 =
+          mean(
+            x$n_specimens <= 2
+          ),
+
+        prop_n_le_5 =
+          mean(
+            x$n_specimens <= 5
+          )
+
+      )
+
+    }
+
+  )
+
+small_cluster_comparison
+
 ```

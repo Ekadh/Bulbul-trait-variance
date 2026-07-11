@@ -18,14 +18,12 @@ data {
   int<lower=1> n_source;
   array[N] int<lower=1, upper=n_source> source;
 
+  real<lower=0> trait_mean;
+
   matrix[S,S] L_A;
 }
 
 parameters {
-
-  // Global mean
-
-  real alpha;
 
   // Random source effects
 
@@ -38,8 +36,6 @@ parameters {
   vector[S] species_mean_raw;
 
   real mu_mean;
-
-  real<lower=0> trait_mean;
 
   real<lower=0> sigma_mean;
 
@@ -121,8 +117,6 @@ model {
   //----------------------------------------------------------
   // Priors
   //----------------------------------------------------------
-
-  alpha ~ normal(0,5);
 
   source_raw ~ normal(0,1);
 
@@ -264,14 +258,6 @@ generated quantities {
 
     CV_species[i] =
       exp(logCV[i]);
-
-    predicted_range = rep_vector(0, S);
-    predicted_density = rep_vector(0, S);
-    predicted_ESI = rep_vector(0, S);
-
-  }
-
-  for(i in 1:S){
 
     predicted_range[i] =
 

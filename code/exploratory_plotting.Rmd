@@ -1185,7 +1185,7 @@ specimen_counts <- bulbuls_raw %>%
 ```{r}
 library(maps)
 
-museum_data <- read.xlsx("../data/Specimen_maps/Museum_map.xlsx")
+museum_data <- read.xlsx("../data/Holdings/Museum_map.xlsx")
 str(museum_data)
 
 museum_data <- museum_data %>%
@@ -1231,8 +1231,8 @@ world_map <- map_data("world")
 museum_data <- museum_data %>%
   mutate(
     Museum_status = case_when(
-      !is.na(Expected.sample.size) ~ "Predicted data (n = 3286 specimens)",
-      AVONET.2 == "Y" ~ "New data (n = 6685 specimens)",
+      !is.na(Expected.sample.size) ~ "Predicted data (n = 1491 specimens)",
+      AVONET.2 == "Y" ~ "New data (n = 6724 specimens)",
       AVONET.2 == "N" ~ "AVONET 1.0 (n = 806 specimens)"
     )
   )
@@ -1268,8 +1268,8 @@ ggplot() +
   scale_color_manual(
     values = c(
       "AVONET 1.0 (n = 806 specimens)" = "red",
-      "New data (n = 6685 specimens)" = "steelblue",
-      "Predicted data (n = 3286 specimens)" = "darkorange"
+      "New data (n = 6724 specimens)" = "steelblue",
+      "Predicted data (n = 1491 specimens)" = "darkorange"
     )
   ) +
   
@@ -1285,11 +1285,6 @@ ggplot() +
     ),
     drop = FALSE
   ) +
-  
-  coord_fixed(1.3) +
-  
-  xlim(-20, 160) +
-  ylim(-40, 60) +
   
   guides(
 
@@ -1365,10 +1360,24 @@ legend.spacing.y = unit(
 )
 
 ggsave(
-  "../results/Museum_map/field_collection_map.pdf",
-  width = 16,
-  height = 12
+  "../results/Museum_map.png",
+  plot = last_plot(),
+  width = 18,
+  height = 8,
+  units = "in",
+  dpi = 300
 )
+
+#Find out how many specimens from bulbuls are not Source == Field1, Field_Tobias or Indian Institute for Science and Research, Tirupati
+bulbuls %>%
+  filter(
+    !Source %in% c(
+      "Field1",
+      "Field_Tobias",
+      "Indian Institute of Science Education and Research Tirupati"
+    )
+  ) %>%
+  summarise(n = n())
 
 #################Do the same for the field data
 ```{r}
@@ -1420,7 +1429,7 @@ world_map <- map_data("world")
 museum_data <- museum_data %>%
   mutate(
     Museum_status = case_when(
-      AVONET.2 == "Y" ~ "New data (n = 4077 specimens)",
+      AVONET.2 == "Y" ~ "New data (n = 4146 specimens)",
       AVONET.2 == "N" ~ "AVONET 1.0 (n = 1214 specimens)"
     )
   )
@@ -1456,7 +1465,7 @@ ggplot() +
   scale_color_manual(
     values = c(
       "AVONET 1.0 (n = 1214 specimens)" = "red",
-      "New data (n = 4077 specimens)" = "steelblue"
+      "New data (n = 4146 specimens)" = "steelblue"
     )
   ) +
   
@@ -1637,7 +1646,7 @@ scale_fill_manual(
     "1000+" = "#a50f15"
   ),
   drop = FALSE,
-  name = "Individuals (n = 11,454)",
+  name = "Individuals (n = 12,084)",
   guide = guide_legend(
     reverse = TRUE,
     
@@ -1695,10 +1704,9 @@ bulbuls$Country_WRI[bulbuls$Country_WRI == "Mascarene Islands"] <- "Mauritius"
 bulbuls$Country_WRI[bulbuls$Country_WRI == "Phillippines"] <- "Philippines"
 bulbuls$Country_WRI[bulbuls$Country_WRI == "United Republic of Tanzania"] <- "Tanzania"
 bulbuls$Country_WRI[bulbuls$Country_WRI == "Zaire"] <- "Democratic Republic of the Congo"
-bulbuls$Country_WRI[bulbuls$Country_WRI == "France"] <- "FFrance"
 
 ```
-Now I need one file with the plotting data, that includes specimen-level trait data, attached to range size and ecological niceh breadth
+Now I need one file with the plotting data, that includes specimen-level trait data, attached to range size and ecological niche breadth
 ```{r}
 bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv", stringsAsFactors = FALSE)
 str(bulbuls)
@@ -1787,7 +1795,7 @@ bulbul_rangesize <- bulbuls %>%
   )
 str(bulbul_rangesize)
 
-write.csv(bulbul_rangesize, "../data/Bulbul_plotting.csv", row.names = FALSE)
+write.csv(bulbul_rangesize, "../data/Bulbul_plotting_1Jul.csv", row.names = FALSE)
 ```
 Yale Peabody Museum holdings and priority list creation
 ```{r}
@@ -1910,7 +1918,7 @@ New figure alert: this time need to make a figure showing all bulbul species by 
 bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated.csv", stringsAsFactors = FALSE)
 str(bulbul_specimen_counts)
 #Add species 161 to the bulbul_specimen_counts data frame with a count of 0
-bulbul_specimen_counts <- rbind(bulbul_specimen_counts, data.frame(X = 161, Var1 = "Hypsipetes moheliensis", Freq = 0))
+bulbul_specimen_counts <- rbind(bulbul_specimen_counts, data.frame(X = 161, Var1 = "Hypsipetes moheliensis", Freq = 2))
 
 bulbul_specimen_counts <- bulbul_specimen_counts %>%
   arrange(Freq) %>%
@@ -1926,7 +1934,12 @@ mean_integrated <- mean(bulbul_specimen_counts$Freq, na.rm = TRUE)
 ggplot(bulbul_specimen_counts,
        aes(x = Rank, y = Freq)) +
 
-  geom_col(
+  geom_point(
+    colour = "steelblue",
+    size = 1.5
+  ) +
+
+  geom_line(
     colour = "steelblue"
   ) +
 
@@ -1968,6 +1981,17 @@ ggplot(bulbul_specimen_counts,
     yintercept = 7,
     colour = "#D55E00",
     linetype = "dashed"
+  ) +
+
+  annotate(
+    "text",
+    x = max(bulbul_specimen_counts$Rank),
+    y = 7,
+    label = "Mean AVONET 1.0 = 7 specimens per species",
+    colour = "#D55E00",
+    hjust = 1,
+    vjust = -0.5,
+    size = 5
   ) +
 
   scale_y_log10(
@@ -2285,4 +2309,95 @@ highest_tail_cv_diff <- bulbuls_cv_comparison %>%
   arrange(desc(abs(CV_difference))) %>%
   slice_head(n = 20)
 
+
+#Random stuff
+bulbuls_trimmed <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv", stringsAsFactors = FALSE)
+#Find all duplicated Specimen.number values in bulbuls_trimmed
+duplicated_specimens <- bulbuls_trimmed %>%
+  group_by(Specimen.number) %>%
+  filter(n() > 1) %>%
+  ungroup() %>%
+  distinct(Specimen.number, .keep_all = TRUE)
+```
+Need to add the locality strings for the unknown field specimens to the bulbuls dataset
+```{r}
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv", stringsAsFactors = FALSE)
+str(bulbuls)
+
+locality_data <- read.csv("../data/Field_data_from_AVONET1.csv", stringsAsFactors = FALSE)
+str(locality_data)
+
+#Only keep the bulbuls species names from bulbuls in locality_data
+locality_data_bulbuls <- locality_data %>%
+  filter(avdb_species_1_birdlife %in% bulbuls$AviList)
+
+locality_data_bulbuls <- locality_data_bulbuls %>%
+  filter(avdb_source_type == "field study")
+
+write.csv(locality_data_bulbuls, "../data/Field_data_from_AVONET1_bulbuls.csv", row.names = FALSE)
+
+# Define the original block
+block_rows <- 9609:11575
+
+# Extract Field1 rows, but preserve their original row numbers
+bulbuls_field1 <- bulbuls %>%
+  mutate(.original_row = row_number()) %>%
+  filter(
+    .original_row %in% block_rows,
+    Source == "Field1"
+  )
+
+# Read locality data
+locality_data_bulbuls <- read.csv(
+  "../data/Field_data_from_AVONET1_bulbuls.csv",
+  stringsAsFactors = FALSE
+)
+
+# Sanity check: row counts MUST match for row-by-row assignment
+stopifnot(
+  nrow(bulbuls_field1) == nrow(locality_data_bulbuls)
+)
+
+# Add locality and specimen number row by row
+bulbuls_field1 <- bulbuls_field1 %>%
+  mutate(
+    Locality = locality_data_bulbuls$gdb_locality_original,
+    Specimen.number = locality_data_bulbuls$avdb_specimen_identifier_unique
+  )
+
+# Start from complete original dataset
+bulbuls_updated <- bulbuls
+
+# Write ONLY the filtered Field1 rows back to their original positions
+bulbuls_updated[
+  bulbuls_field1$.original_row,
+  c("Locality", "Specimen.number")
+] <- bulbuls_field1[
+  c("Locality", "Specimen.number")
+]
+
+# Export
+write.csv(
+  bulbuls_updated,
+  "../data/Bulbul_AVONET_data_integrated_trimmed.csv",
+  row.names = FALSE
+)
+
+bulbuls_updated <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv", stringsAsFactors = FALSE)
+
+#Now change Country_WRI values to "Ghana" for any rows where Locality is "Ahokwa"
+bulbuls_updated <- bulbuls_updated %>%
+  mutate(
+    Country_WRI = ifelse(
+      Locality == "East Usambara Mountains",
+      "Tanzania",
+      Country_WRI
+    )
+  )
+
+write.csv(
+  bulbuls_updated,
+  "../data/Bulbul_AVONET_data_integrated_trimmed.csv",
+  row.names = FALSE
+)
 ```

@@ -1,4 +1,4 @@
-# Bulbul Morphology and Range-Size Project
+# Intraspecific morphological trait variation as a predictor of species-level outcomes in bulbuls
 
 This repository contains the analysis workflow for a bulbul-focused project examining how morphological variation relates to species-level outcomes such as geographic range, density and niche breadth. The work brings together specimen measurements, locality data, museum holdings, collaborator datasets, phylogenies, and range/abundance information. A more detailed introduction is available in [Project Bulbul 2026.docx](Project%20Bulbul%202026.docx).
 

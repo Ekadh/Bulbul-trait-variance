@@ -251,9 +251,25 @@ rbins2$Comments <- as.character(rbins2$Comments)
 #Cambridge again - measured by Carla du Toit, her second batch
 cdt2 <- read.xlsx("../data/Collaborator data/Sample data sheet CJD2.xlsx")
 str(cdt2)
+#University of Colombo dataset - measured by Sandupama M.
+colombo <- read.xlsx("../data/Collaborator data/Sample_data_sheet_SAM_Colombo.xlsx")
+str(colombo)
+#Louisiana State University Museum of Natural Science (LSUMNS) dataset - measured by David Vander Pluym part 3
+lsumns3 <- read.xlsx("../data/Collaborator data/Bulbul_Vander_Pluym_part3.xlsx")
+str(lsumns3)
+lsumns3$`Kipp's_Distance` <- lsumns3$Wing_Chord - lsumns3$Sec_1
+#SYSU dataset 2 - measured by Yue Wu
+sysu2 <- read.xlsx("../data/Collaborator data/Sample_data_sheet_SYSU_Yue2.xlsx")
+str(sysu2)
+sysu2$Comments <- as.character(sysu2$Comments)
+#ZFMK dataset - measured by TT & GMK
+zfmk <- read.xlsx("../data/Collaborator data/Sample_data_sheet_ZFMK_TT.xlsx")
+str(zfmk)
+zfmk$Subspecies <- as.character(zfmk$Subspecies)
+zfmk$Comments <- NA
 
 ####RENAME####
-cdt2 <- cdt2 |>
+zfmk <- zfmk |>
   rename(
     AviList = Scientific_Name,
     Beak.Length_Culmen = Bill_TotalCulmen,
@@ -323,7 +339,7 @@ for (trait in traits) {
       .groups = "drop"
     )
 
-  cdt2 <- cdt2 |>
+  sysu2 <- sysu2 |>
     left_join(avonet_stats, by = "AviList") |>
     mutate(
       !!trait := ifelse(
@@ -338,14 +354,14 @@ for (trait in traits) {
 }
 
 #Merging step with AVONET data - do NOT remove any columns from the AVONET data frame, just add new rows for UMich specimens, and leave NA where information/columns are missing in UMich but present in AVONET
-bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated.csv")
+bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv")
 bulbuls2 <- bind_rows(
   bulbuls,
-  cdt2 %>% dplyr::select(any_of(names(bulbuls)))
+  zfmk %>% dplyr::select(any_of(names(bulbuls)))
 ) %>%
   dplyr::select(all_of(names(bulbuls)))
 str(bulbuls2)
-write.csv(bulbuls2, "../data/Bulbul_AVONET_data_integrated.csv", row.names = FALSE)
+write.csv(bulbuls2, "../data/Bulbul_AVONET_data_integrated_trimmed.csv", row.names = FALSE)
 new_bulcount <- table(bulbuls2$AviList)
 mean(new_bulcount)
 
@@ -364,14 +380,14 @@ avonet_points <- merge(
 )
 
 #Museum means for each trait, by species
-cdt2_means <- cdt2 |>
+zfmk_means <- zfmk |>
   group_by(AviList) |>
   summarise(
     across(all_of(traits), ~mean(.x, na.rm=TRUE)),
     .groups="drop"
   )
-cdt2_points <- merge(
-  cdt2,
+zfmk_points <- merge(
+  zfmk,
   avonet_means,
   by="AviList",
   suffixes=c("_specimen","_mean")
@@ -421,13 +437,13 @@ ggplot(comparison_long,
 
 
 #Method 2: Highlighting species with specimen measurements in the SYSU dataset, and comparing those to the AVONET means for those species
-cdt2_species <- cdt2_points %>%
+zfmk_species <- zfmk_points %>%
     filter(!is.na(Wing.Length_specimen)) %>%
     pull(AviList) %>%
     unique()
 
 avonet_points_filtered <- avonet_points %>%
-    dplyr::filter(AviList %in% cdt2_species)
+    dplyr::filter(AviList %in% zfmk_species)
 
 avonet_long <- avonet_points_filtered %>%
   pivot_longer(
@@ -445,7 +461,7 @@ avonet_long <- avonet_points_filtered %>%
   filter(Trait == Trait_mean) %>%
   dplyr::select(AviList, Trait, specimen, mean)
 
-cdt2_long <- cdt2_points %>%
+zfmk_long <- zfmk_points %>%
   pivot_longer(
     cols = ends_with("_specimen"),
     names_to = "Trait",
@@ -470,7 +486,7 @@ ggplot() +
   ) +
 
   geom_point(
-    data = cdt2_long,
+    data = zfmk_long,
     aes(mean, specimen),
     colour = "#D55E00",
     shape = 17,
@@ -494,7 +510,7 @@ ggplot() +
     y = "Specimen measurement"
   )
 
-ggsave("../results/Collaborator data comparisons/Cambridge comparison_CDT2.pdf", width = 12, height = 8)
+ggsave("../results/Collaborator data comparisons/TT comparison_ZFMK.pdf", width = 12, height = 8)
 
 
 #Load bulbuls again and remove any specimen rows that don't have any trait measurements for the traits we're interested in (Beak.Length_Culmen, Beak.Length_Nares, Beak.Width, Beak.Depth, Tarsus.Length, Wing.Length, Kipps.Distance, Tail.Length, Gape_Width)

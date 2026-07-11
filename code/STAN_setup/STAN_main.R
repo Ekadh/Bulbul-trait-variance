@@ -17,16 +17,18 @@ library(patchwork)
 #===========================================================
 
 bulbul <- read.csv(
-  "../data/Bulbul_plotting.csv"
+  "../data/Bulbul_AVONET_data_integrated_trimmed.csv"
 )
 
-bulbul_density <- read.csv("../data/Density/Bulbul_density_data_Callaghan.csv")
+bulbul_density <- read.csv("../data/Density/Bulbul_density_data.csv")
 bulbul_ESI <- read.csv("../data/BIRDBASE/Bulbul_Birdbase_data.csv")
+bulbul_range <- read.csv("../data/Bulbul_rangesize.csv")
 
 # Add Density and ESI to the data frame, matching by species
 bulbul <- bulbul %>%
-  left_join(bulbul_density %>% select(Scientific.name, Density), by = c("AviList" = "Scientific.name")) %>%
-  left_join(bulbul_ESI %>% select(AviList.v1.2025, ESI), by = c("AviList" = "AviList.v1.2025"))
+  left_join(bulbul_density %>% select(Species, Predicted.Density.n.km2), by = c("AviList" = "Species")) %>%
+  left_join(bulbul_ESI %>% select(AviList.v1.2025, ESI), by = c("AviList" = "AviList.v1.2025")) %>%
+  left_join(bulbul_range %>% select(AviList, Range.Size), by = c("AviList" = "AviList"))
 
 #===========================================================
 # TRAITS TO ANALYSE
@@ -39,10 +41,10 @@ traits <- tibble(
     "Wing.Length",
     "Beak.Length_Culmen",
     "Tail.Length",
-    "Tarsus.Length"
-    # "Beak.Depth",
-    # "Beak.Width",
-    # "Beak.Length_Nares"
+    "Tarsus.Length",
+    "Beak.Depth",
+    "Beak.Width",
+    "Beak.Length_Nares"
 
   ),
 
@@ -51,7 +53,10 @@ traits <- tibble(
     "Wing",
     "Culmen",
     "Tail",
-    "Tarsus"
+    "Tarsus",
+    "Beak Depth",
+    "Beak Width",
+    "Beak Length (Nares)"
 
   )
 
@@ -73,6 +78,7 @@ bulbul$species <- factor(
 bulbul$source <- factor(
   bulbul$Data.type
 )
+
 
 #===========================================================
 # PHYLOGENY
@@ -169,7 +175,7 @@ run_trait_model <- function(
             first(log(Range.Size)),
 
           density =
-            first(log(Density)),
+            first(Predicted.Density.n.km2),
 
           ESI =
             first(ESI),
@@ -287,9 +293,9 @@ run_trait_model <- function(
 
       parallel_chains = 4,
 
-      iter_warmup = 500,
+      iter_warmup = 2000,
 
-      iter_sampling = 500,
+      iter_sampling = 4000,
 
       adapt_delta = 0.99,
 
@@ -615,7 +621,7 @@ for(i in seq_len(nrow(traits))){
 
         res$short_name,
 
-        "_fit.rds"
+        "_fit_Main.rds"
 
       )
 
@@ -727,6 +733,34 @@ cor.test(
   tarsus$cv_compare$CV_stan
 )
 
+beak_depth <- results[[5]]
+beak_depth$fit$summary(
+  variables = c(
+    "beta_CV_range",
+    "beta_CV_density",
+    "beta_CV_ESI"
+  )
+)
+
+beak_width <- results[[6]]
+beak_width$fit$summary(
+  variables = c(
+    "beta_CV_range",
+    "beta_CV_density",
+    "beta_CV_ESI"
+  )
+)
+
+beak_nares <- results[[7]]
+beak_nares$fit$summary(
+  variables = c(
+    "beta_CV_range",
+    "beta_CV_density",
+    "beta_CV_ESI"
+  )
+)
+
+
 avonet_means <- bulbul |>
   group_by(AviList) |>
   summarise(
@@ -773,7 +807,7 @@ ggplot() +
 
 
 ####Test analysis: Check distributions of latent CVs across traits
-summary(results[[1]]$CV_summary$mean)
+summary(results[[7]]$CV_summary$mean)
 sd(results[[4]]$CV_summary$mean)
 IQR(results[[4]]$CV_summary$mean)
 
@@ -787,3 +821,462 @@ cor(results$Tarsus$CV_summary$mean,
 cor(results$Culmen$CV_summary$mean,
     results$Tarsus$CV_summary$mean)
 
+#I need to now load the rds files for all the traits and then make a faceted plot, one facet for each response variable (range size, density and ESI) and then plot the posterior distributions of the beta coefficients for each trait, as well as a dot and credible interval just below each distribution to show the mean and 95% credible interval for each trait. I will also add a dashed vertical line at 0 to show which traits have a significant effect on the latent CVs (the ones that don't include 0 in their credible interval, will be opaque color, while non-significant will be slightly transparent).
+
+# ============================================================
+# Posterior distributions of CV effects across morphological traits
+# ============================================================
+
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(ggplot2)
+library(posterior)
+
+# ------------------------------------------------------------
+# 1. Find all CmdStanR fit files
+# ------------------------------------------------------------
+
+rds_files <- list.files(
+  path = "../results/stan/",
+  pattern = "_fit\\.rds$",
+  full.names = TRUE
+)
+
+# Sanity check
+rds_files
+
+
+# ------------------------------------------------------------
+# 2. Function to extract the three beta coefficients
+#    from each CmdStanMCMC fit
+# ------------------------------------------------------------
+
+read_beta_draws <- function(f) {
+
+  # Read fit
+  fit <- readRDS(f)
+
+  # Check that this is a CmdStanR MCMC fit
+  if (!inherits(fit, "CmdStanMCMC")) {
+    warning(
+      "Skipping ", basename(f),
+      ": object is not a CmdStanMCMC fit."
+    )
+    return(NULL)
+  }
+
+  # Get clean trait name from filename
+  # e.g. "Beak Depth_fit.rds" -> "Beak Depth"
+  trait <- tools::file_path_sans_ext(basename(f)) %>%
+    sub("_fit$", "", .)
+
+  # Parameters of interest
+  beta_vars <- c(
+    "beta_CV_range",
+    "beta_CV_density",
+    "beta_CV_ESI"
+  )
+
+  # Extract posterior draws directly from CmdStanR object
+  draws <- fit$draws(
+    variables = beta_vars,
+    format = "draws_df"
+  ) %>%
+    as.data.frame()
+
+  # Convert to long format
+  draws_long <- draws %>%
+    select(
+      all_of(beta_vars),
+      any_of(c(".chain", ".iteration", ".draw"))
+    ) %>%
+    pivot_longer(
+      cols = all_of(beta_vars),
+      names_to = "parameter",
+      values_to = "beta"
+    ) %>%
+    mutate(
+      trait = trait
+    )
+
+  return(draws_long)
+}
+
+
+# ------------------------------------------------------------
+# 3. Extract draws from all seven trait models
+# ------------------------------------------------------------
+
+all_draws <- map_dfr(
+  rds_files,
+  read_beta_draws
+)
+
+
+# ------------------------------------------------------------
+# 4. Clean response names
+# ------------------------------------------------------------
+
+all_draws <- all_draws %>%
+  mutate(
+    response = recode(
+      parameter,
+      beta_CV_range   = "Range size",
+      beta_CV_density = "Population density",
+      beta_CV_ESI     = "Ecological specialisation"
+    )
+  )
+
+
+# ------------------------------------------------------------
+# 5. Set desired trait and facet ordering
+# ------------------------------------------------------------
+
+trait_order <- c(
+  "Culmen",
+  "Beak Length (Nares)",
+  "Beak Width",
+  "Beak Depth",
+  "Tarsus",
+  "Wing",
+  "Tail"
+)
+
+response_order <- c(
+  "Range size",
+  "Population density",
+  "Ecological specialisation"
+)
+
+all_draws <- all_draws %>%
+  mutate(
+    trait = factor(
+      trait,
+      levels = trait_order
+    ),
+    response = factor(
+      response,
+      levels = response_order
+    )
+  )
+
+
+# ------------------------------------------------------------
+# 6. Calculate posterior mean and 95% credible interval
+# ------------------------------------------------------------
+
+posterior_summary <- all_draws %>%
+  group_by(trait, response) %>%
+  summarise(
+    mean_beta = mean(beta),
+    lower_95 = quantile(beta, 0.05),
+    upper_95 = quantile(beta, 0.95),
+    .groups = "drop"
+  ) %>%
+
+  # 95% CrI excludes zero if:
+  # both bounds > 0 OR both bounds < 0
+  mutate(
+    excludes_zero = (
+      lower_95 > 0 |
+      upper_95 < 0
+    ),
+    effect_status = if_else(
+      excludes_zero,
+      "95% CrI excludes 0",
+      "95% CrI overlaps 0"
+    )
+  )
+
+
+# Inspect numerical results
+posterior_summary
+
+
+# ------------------------------------------------------------
+# 7. Calculate density curves explicitly
+#
+# This gives us full control over:
+# - vertical placement of each trait
+# - density height
+# - space below each density for mean + CrI
+# ------------------------------------------------------------
+
+density_data <- all_draws %>%
+  filter(
+    !is.na(beta),
+    !is.na(trait),
+    !is.na(response)
+  ) %>%
+  group_by(trait, response) %>%
+  group_modify(~ {
+
+    dens <- density(.x$beta, n = 512)
+
+    tibble(
+      beta = dens$x,
+      density = dens$y
+    )
+
+  }) %>%
+  ungroup()
+
+
+# ------------------------------------------------------------
+# 8. Create numeric y positions for traits
+# ------------------------------------------------------------
+
+trait_positions <- tibble(
+  trait = factor(
+    trait_order,
+    levels = trait_order
+  ),
+
+  # Reverse so first trait appears at top
+  y_base = rev(seq_along(trait_order))
+)
+
+
+# Add positions to density curves
+density_data <- density_data %>%
+  left_join(
+    trait_positions,
+    by = "trait"
+  )
+
+
+# Add positions to posterior summaries
+posterior_summary <- posterior_summary %>%
+  left_join(
+    trait_positions,
+    by = "trait"
+  )
+
+
+# ------------------------------------------------------------
+# 9. Add significance / credible-interval status to densities
+# ------------------------------------------------------------
+
+density_data <- density_data %>%
+  left_join(
+    posterior_summary %>%
+      select(
+        trait,
+        response,
+        excludes_zero,
+        effect_status
+      ),
+    by = c("trait", "response")
+  )
+
+
+# ------------------------------------------------------------
+# 10. Scale each density independently
+#
+# Each posterior gets the same maximum visual height,
+# regardless of how narrow or broad the posterior is.
+# ------------------------------------------------------------
+
+density_data <- density_data %>%
+  group_by(trait, response) %>%
+  mutate(
+    density_scaled =
+      density / max(density, na.rm = TRUE) * 0.55,
+
+    y_density =
+      y_base + density_scaled
+  ) %>%
+  ungroup()
+
+
+# ------------------------------------------------------------
+# 11. Position mean + 95% CrI just below each density
+# ------------------------------------------------------------
+
+posterior_summary <- posterior_summary %>%
+  mutate(
+    y_interval = y_base - 0.12
+  )
+
+
+# ------------------------------------------------------------
+# 12. Plot
+# ------------------------------------------------------------
+
+p <- ggplot() +
+
+  # Zero-effect reference line
+  geom_vline(
+    xintercept = 0,
+    linetype = "dashed",
+    linewidth = 0.6,
+    colour = "grey35"
+  ) +
+
+  # Posterior density distributions
+  geom_ribbon(
+    data = density_data,
+    aes(
+      x = beta,
+      ymin = y_base,
+      ymax = y_density,
+      group = trait,
+      fill = response,
+      alpha = effect_status
+    ),
+    colour = NA
+  ) +
+
+  # Density outlines
+  geom_line(
+    data = density_data,
+    aes(
+      x = beta,
+      y = y_density,
+      group = trait,
+      colour = response,
+      alpha = effect_status
+    ),
+    linewidth = 0.7
+  ) +
+
+  # 95% credible intervals below each density
+  geom_segment(
+    data = posterior_summary,
+    aes(
+      x = lower_95,
+      xend = upper_95,
+      y = y_interval,
+      yend = y_interval,
+      colour = response,
+      alpha = effect_status
+    ),
+    linewidth = 1
+  ) +
+
+  # Posterior mean
+  geom_point(
+    data = posterior_summary,
+    aes(
+      x = mean_beta,
+      y = y_interval,
+      colour = response,
+      alpha = effect_status
+    ),
+    size = 2.5
+  ) +
+
+  # One separate facet per response variable
+  facet_wrap(
+    ~ response,
+    nrow = 1,
+    scales = "free_x"
+  ) +
+
+  # Trait labels
+  scale_y_continuous(
+    breaks = trait_positions$y_base,
+    labels = as.character(trait_positions$trait),
+    expand = expansion(
+      mult = c(0.04, 0.08)
+    )
+  ) +
+
+  # Opaque when 95% CrI excludes zero;
+  # transparent when it overlaps zero
+  scale_alpha_manual(
+    values = c(
+      "95% CrI excludes 0" = 1,
+      "95% CrI overlaps 0" = 0.3
+    )
+  ) +
+
+  labs(
+    x = expression(beta["CV"] ~ "posterior estimate"),
+    y = NULL,
+    fill = "Response variable",
+    colour = "Response variable",
+    alpha = NULL
+  ) +
+
+  scale_fill_manual(
+  values = c(
+    "Range size" = "#0072B2",
+    "Population density" = "#D55E00",
+    "Ecological specialisation" = "#009E73"
+  )
+) +
+
+scale_colour_manual(
+  values = c(
+    "Range size" = "#0072B2",
+    "Population density" = "#D55E00",
+    "Ecological specialisation" = "#009E73"
+  )
+) +
+
+  # Remove alpha legend (95% CrI) and adjust legend text sizes
+  guides(alpha = "none") +
+
+  # Gives each facet a clean rectangular panel
+  theme_bw(base_size = 12) +
+
+  theme(
+    # Explicit rectangular border around every facet
+    panel.border = element_rect(
+      colour = "black",
+      fill = NA,
+      linewidth = 0.7
+    ),
+
+    # Remove internal grid lines so posterior shapes stay clean
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+
+    # Facet headers as separate strips
+    strip.background = element_rect(
+      fill = "grey92",
+      colour = "black",
+      linewidth = 0.7
+    ),
+
+    strip.text = element_text(
+      face = "bold",
+      size = 18
+    ),
+
+    axis.text.x = element_text(
+      size = 16
+    ),
+
+    axis.text.y = element_text(
+      size = 16
+    ),
+
+    axis.title.x = element_text(
+      size = 20,
+      margin = margin(t = 8)
+    ),
+
+    axis.title.y = element_text(
+      size = 20
+    ),
+
+    # Visible gap between rectangular facets
+    panel.spacing = unit(
+      1.2,
+      "lines"
+    ),
+
+    legend.position = "none"
+  )
+
+
+p
+
+ggsave(
+  filename = "../results/stan/CV_beta_posteriors_all_traits.pdf",
+  plot = p,
+  width = 14,
+  height = 8)
