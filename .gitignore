@@ -16,3 +16,6 @@ myenv/*
 *.aux
 *.log
 ~$*
+
+# Sensitive collaborator datasets are retained locally only.
+data/Collaborator data/
