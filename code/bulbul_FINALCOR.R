@@ -9,7 +9,7 @@ library(brms)
 library(lme4)
 
 #load bulbul data including range size etc.
-bulbul <- read.csv("../data/Bulbul_plotting.csv")
+bulbul <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv")
 str(bulbul)
 
 #only keep species with > 10 specimens (rows) in the dataset to ensure more reliable CV estimates
@@ -138,17 +138,18 @@ bulbul <- left_join(
 
 bulbul$RangeSize_z <- scale(log(bulbul$Range.Size))[,1]
 bulbul$species_mean_z <- scale(bulbul$species_mean)[,1]
+bulbul$ESI_z <- scale(bulbul$ESI)[,1]
 
 model2 <- brm(
-  bf(logWing ~ Sex + Data.source + (1|Measurer) + (1|gr(AviList, cov = A)),
-    sigma ~ species_mean_z + RangeSize_z + (1|gr(AviList, cov = A))
+  bf(logWing ~ Sex + Data.type + (1|gr(AviList, cov = A)),
+    sigma ~ species_mean_z + RangeSize_z + ESI_z + (1|gr(AviList, cov = A))
   ),
   data = bulbul,
   data2 = list(A = A),
   family = gaussian(),
   chains = 4,
-  iter = 4000,
-  warmup = 1000,
+  iter = 2000,
+  warmup = 500,
 
   control = list(adapt_delta = 0.95, max_treedepth = 15)
 )

@@ -134,7 +134,7 @@ Now use bulbul_unique_localities.csv and append all the missing specimen numbers
 library(stringr)
 library(tidyverse)
 
-bulbuls_localities <- read.csv("../data/Bulbul_final_georeferenced_localities_Batch2complete.csv", stringsAsFactors = FALSE)
+bulbuls_localities <- read.csv("../data/Bulbul_final_georeferenced_localities_Batch3complete.csv", stringsAsFactors = FALSE)
 bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv", stringsAsFactors = FALSE)
 
 #Check for duplicate specimen numbers in bulbuls_localities
@@ -199,6 +199,7 @@ bulbuls <- bulbuls %>%
   select(-Lat.lookup, -Lon.lookup, -Locality_Corrected.lookup)
 str(bulbuls)
 write.csv(bulbuls, "../data/Bulbul_AVONET_data_integrated_trimmed.csv", row.names = FALSE)
+
 
 ##Before I get a new batch, I need to add a column to the bulbuls dataframe that is Locality_Corrected, which is the Locality values from the bulbuls_localities dataframe, matched by Specimen.number
 bulbuls <- bulbuls %>%

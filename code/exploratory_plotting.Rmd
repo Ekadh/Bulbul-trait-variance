@@ -688,7 +688,7 @@ I need to now make a very good looking phylogeny figure with initial AVONET spec
 #Specimen counts first (bulbuls_raw already loaded)
 
 bulbuls <- read.csv(
-  "../data/Bulbul_AVONET_data_integrated.csv",
+  "../data/Bulbul_AVONET_data_integrated_trimmed.csv",
   stringsAsFactors = FALSE)
 
 traits <- c(
@@ -1913,105 +1913,120 @@ revised <- revised %>%
 str(revised)
 write.xlsx(revised, "../data/Bulbul_target_list_8Jun_ER.xlsx", rowNames = FALSE)
 ```
-New figure alert: this time need to make a figure showing all bulbul species by rank in a bar plot with the number of specimens that we currently have, the species can be ordered by rank, and there should be dotted lines at the mean of AVONET 1.0, the target of 80 specimens per species, and the current mean of the integrated dataset
+Figure for specimen counts per species, ranked from lowest to highest, with dashed lines at 7 and 80 specimens
 ```{r}
 bulbul_specimen_counts <- read.csv("../data/Bulbul_specimen_counts_integrated.csv", stringsAsFactors = FALSE)
-str(bulbul_specimen_counts)
-#Add species 161 to the bulbul_specimen_counts data frame with a count of 0
-bulbul_specimen_counts <- rbind(bulbul_specimen_counts, data.frame(X = 161, Var1 = "Hypsipetes moheliensis", Freq = 2))
+
+bulbul_specimen_counts <- rbind(
+  bulbul_specimen_counts,
+  data.frame(
+    X = 161,
+    Var1 = "Hypsipetes moheliensis",
+    Freq = 2
+  )
+)
 
 bulbul_specimen_counts <- bulbul_specimen_counts %>%
   arrange(Freq) %>%
   mutate(
     Rank = row_number(),
-    Mean_AVONET_1.0 = 7,
-    Target_80 = 80,
-    Mean_Integrated = mean(Freq, na.rm = TRUE)
+    Log_individuals = log10(Freq)
   )
 
-mean_integrated <- mean(bulbul_specimen_counts$Freq, na.rm = TRUE)
+mean_integrated <- mean(
+  bulbul_specimen_counts$Freq,
+  na.rm = TRUE
+)
 
-ggplot(bulbul_specimen_counts,
-       aes(x = Rank, y = Freq)) +
+ggplot(
+  bulbul_specimen_counts,
+  aes(
+    x = Rank,
+    y = Log_individuals
+  )
+) +
 
   geom_point(
-    colour = "steelblue",
-    size = 1.5
-  ) +
-
-  geom_line(
-    colour = "steelblue"
-  ) +
-
-  geom_hline(
-    yintercept = mean_integrated,
-    colour = "#0072B2",
-    linetype = "dashed"
-  ) +
-
-  annotate(
-    "text",
-    x = min(bulbul_specimen_counts$Rank),
-    y = mean_integrated * 0.92,
-    label = paste0("Current = ", round(mean_integrated, 0), " specimens per species"),
-    colour = "#0072B2",
-    hjust = 0,
-    vjust = 1,
-    size = 5
+    shape = 21,
+    size = 4.5,
+    fill = "white",
+    colour = "black",
+    stroke = 1.1,
+    alpha = 0.8
   ) +
 
   geom_hline(
-    yintercept = 80,
-    colour = "#009E73",
-    linetype = "dashed"
-  ) +
-
-  annotate(
-    "text",
-    x = min(bulbul_specimen_counts$Rank),
-    y = 80 * 1.08,
-    label = "Target = 80 specimens per species",
-    colour = "#009E73",
-    hjust = 0,
-    vjust = 0,
-    size = 5
-  ) +
-
-  geom_hline(
-    yintercept = 7,
+    yintercept = log10(7),
     colour = "#D55E00",
-    linetype = "dashed"
+    linetype = "dashed",
+    linewidth = 1.8
   ) +
 
-  annotate(
-    "text",
-    x = max(bulbul_specimen_counts$Rank),
-    y = 7,
-    label = "Mean AVONET 1.0 = 7 specimens per species",
-    colour = "#D55E00",
-    hjust = 1,
-    vjust = -0.5,
-    size = 5
-  ) +
-
-  scale_y_log10(
-    breaks = c(1, 10, 100, 1000),
-    labels = c(1, 10, 100, 1000)
+  geom_hline(
+    yintercept = log10(76),
+    colour = "#0072B2",
+    linetype = "dashed",
+    linewidth = 1.8
   ) +
 
   labs(
     x = "Species rank",
-    y = "Specimens per species"
+    y = "Log (Individuals per species)"
   ) +
 
-  theme_classic(base_size = 18)
+  scale_y_continuous(
+    breaks = log10(c(1, 10, 100, 1000)),
+    labels = c("1", "10", "100", "1000"),
+    expand = expansion(
+      mult = c(0.03, 0.08)
+    )
+  ) +
+
+  theme_classic(
+    base_size = 20
+  ) +
+
+  theme(
+    axis.title.x = element_text(
+      size = 28,
+      face = "bold",
+      margin = margin(
+        t = 12
+      )
+    ),
+
+    axis.title.y = element_text(
+      size = 28,
+      face = "bold",
+      margin = margin(
+        r = 12
+      )
+    ),
+
+    axis.text = element_text(
+      size = 28,
+      colour = "black"
+    ),
+
+    axis.line = element_line(
+      linewidth = 0.8,
+      colour = "black"
+    ),
+
+    axis.ticks = element_line(
+      linewidth = 0.8,
+      colour = "black"
+    ),
+
+    panel.grid = element_blank()
+  )
 
 ggsave(
-  "../results/Specimen_counts/bulbul_specimen_counts_log_bar_ranked.pdf",
-  width = 14,
-  height = 9
+  "../results/Specimen_counts/bulbul_specimen_counts_ranked_log_points.png",
+  width = 10,
+  height = 10,
+  units = "in"
 )
-
 ```
 Last priority list hopefully: re-doing Copenhagen with new targets
 ```{r}
@@ -2389,8 +2404,8 @@ bulbuls_updated <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv",
 bulbuls_updated <- bulbuls_updated %>%
   mutate(
     Country_WRI = ifelse(
-      Locality == "East Usambara Mountains",
-      "Tanzania",
+      Locality == "Oyala",
+      "Equatorial Guinea",
       Country_WRI
     )
   )
@@ -2400,4 +2415,420 @@ write.csv(
   "../data/Bulbul_AVONET_data_integrated_trimmed.csv",
   row.names = FALSE
 )
+```
+Let's make the final map figure with all specimens in dataset but separated by field vs museum specimens
+```{r}
+combined_map <- read.xlsx("../data/Combined_museum_field_map.xlsx")
+str(combined_map)
+
+library(dplyr)
+library(ggplot2)
+library(maps)
+
+# Create specimen count bins
+combined_map <- combined_map %>%
+  mutate(
+    Count_bin = cut(
+      Specimen.counts,
+      breaks = c(0, 10, 50, 100, 250, 500, 999, Inf),
+      labels = c(
+        "1–10",
+        "11–50",
+        "51–100",
+        "101–250",
+        "251–500",
+        "501–999",
+        "1000+"
+      ),
+      include.lowest = TRUE
+    ),
+    
+    Collection_type = recode(
+      `Field.or.Museum?`,
+      "M" = "Museum specimens",
+      "F" = "Living individuals"
+    )
+  )
+
+world_map <- map_data("world")
+
+ggplot() +
+
+  geom_polygon(
+    data = world_map,
+    aes(
+      x = long,
+      y = lat,
+      group = group
+    ),
+    fill = "grey95",
+    colour = "grey70",
+    linewidth = 0.2
+  ) +
+
+  geom_point(
+    data = combined_map,
+    aes(
+      x = Longitude,
+      y = Latitude,
+      size = Count_bin,
+      colour = Collection_type
+    ),
+    shape = 21,
+    fill = NA,
+    stroke = 1.3
+  ) +
+
+  scale_colour_manual(
+    values = c(
+      "Museum specimens" = "steelblue",
+      "Living individuals" = "red"
+    )
+  ) +
+
+  scale_size_manual(
+    values = c(
+      "1–10" = 1,
+      "11–50" = 2,
+      "51–100" = 4,
+      "101–250" = 6,
+      "251–500" = 8,
+      "501–999" = 10,
+      "1000+" = 14
+    ),
+    drop = FALSE
+  ) +
+
+  guides(
+
+    size = guide_legend(
+      title = "Number of individuals",
+      order = 1,
+      override.aes = list(
+        size = c(
+          2.2,
+          3.8,
+          5.8,
+          7.8,
+          9.8,
+          11.8,
+          13.8
+        ),
+        colour = "black"
+      )
+    ),
+
+    colour = guide_legend(
+      title = NULL,
+      order = 2,
+      override.aes = list(
+        fill = NA,
+        shape = 21,
+        linewidth = 1.3,
+        size = 5.2
+      )
+    ),
+
+    shape = guide_legend(
+      title = NULL,
+      order = 3,
+      override.aes = list(
+        alpha = 0,
+        size = 0
+      ),
+      label.theme = element_text(
+        size = 20,
+        face = "bold"
+      )
+    )
+
+  ) +
+
+  theme_void() +
+
+  theme(
+
+    legend.position = c(0.04, 0.15),
+    legend.justification = c(0, 0),
+
+    panel.background = element_rect(
+      fill = "white",
+      colour = NA
+    ),
+
+    plot.background = element_rect(
+      fill = "white",
+      colour = NA
+    ),
+
+    legend.title = element_text(
+      size = 20,
+      face = "bold"
+    ),
+
+    legend.text = element_text(
+      size = 20
+    ),
+
+    legend.key.height = unit(
+      1.0,
+      "cm"
+    ),
+
+    legend.key.width = unit(
+      1.0,
+      "cm"
+    ),
+
+    legend.spacing.y = unit(
+      0.12,
+      "cm"
+    )
+
+  )
+
+ggsave(
+  "../results/Museum_and_field_map.png",
+  width = 18,
+  height = 10
+)
+```
+
+```{r}
+bulbul <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv", stringsAsFactors = FALSE)
+bulbul <- bulbul %>%
+  filter(!is.na(Lat) & !is.na(Lon))
+
+specimen_bins <- bulbul %>%
+  group_by(Data.type, Lat, Lon) %>%
+  summarise(Specimen.counts = n(), .groups = "drop") %>%
+  ungroup() %>%
+  mutate(
+    Count_bin = cut(
+      Specimen.counts,
+      breaks = c(0, 1, 10, 50, 100, 499, Inf),
+      labels = c(
+        "1",
+        "2–10",
+        "11–50",
+        "51–100",
+        "101–499",
+        "500+"
+      ),
+      include.lowest = TRUE
+    ),
+    Data.type = factor(
+      Data.type,
+      levels = c(1, 2),
+      labels = c("Museum specimens", "Field specimens")
+    )
+  )
+  #Check how many rows are in each Data.type
+specimen_bins %>%
+  group_by(Data.type) %>%
+  summarise(n = n())
+
+world_map <- map_data("world")
+
+ggplot() +
+
+  geom_polygon(
+    data = world_map,
+    aes(
+      x = long,
+      y = lat,
+      group = group
+    ),
+    fill = "grey95",
+    colour = "grey70",
+    linewidth = 0.2
+  ) +
+
+  geom_point(
+    data = specimen_bins,
+    aes(
+      x = Lon,
+      y = Lat,
+      size = Count_bin,
+      fill = Data.type
+    ),
+    shape = 21,
+    colour = "black",
+    stroke = 0.7
+  ) +
+
+  facet_grid(
+    . ~ Data.type
+  ) +
+
+  scale_size_manual(
+    values = c(
+      "1" = 1,
+      "2–10" = 2,
+      "11–50" = 4,
+      "51–100" = 6,
+      "101–499" = 8,
+      "500+" = 12
+    ),
+    drop = FALSE
+  ) +
+
+  scale_fill_manual(
+    values = c(
+      "Museum specimens" = "steelblue",
+      "Field specimens" = "darkorange"
+    )
+  ) +
+
+  coord_fixed(
+    xlim = c(-20, 160),
+    ylim = c(-40, 40),
+    ratio = 1.3
+  ) +
+
+  guides(
+    size = guide_legend(
+      title = "Number of individuals",
+      nrow = 1,
+      byrow = TRUE,
+      order = 1,
+      override.aes = list(
+        size = c(
+          2.2,
+          3.8,
+          5.8,
+          7.8,
+          9.8,
+          11.8
+        ),
+        colour = "black",
+        fill = "grey70"
+      ),
+      theme = theme(
+        legend.key.width = unit(0.3, "cm"),
+        legend.spacing.x = unit(1.5, "cm")
+      )
+    ),
+    fill = "none"
+  ) +
+
+  theme_void() +
+
+  theme(
+    legend.position = "bottom",
+    legend.direction = "horizontal",
+
+    strip.text = element_blank(),
+    strip.background = element_blank(),
+
+    panel.background = element_rect(
+      fill = "white",
+      colour = NA
+    ),
+
+    plot.background = element_rect(
+      fill = "white",
+      colour = NA
+    ),
+
+    legend.title = element_text(
+      size = 24,
+      face = "bold"
+    ),
+
+    legend.text = element_text(
+      size = 24
+    ),
+
+    legend.key.height = unit(
+      1.2,
+      "cm"
+    ),
+
+    legend.box.spacing = unit(
+      0.8,
+      "cm"
+    ),
+
+    panel.spacing = unit(
+      0.8,
+      "cm"
+    )
+  )
+
+ggsave(
+  "../results/All_specimens_map_updated.png",
+  width = 20,
+  height = 9,
+  units = "in",
+  dpi = 300
+)
+```
+Now need to make an updated list of museums and how many specimens they have measured
+```{r}
+bulbul <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed(in).csv", stringsAsFactors = FALSE)
+str(bulbul)
+
+museum_counts <- bulbul %>%
+  group_by(Source) %>%
+  summarise(Specimen.counts = n(), .groups = "drop") %>%
+  arrange(desc(Specimen.counts))
+write.csv(museum_counts, "../data/Museum_specimen_counts.csv", row.names = FALSE)
+
+
+#Before moving on to Measurer counts, need to check if there are any duplicate measurer names in Measurer column of bulbuls, that is, whether the Source columns are different but the Measurer columns have the same name. Check specifically for measurer names that are found in more than one Source.
+
+# Check for measurer names found in multiple sources
+measurer_source_check <- bulbul %>%
+  distinct(Measurer, Source) %>%
+  group_by(Measurer) %>%
+  summarise(
+    n_sources = n_distinct(Source),
+    sources = paste(sort(unique(Source)), collapse = "; "),
+    .groups = "drop"
+  ) %>%
+  filter(n_sources > 1) %>%
+  arrange(desc(n_sources))
+
+print(measurer_source_check)
+
+#If Source == ""University of Kansas Museum of Natural History" and Measurer == "CM", then change Measurer to "CAM"
+bulbul <- bulbul %>%
+  mutate(
+    Measurer = ifelse(
+      Source == "Field1" & Measurer == "NS",
+      "NIS",
+      Measurer
+    )
+  )
+  write.csv(bulbul, "../data/Bulbul_AVONET_data_integrated_trimmed(in).csv", row.names = FALSE)
+
+measurer_counts <- bulbul %>%
+  group_by(Measurer) %>%
+  summarise(Specimen.counts = n(), .groups = "drop") %>%
+  arrange(Measurer)
+write.csv(measurer_counts, "../data/Measurer_specimen_counts.csv", row.names = FALSE)
+
+#Now add the Measurer.name to measurer_counts by adding the values from measurers_AVONET1$Measurer.name, matching by Measurer in both
+measurer_counts <- read.csv("../data/Measurer_specimen_counts.csv", stringsAsFactors = FALSE)
+measurer_names <- read.csv("../data/Measurers_AVONET1.csv", stringsAsFactors = FALSE)
+
+#Arrange measurer_counts by Measurer column alphabetically
+measurer_counts <- measurer_counts %>%
+  arrange(Measurer)
+write.csv(measurer_counts, "../data/Measurer_specimen_counts.csv", row.names = FALSE)
+
+measurer_counts <- measurer_counts %>%
+  select(Measurer, Individuals.measured) %>%
+  left_join(
+    measurer_names %>%
+      select(Measurer, Measurer.name),
+    by = "Measurer"
+  )
+
+str(measurer_counts)
+write.csv(measurer_counts, "../data/Measurer_specimen_counts.csv", row.names = FALSE)
+
+which(bulbul$Data.type == 1)
+
 ```

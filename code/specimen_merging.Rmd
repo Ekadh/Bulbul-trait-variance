@@ -224,9 +224,9 @@ chima$Date.collected <- as.character(chima$Date.collected)
 maarten <- read.xlsx("../data/Collaborator data/Sample_data_sheet_MH_RMNH.xlsx")
 str(maarten)
 #Jaden Tran's data from University of Western Ontario, Canada
-uwo <- read.xlsx("../data/Collaborator data/Sample_data_sheet_JT_UWO.xlsx")
+uwo <- read.xlsx("../data/Collaborator data/Data still to be added/UWO bulbuls.xlsx")
 str(uwo)
-uwo$Comments <- as.character(uwo$Comments)
+uwo$Bill_FromNostril <- as.numeric(uwo$Bill_FromNostril)
 #Olivier Pauwels and René Marie Lafontaine's data from RBINS in Belgium
 rbins <- read.xlsx("../data/Collaborator data/Sample_data_sheet_RBINS.xlsx")
 str(rbins)
@@ -269,7 +269,7 @@ zfmk$Subspecies <- as.character(zfmk$Subspecies)
 zfmk$Comments <- NA
 
 ####RENAME####
-zfmk <- zfmk |>
+uwo <- uwo |>
   rename(
     AviList = Scientific_Name,
     Beak.Length_Culmen = Bill_TotalCulmen,
@@ -357,7 +357,7 @@ for (trait in traits) {
 bulbuls <- read.csv("../data/Bulbul_AVONET_data_integrated_trimmed.csv")
 bulbuls2 <- bind_rows(
   bulbuls,
-  zfmk %>% dplyr::select(any_of(names(bulbuls)))
+  uwo %>% dplyr::select(any_of(names(bulbuls)))
 ) %>%
   dplyr::select(all_of(names(bulbuls)))
 str(bulbuls2)
@@ -380,14 +380,14 @@ avonet_points <- merge(
 )
 
 #Museum means for each trait, by species
-zfmk_means <- zfmk |>
+uwo_means <- uwo |>
   group_by(AviList) |>
   summarise(
     across(all_of(traits), ~mean(.x, na.rm=TRUE)),
     .groups="drop"
   )
-zfmk_points <- merge(
-  zfmk,
+uwo_points <- merge(
+  uwo,
   avonet_means,
   by="AviList",
   suffixes=c("_specimen","_mean")
@@ -437,13 +437,13 @@ ggplot(comparison_long,
 
 
 #Method 2: Highlighting species with specimen measurements in the SYSU dataset, and comparing those to the AVONET means for those species
-zfmk_species <- zfmk_points %>%
+uwo_species <- uwo_points %>%
     filter(!is.na(Wing.Length_specimen)) %>%
     pull(AviList) %>%
     unique()
 
 avonet_points_filtered <- avonet_points %>%
-    dplyr::filter(AviList %in% zfmk_species)
+    dplyr::filter(AviList %in% uwo_species)
 
 avonet_long <- avonet_points_filtered %>%
   pivot_longer(
@@ -461,7 +461,7 @@ avonet_long <- avonet_points_filtered %>%
   filter(Trait == Trait_mean) %>%
   dplyr::select(AviList, Trait, specimen, mean)
 
-zfmk_long <- zfmk_points %>%
+uwo_long <- uwo_points %>%
   pivot_longer(
     cols = ends_with("_specimen"),
     names_to = "Trait",
@@ -486,7 +486,7 @@ ggplot() +
   ) +
 
   geom_point(
-    data = zfmk_long,
+    data = uwo_long,
     aes(mean, specimen),
     colour = "#D55E00",
     shape = 17,
@@ -510,7 +510,7 @@ ggplot() +
     y = "Specimen measurement"
   )
 
-ggsave("../results/Collaborator data comparisons/TT comparison_ZFMK.pdf", width = 12, height = 8)
+ggsave("../results/Collaborator data comparisons/Jaden comparison_UWO.pdf", width = 12, height = 8)
 
 
 #Load bulbuls again and remove any specimen rows that don't have any trait measurements for the traits we're interested in (Beak.Length_Culmen, Beak.Length_Nares, Beak.Width, Beak.Depth, Tarsus.Length, Wing.Length, Kipps.Distance, Tail.Length, Gape_Width)

@@ -125,9 +125,19 @@ bulbul_dupes <- combined_data %>%
 str(bulbul_dupes)
 write.csv(bulbul_dupes, "../data/Duplicates/bulbul_dupes.csv", row.names = FALSE)
 ```
+
+
+
+
+
+
+
+
+
+
 Next step: Correlations and repeatability of measurements for duplicated specimens
 ```{r}
-bulbul_dupes <- read.csv("../data/Duplicates/Bulbul_Duplicates.csv")
+bulbul_dupes <- read.csv("../data/Duplicates/Bulbul_Duplicates(in).csv")
 str(bulbul_dupes)
 
 library(dplyr)
@@ -139,14 +149,14 @@ library(ggplot2)
 # 1. Define traits
 # -----------------------------
 traits <- c(
-  "Beak.Length_Culmen",
+  #"Beak.Length_Culmen",
   "Beak.Length_Nares",
-  "Beak.Width",
+  #"Beak.Width",
   "Beak.Depth",
   "Tarsus.Length",
-  "Wing.Length",
-  "Kipps.Distance",
-  "Tail.Length"
+  "Wing.Length"
+  #"Kipps.Distance",
+  #"Tail.Length"
 )
 
 # -----------------------------
@@ -274,19 +284,18 @@ cor_by_protocol
 # 9. Plot (example for one trait)
 # -----------------------------
 ggplot(bulbul_wide, aes(
-  x = Tail.Length_1,
-  y = Tail.Length_2
+  x = Tarsus.Length_1,
+  y = Tarsus.Length_2
 )) +
   geom_point() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
   theme_classic() +
   labs(
     x = "Measurement 1",
-    y = "Measurement 2",
-    title = "Repeatability of Tail Length"
+    y = "Measurement 2"
   )
 
-ggsave("../Results/Sensitivity/Bulbuls_Tail_Length_Repeatability.png", width = 6, height = 6)
+ggsave("../Results/Sensitivity/Bulbuls_Wing_Length_Repeatability.png", width = 6, height = 6)
 ```
 Now let's just do the same for all oscines to keep in hand
 ```{r}
@@ -472,22 +481,73 @@ cor_by_protocol <- oscine_dupes %>%
 cor_by_protocol
 
 # -----------------------------
-# 9. Plot (example for one trait)
+# 9. Faceted repeatability plot
 # -----------------------------
-ggplot(oscine_wide, aes(
-  x = Tail.Length_1,
-  y = Tail.Length_2
-)) +
-  geom_point() +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  theme_classic() +
-  labs(
-    x = "Measurement 1",
-    y = "Measurement 2",
-    title = "Repeatability of Tail Length"
+plot_df <- bulbul_dupes %>%
+  arrange(Unique.Specimen.Identifier, Sample.Number) %>%
+  pivot_longer(
+    cols = all_of(traits),
+    names_to = "Trait",
+    values_to = "Measurement"
+  ) %>%
+  pivot_wider(
+    id_cols = c(Unique.Specimen.Identifier, Trait),
+    names_from = Sample.Number,
+    values_from = Measurement,
+    names_prefix = "Measurement_"
+  ) %>%
+  mutate(
+    Trait = recode(
+      Trait,
+      "Beak.Depth" = "Beak Depth",
+      "Beak.Length_Nares" = "Beak Length (Nares)",
+      "Tarsus.Length" = "Tarsus Length",
+      "Wing.Length" = "Wing Length"
+    )
   )
 
-ggsave("../Results/Sensitivity/oscines_Tail_Length_Repeatability.png", width = 6, height = 6)
+ggplot(plot_df,
+       aes(x = Measurement_1,
+           y = Measurement_2)) +
+
+  geom_point(
+    size = 2,
+    alpha = 0.75
+  ) +
+
+  geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "dashed",
+    linewidth = 0.7
+  ) +
+
+  facet_wrap(
+    ~Trait,
+    scales = "free",
+    ncol = 2
+  ) +
+
+  labs(
+    x = "Measurement 1",
+    y = "Measurement 2"
+  ) +
+
+  theme_classic(base_size = 18) +
+
+  theme(
+    axis.title = element_text(size = 18),
+    axis.text = element_text(size = 16),
+    strip.text = element_text(size = 18, face = "bold"),
+    panel.spacing = unit(1.2, "lines")
+  )
+
+ggsave(
+  "../Results/Sensitivity/Bulbul_Duplicate_Repeatability_Faceted.png",
+  width = 10,
+  height = 10,
+  dpi = 600
+)
 ```
 One more analysis: Checking how many specimens are required to capture 90% of the variation in each trait for the 10 most sampled species
 ```{r}
